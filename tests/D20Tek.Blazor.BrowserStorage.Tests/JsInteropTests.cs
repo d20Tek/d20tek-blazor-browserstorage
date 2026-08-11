@@ -19,7 +19,7 @@ public class JsInteropTests
 
         // Assert
         Assert.AreEqual("test-value", result);
-        Assert.AreEqual(1, _jsRuntime.Invocations.Count);
+        Assert.HasCount(1, _jsRuntime.Invocations);
         Assert.AreEqual("localStorage.getItem", _jsRuntime.Invocations[0].Identifier);
         Assert.AreEqual("myKey", _jsRuntime.Invocations[0].Args[0]);
     }
@@ -41,7 +41,7 @@ public class JsInteropTests
         await JsInterop.SetItemAsync(_jsRuntime, "localStorage", "myKey", "{\"value\":1}", CancellationToken.None);
 
         // Assert
-        Assert.AreEqual(1, _jsRuntime.Invocations.Count);
+        Assert.HasCount(1, _jsRuntime.Invocations);
         Assert.AreEqual("localStorage.setItem", _jsRuntime.Invocations[0].Identifier);
         Assert.AreEqual("myKey", _jsRuntime.Invocations[0].Args[0]);
         Assert.AreEqual("{\"value\":1}", _jsRuntime.Invocations[0].Args[1]);
@@ -54,7 +54,7 @@ public class JsInteropTests
         await JsInterop.RemoveItemAsync(_jsRuntime, "sessionStorage", "myKey", CancellationToken.None);
 
         // Assert
-        Assert.AreEqual(1, _jsRuntime.Invocations.Count);
+        Assert.HasCount(1, _jsRuntime.Invocations);
         Assert.AreEqual("sessionStorage.removeItem", _jsRuntime.Invocations[0].Identifier);
         Assert.AreEqual("myKey", _jsRuntime.Invocations[0].Args[0]);
     }
@@ -66,7 +66,7 @@ public class JsInteropTests
         await JsInterop.ClearAsync(_jsRuntime, "localStorage", CancellationToken.None);
 
         // Assert
-        Assert.AreEqual(1, _jsRuntime.Invocations.Count);
+        Assert.HasCount(1, _jsRuntime.Invocations);
         Assert.AreEqual("localStorage.clear", _jsRuntime.Invocations[0].Identifier);
     }
 
