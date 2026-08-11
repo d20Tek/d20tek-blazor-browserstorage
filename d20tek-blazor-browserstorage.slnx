@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/.items/">
+    <File Path=".github/workflows/ci-build.yml" />
+    <File Path=".github/workflows/nuget-release.yml" />
+    <File Path="D20Tek.Blazor.BrowserStorage-Plan.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/samples/" />
+  <Folder Name="/src/">
+    <Project Path="src/D20Tek.Blazor.BrowserStorage/D20Tek.Blazor.BrowserStorage.csproj" Id="b4bb6d00-f69b-47c3-9f6c-fe923cc40f03" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/D20Tek.Blazor.BrowserStorage.Tests/D20Tek.Blazor.BrowserStorage.Tests.csproj" Id="bcf94fd5-dc15-45bb-aa58-e39b32d5e2d5" />
+  </Folder>
+</Solution>
