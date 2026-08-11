@@ -1,3 +1,4 @@
+using D20Tek.Blazor.BrowserStorage.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace D20Tek.Blazor.BrowserStorage;
@@ -15,12 +16,9 @@ public static class ServiceCollectionExtensions
     /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddBrowserStorage(
         this IServiceCollection services,
-        Action<BrowserStorageOptions>? configure = null)
-    {
-        AddLocalStorage(services, configure);
-        AddSessionStorage(services, configure);
-        return services;
-    }
+        Action<BrowserStorageOptions>? configure = null) =>
+        services.AddLocalStorage(configure)
+                .AddSessionStorage(configure);
 
     /// <summary>
     /// Registers the local storage service.
@@ -30,11 +28,9 @@ public static class ServiceCollectionExtensions
     /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddLocalStorage(
         this IServiceCollection services,
-        Action<BrowserStorageOptions>? configure = null)
-    {
-        // TODO: Register LocalStorageService implementation
-        throw new NotImplementedException();
-    }
+        Action<BrowserStorageOptions>? configure = null) =>
+        services.Configure(configure ?? (_ => { }))
+                .AddScoped<ILocalStorageService, LocalStorageService>();
 
     /// <summary>
     /// Registers the session storage service.
