@@ -35,6 +35,7 @@ A modern, lightweight browser storage library for Blazor WebAssembly and client-
 - **Typed API** — `GetAsync<T>` / `SetAsync<T>` with `System.Text.Json` serialization
 - **Result-based reads** — returns a result struct to handle missing keys without exceptions
 - **CancellationToken support** — all async methods accept optional cancellation
+- **Public Api documentation** — XML comments for all public types and members
 
 ### Extras
 - **Key prefix/namespace** — configurable prefix to avoid collisions across apps on same origin
@@ -324,20 +325,20 @@ This requires a small inline script registered during service initialization via
 
 ## Implementation Steps
 
-| # | Step | Deliverable |
-|---|------|-------------|
-| 1 | Create repo, solution, and project structure | `.sln`, `.csproj` files, folder layout |
-| 2 | Define public API contracts | All interfaces, records, options, event args |
-| 3 | Implement `JsInterop` helper | Internal static class wrapping `IJSRuntime` calls |
-| 4 | Implement `LocalStorageService` | Full `ILocalStorageService` implementation |
-| 5 | Implement `SessionStorageService` | Full `ISessionStorageService` implementation |
-| 6 | Implement `StorageEvent` listener | Cross-tab change detection + `Changed` event |
-| 7 | Implement DI extensions | `AddBrowserStorage`, `AddLocalStorage`, `AddSessionStorage` |
-| 8 | Unit tests | Test all methods with mocked `IJSRuntime` |
-| 9 | Sample app | Blazor WASM app demonstrating all features |
-| 10 | Documentation | README, API docs, migration guide from Blazored |
-| 11 | CI/CD | GitHub Actions for build, test, NuGet publish |
-| 12 | Publish | NuGet package, GitHub release |
+| # | Step | Deliverable | Status |
+|---|------|-------------|--------|
+| 1 | Create repo, solution, and project structure | `.sln`, `.csproj` files, folder layout | Done |
+| 2 | Define public API contracts | All interfaces, records, options, event args | Done |
+| 3 | Implement `JsInterop` helper | Internal static class wrapping `IJSRuntime` calls | Done |
+| 4 | Implement `LocalStorageService` | Full `ILocalStorageService` implementation | Done |
+| 5 | Implement `SessionStorageService` | Full `ISessionStorageService` implementation | |
+| 6 | Implement `StorageEvent` listener | Cross-tab change detection + `Changed` event | |
+| 7 | Implement DI extensions | `AddBrowserStorage`, `AddLocalStorage`, `AddSessionStorage` | |
+| 8 | Unit tests | Test all methods with mocked `IJSRuntime` | |
+| 9 | Sample app | Blazor WASM app demonstrating all features | |
+| 10 | Documentation | README, API docs, migration guide from Blazored | |
+| 11 | CI/CD | GitHub Actions for build, test, NuGet publish | |
+| 12 | Publish | NuGet package, GitHub release | |
 
 ---
 
