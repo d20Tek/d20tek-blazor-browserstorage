@@ -329,7 +329,7 @@ This requires a small inline script registered during service initialization via
 |---|------|-------------|--------|
 | 1 | Create repo, solution, and project structure | `.sln`, `.csproj` files, folder layout | Done |
 | 2 | Define public API contracts | All interfaces, records, options, event args | Done |
-| 3 | Implement `JsInterop` helper | Internal static class wrapping `IJSRuntime` calls | |
+| 3 | Implement `JsInterop` helper | Internal static class wrapping `IJSRuntime` calls | Done |
 | 4 | Implement `LocalStorageService` | Full `ILocalStorageService` implementation | |
 | 5 | Implement `SessionStorageService` | Full `ISessionStorageService` implementation | |
 | 6 | Implement `StorageEvent` listener | Cross-tab change detection + `Changed` event | |
