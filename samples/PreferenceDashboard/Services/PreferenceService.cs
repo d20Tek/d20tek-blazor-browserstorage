@@ -27,4 +27,11 @@ public class PreferenceService(ILocalStorageService storage)
         await _storage.SetAsync(StorageKey, preferences);
         OnChanged?.Invoke();
     }
+
+    public async Task ClearAsync()
+    {
+        Current = UserPreferences.Default;
+        await _storage.RemoveAsync(StorageKey);
+        OnChanged?.Invoke();
+    }
 }

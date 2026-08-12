@@ -4,6 +4,10 @@
     --text-color: #212529;
     --card-bg: #f8f9fa;
     --nav-bg: #ffffff;
+    --input-bg: #ffffff;
+    --input-text: #212529;
+    --input-border: #dee2e6;
+    --link-color: #1b6ec2;
     --font-family: 'Segoe UI', sans-serif;
 }
 
@@ -12,18 +16,30 @@
     --text-color: #e0e0e0;
     --card-bg: #16213e;
     --nav-bg: #0f3460;
+    --input-bg: #0f3460;
+    --input-text: #e0e0e0;
+    --input-border: #2a4a7f;
+    --link-color: #7db8f0;
 }
 
-body {
+[data-theme] {
     background-color: var(--bg-color);
     color: var(--text-color);
     font-family: var(--font-family);
     transition: background-color 0.3s, color 0.3s;
 }
 
+body {
+    margin: 0;
+}
+
 .navbar {
     background-color: var(--nav-bg) !important;
     border-bottom: 2px solid var(--accent-color);
+}
+
+.navbar .nav-link {
+    color: var(--text-color) !important;
 }
 
 .navbar .nav-link.active,
@@ -34,6 +50,30 @@ body {
 .card {
     background-color: var(--card-bg);
     border-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+[data-theme="dark"] a:not(.btn):not(.nav-link):not(.navbar-brand) {
+    color: var(--link-color);
+}
+
+.form-select,
+.form-control {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border-color: var(--input-border);
+}
+
+.form-select:focus,
+.form-control:focus {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem rgba(var(--accent-color), 0.15);
+}
+
+.form-label {
+    color: var(--text-color);
 }
 
 .btn-accent {
@@ -42,8 +82,10 @@ body {
     color: #fff;
 }
 
-.btn-accent:hover {
-    opacity: 0.85;
+.btn-accent:hover,
+.btn-accent:focus {
+    background-color: color-mix(in srgb, var(--accent-color) 80%, black);
+    border-color: color-mix(in srgb, var(--accent-color) 80%, black);
     color: #fff;
 }
 

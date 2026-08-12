@@ -1,6 +1,4 @@
 @page "/settings"
-@inject PreferenceDashboard.Services.PreferenceService PrefService
-
 <PageTitle>Settings - Preference Dashboard</PageTitle>
 
 <h1>Settings</h1>
@@ -42,49 +40,17 @@
         </select>
     </div>
 
-    <button class="btn btn-accent" @onclick="SavePreferences">Save Preferences</button>
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-accent" @onclick="SavePreferences">Save Preferences</button>
+        <button class="btn btn-outline-danger" @onclick="ResetToDefaults">Reset to Defaults</button>
 
-    @if (_saved)
-    {
-        <span class="text-success ms-3">✓ Saved!</span>
-    }
-</div>
-
-@code {
-    private string _theme = "light";
-    private string _accentColor = "#1b6ec2";
-    private string _fontFamily = "'Segoe UI', sans-serif";
-    private bool _saved;
-
-    private readonly (string Name, string Value)[] _accentColors =
-    [
-        ("Blue", "#1b6ec2"),
-        ("Purple", "#6c63ff"),
-        ("Teal", "#0d9488"),
-        ("Orange", "#ea580c"),
-        ("Pink", "#db2777"),
-        ("Green", "#16a34a")
-    ];
-
-    protected override void OnInitialized()
-    {
-        _theme = PrefService.Current.Theme;
-        _accentColor = PrefService.Current.AccentColor;
-        _fontFamily = PrefService.Current.FontFamily;
-    }
-
-    private async Task SavePreferences()
-    {
-        var prefs = new PreferenceDashboard.Models.UserPreferences
+        @if (_saved)
         {
-            Theme = _theme,
-            AccentColor = _accentColor,
-            FontFamily = _fontFamily
-        };
-
-        await PrefService.SaveAsync(prefs);
-        _saved = true;
-        await Task.Delay(2000);
-        _saved = false;
-    }
-}
+            <span class="text-success">✓ Saved!</span>
+        }
+        @if (_reset)
+        {
+            <span class="text-warning">↺ Reset to defaults!</span>
+        }
+    </div>
+</div>

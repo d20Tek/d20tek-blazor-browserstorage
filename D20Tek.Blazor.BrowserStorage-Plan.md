@@ -335,11 +335,12 @@ This requires a small inline script registered during service initialization via
 | 6 | Implement `StorageEvent` listener | Cross-tab change detection + `Changed` event | Done |
 | 7 | Implement DI extensions | `AddBrowserStorage`, `AddLocalStorage`, `AddSessionStorage` | Done |
 | 8 | Unit tests | Test all methods with mocked `IJSRuntime` | Done |
-| 9 | Sample app — Theme & Preferences | Blazor WASM app demonstrating basic usage with primitives | |
+| 9 | Sample app — Theme & Preferences | Blazor WASM app demonstrating basic usage with primitives | Done |
 | 10 | Sample app — Quiz/Trivia | Blazor WASM app demonstrating complex types and full feature set | |
 | 11 | Documentation | README, API docs, migration guide from Blazored | |
 | 12 | CI/CD | GitHub Actions for build, test, NuGet publish | |
 | 13 | Publish | NuGet package, GitHub release | |
+| 14 | DI extension with Lifecycle support | DI methods should support scoped, singleton, and transient lifetimes parameter | |
 
 ---
 
@@ -355,7 +356,6 @@ A simple settings page demonstrating basic primitive storage and cross-tab sync.
 - Font size — `int`
 
 **sessionStorage (resets on tab close):**
-- Unsaved settings draft flag — `bool`
 - "What's new" banner dismissed — `bool`
 
 **Features demonstrated:**
@@ -363,7 +363,7 @@ A simple settings page demonstrating basic primitive storage and cross-tab sync.
 - `ContainsKeyAsync` for first-visit detection
 - `Changed` event for cross-tab theme synchronization
 - `RemoveAsync` for resetting individual preferences
-- Key prefix namespacing (`theme_`, `session_`)
+- Key prefix namespacing (`sample-`)
 - Result-based reads for missing keys with fallback defaults
 
 **Pages:**

@@ -7,4 +7,6 @@ public class UserPreferences
     public string AccentColor { get; set; } = "#1b6ec2";
 
     public string FontFamily { get; set; } = "'Segoe UI', sans-serif";
+
+    public static UserPreferences Default => new();
 }
