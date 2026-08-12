@@ -1,4 +1,3 @@
-using D20Tek.Blazor.BrowserStorage.Tests.Fakes;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace D20Tek.Blazor.BrowserStorage.Tests;
@@ -66,7 +65,7 @@ public class ServiceCollectionExtensionsTests
 
         // Assert
         var provider = services.BuildServiceProvider();
-        var options = provider.GetRequiredService<Microsoft.Extensions.Options.IOptions<BrowserStorageOptions>>();
+        var options = provider.GetRequiredService<IOptions<BrowserStorageOptions>>();
         Assert.AreEqual("test_", options.Value.KeyPrefix);
     }
 
@@ -82,7 +81,7 @@ public class ServiceCollectionExtensionsTests
 
         // Assert
         var provider = services.BuildServiceProvider();
-        var options = provider.GetRequiredService<Microsoft.Extensions.Options.IOptions<BrowserStorageOptions>>();
+        var options = provider.GetRequiredService<IOptions<BrowserStorageOptions>>();
         Assert.AreEqual(string.Empty, options.Value.KeyPrefix);
     }
 }

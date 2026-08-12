@@ -1,7 +1,3 @@
-using D20Tek.Blazor.BrowserStorage.Internal;
-using D20Tek.Blazor.BrowserStorage.Tests.Fakes;
-using Microsoft.Extensions.Options;
-
 namespace D20Tek.Blazor.BrowserStorage.Tests;
 
 [TestClass]

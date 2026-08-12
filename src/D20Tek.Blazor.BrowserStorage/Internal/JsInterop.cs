@@ -1,5 +1,3 @@
-using Microsoft.JSInterop;
-
 namespace D20Tek.Blazor.BrowserStorage.Internal;
 
 /// <summary>

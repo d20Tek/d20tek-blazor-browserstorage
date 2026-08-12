@@ -1,6 +1,3 @@
-using Microsoft.JSInterop;
-using System.Diagnostics.CodeAnalysis;
-
 namespace D20Tek.Blazor.BrowserStorage.Tests.Fakes;
 
 [ExcludeFromCodeCoverage]
@@ -16,16 +13,11 @@ internal sealed class FakeJSRuntime : IJSRuntime
     {
         _invocations.Add((identifier, args ?? []));
 
-        if (Results.TryGetValue(identifier, out var result))
-        {
-            return ValueTask.FromResult((TValue)result!);
-        }
-
-        return ValueTask.FromResult(default(TValue)!);
+        return Results.TryGetValue(identifier, out var result)
+            ? ValueTask.FromResult((TValue)result!)
+            : ValueTask.FromResult(default(TValue)!);
     }
 
-    public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args)
-    {
-        return InvokeAsync<TValue>(identifier, args);
-    }
+    public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) =>
+        InvokeAsync<TValue>(identifier, args);
 }

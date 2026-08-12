@@ -331,9 +331,9 @@ This requires a small inline script registered during service initialization via
 | 2 | Define public API contracts | All interfaces, records, options, event args | Done |
 | 3 | Implement `JsInterop` helper | Internal static class wrapping `IJSRuntime` calls | Done |
 | 4 | Implement `LocalStorageService` | Full `ILocalStorageService` implementation | Done |
-| 5 | Implement `SessionStorageService` | Full `ISessionStorageService` implementation | |
+| 5 | Implement `SessionStorageService` | Full `ISessionStorageService` implementation | Done |
 | 6 | Implement `StorageEvent` listener | Cross-tab change detection + `Changed` event | |
-| 7 | Implement DI extensions | `AddBrowserStorage`, `AddLocalStorage`, `AddSessionStorage` | |
+| 7 | Implement DI extensions | `AddBrowserStorage`, `AddLocalStorage`, `AddSessionStorage` | Done |
 | 8 | Unit tests | Test all methods with mocked `IJSRuntime` | |
 | 9 | Sample app | Blazor WASM app demonstrating all features | |
 | 10 | Documentation | README, API docs, migration guide from Blazored | |
