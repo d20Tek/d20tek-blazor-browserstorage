@@ -1,7 +1,7 @@
 namespace D20Tek.Blazor.BrowserStorage.Tests.Fakes;
 
 [ExcludeFromCodeCoverage]
-internal sealed class FakeJSRuntime : IJSRuntime
+internal sealed class FakeJSObjectReference : IJSObjectReference
 {
     private readonly List<(string Identifier, object?[] Args)> _invocations = [];
 
@@ -9,16 +9,9 @@ internal sealed class FakeJSRuntime : IJSRuntime
 
     public Dictionary<string, object?> Results { get; } = [];
 
-    public FakeJSObjectReference? ModuleReference { get; set; }
-
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
     {
         _invocations.Add((identifier, args ?? []));
-
-        if (identifier == "import" && ModuleReference is not null)
-        {
-            return ValueTask.FromResult((TValue)(object)ModuleReference);
-        }
 
         return Results.TryGetValue(identifier, out var result)
             ? ValueTask.FromResult((TValue)result!)
@@ -27,4 +20,12 @@ internal sealed class FakeJSRuntime : IJSRuntime
 
     public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) =>
         InvokeAsync<TValue>(identifier, args);
+
+    public bool Disposed { get; private set; }
+
+    public ValueTask DisposeAsync()
+    {
+        Disposed = true;
+        return ValueTask.CompletedTask;
+    }
 }

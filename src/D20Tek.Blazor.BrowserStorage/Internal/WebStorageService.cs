@@ -1,11 +1,19 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace D20Tek.Blazor.BrowserStorage.Internal;
 
 internal abstract class WebStorageService : IBrowserStorageService
 {
+    private const string ModulePath = "./_content/D20Tek.Blazor.BrowserStorage/BrowserStorageInterop.js";
+
     private readonly string _storageName;
     private readonly IJSRuntime _jsRuntime;
     private readonly BrowserStorageOptions _options;
     private readonly JsonSerializerOptions _jsonOptions;
+
+    private DotNetObjectReference<WebStorageService>? _dotNetRef;
+    private IJSObjectReference? _module;
+    private int _listenerId = -1;
 
     protected WebStorageService(string storageName, IJSRuntime jsRuntime, IOptions<BrowserStorageOptions> options)
     {
@@ -15,7 +23,23 @@ internal abstract class WebStorageService : IBrowserStorageService
         _jsonOptions = _options.JsonOptions ?? new(JsonSerializerDefaults.Web);
     }
 
-    public event EventHandler<StorageChangedEventArgs>? Changed;
+    [ExcludeFromCodeCoverage]
+    public event EventHandler<StorageChangedEventArgs>? Changed
+    {
+        add
+        {
+            ChangedInternal += value;
+            if (ChangedInternal is not null && _module is null)
+            {
+                InitializeListenerAsync();
+            }
+        }
+        remove => ChangedInternal -= value;
+    }
+
+    private event EventHandler<StorageChangedEventArgs>? ChangedInternal;
+
+    private async void InitializeListenerAsync() => await EnsureListenerAsync();
 
     public async ValueTask<StorageResult<T>> GetAsync<T>(string key, CancellationToken ct = default)
     {
@@ -93,5 +117,34 @@ internal abstract class WebStorageService : IBrowserStorageService
     private object? DeserializeRaw(string? json) => json is null ? null : StorageSerializer.Deserialize<object>(json, _jsonOptions);
 
     private void RaiseChanged(string key, object? oldValue, object? newValue) =>
-        Changed?.Invoke(this, new StorageChangedEventArgs(key, oldValue, newValue));
+        ChangedInternal?.Invoke(this, new StorageChangedEventArgs(key, oldValue, newValue));
+
+    private async ValueTask EnsureListenerAsync()
+    {
+        if (_module is null)
+        {
+            _module = await _jsRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath);
+            _dotNetRef = DotNetObjectReference.Create(this);
+            _listenerId = await _module.InvokeAsync<int>("addStorageListener", _dotNetRef, _storageName);
+        }
+    }
+
+    [JSInvokable]
+    public void OnStorageChanged(string? key, string? oldValue, string? newValue)
+    {
+        if (key is null) return;
+
+        RaiseChanged(_options.StripPrefix(key), oldValue, newValue);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is not null && _listenerId >= 0)
+        {
+            await _module.InvokeVoidAsync("removeStorageListener", _listenerId);
+            await _module.DisposeAsync();
+        }
+
+        _dotNetRef?.Dispose();
+    }
 }

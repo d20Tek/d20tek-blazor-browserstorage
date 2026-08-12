@@ -3,7 +3,7 @@ namespace D20Tek.Blazor.BrowserStorage;
 /// <summary>
 /// Provides typed, async access to browser storage (localStorage or sessionStorage).
 /// </summary>
-public interface IBrowserStorageService
+public interface IBrowserStorageService : IAsyncDisposable
 {
     /// <summary>
     /// Gets a value from storage by key.
