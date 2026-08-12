@@ -59,20 +59,6 @@ public interface IBrowserStorageService : IAsyncDisposable
     ValueTask<IReadOnlyList<string>> GetKeysAsync(CancellationToken ct = default);
 
     /// <summary>
-    /// Sets multiple key-value pairs in storage.
-    /// </summary>
-    /// <param name="items">The key-value pairs to store.</param>
-    /// <param name="ct">Optional cancellation token.</param>
-    ValueTask SetMultipleAsync(IEnumerable<KeyValuePair<string, object>> items, CancellationToken ct = default);
-
-    /// <summary>
-    /// Removes multiple keys from storage.
-    /// </summary>
-    /// <param name="keys">The keys to remove.</param>
-    /// <param name="ct">Optional cancellation token.</param>
-    ValueTask RemoveMultipleAsync(IEnumerable<string> keys, CancellationToken ct = default);
-
-    /// <summary>
     /// Raised when a storage value changes.
     /// </summary>
     event EventHandler<StorageChangedEventArgs>? Changed;

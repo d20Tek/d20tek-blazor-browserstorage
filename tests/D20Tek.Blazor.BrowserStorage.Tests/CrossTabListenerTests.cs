@@ -23,7 +23,7 @@ public class CrossTabListenerTests
         service.Changed += (_, e) => eventArgs = e;
 
         // Act
-        service.OnStorageChanged("myKey", "oldVal", "newVal");
+        service.ListenerManager.OnStorageChanged("myKey", "oldVal", "newVal");
 
         // Assert
         Assert.IsNotNull(eventArgs);
@@ -41,7 +41,7 @@ public class CrossTabListenerTests
         service.Changed += [ExcludeFromCodeCoverage](_, e) => eventArgs = e;
 
         // Act
-        service.OnStorageChanged(null, "old", "new");
+        service.ListenerManager.OnStorageChanged(null, "old", "new");
 
         // Assert
         Assert.IsNull(eventArgs);
@@ -56,7 +56,7 @@ public class CrossTabListenerTests
         service.Changed += (_, e) => eventArgs = e;
 
         // Act
-        service.OnStorageChanged("app_myKey", "old", "new");
+        service.ListenerManager.OnStorageChanged("app_myKey", "old", "new");
 
         // Assert
         Assert.IsNotNull(eventArgs);
