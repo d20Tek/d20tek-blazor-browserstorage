@@ -3,7 +3,7 @@ namespace D20Tek.Blazor.BrowserStorage;
 /// <summary>
 /// Provides typed, async access to browser storage (localStorage or sessionStorage).
 /// </summary>
-public interface IBrowserStorageService
+public interface IBrowserStorageService : IAsyncDisposable
 {
     /// <summary>
     /// Gets a value from storage by key.
@@ -57,20 +57,6 @@ public interface IBrowserStorageService
     /// <param name="ct">Optional cancellation token.</param>
     /// <returns>A read-only list of storage keys.</returns>
     ValueTask<IReadOnlyList<string>> GetKeysAsync(CancellationToken ct = default);
-
-    /// <summary>
-    /// Sets multiple key-value pairs in storage.
-    /// </summary>
-    /// <param name="items">The key-value pairs to store.</param>
-    /// <param name="ct">Optional cancellation token.</param>
-    ValueTask SetMultipleAsync(IEnumerable<KeyValuePair<string, object>> items, CancellationToken ct = default);
-
-    /// <summary>
-    /// Removes multiple keys from storage.
-    /// </summary>
-    /// <param name="keys">The keys to remove.</param>
-    /// <param name="ct">Optional cancellation token.</param>
-    ValueTask RemoveMultipleAsync(IEnumerable<string> keys, CancellationToken ct = default);
 
     /// <summary>
     /// Raised when a storage value changes.

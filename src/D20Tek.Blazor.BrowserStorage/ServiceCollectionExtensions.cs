@@ -1,4 +1,3 @@
-using D20Tek.Blazor.BrowserStorage.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace D20Tek.Blazor.BrowserStorage;
@@ -40,9 +39,7 @@ public static class ServiceCollectionExtensions
     /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddSessionStorage(
         this IServiceCollection services,
-        Action<BrowserStorageOptions>? configure = null)
-    {
-        // TODO: Register SessionStorageService implementation
-        throw new NotImplementedException();
-    }
+        Action<BrowserStorageOptions>? configure = null) =>
+        services.Configure(configure ?? (_ => { }))
+                .AddScoped<ISessionStorageService, SessionStorageService>();
 }
