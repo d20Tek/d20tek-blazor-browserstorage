@@ -11,8 +11,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddBrowserStorage(options =>
     {
         options.KeyPrefix = "sample:";
-    });
+    }, ServiceLifetime.Singleton);
 
-builder.Services.AddScoped<PreferenceService>();
+builder.Services.AddSingleton<PreferenceService>();
 
 await builder.Build().RunAsync();
