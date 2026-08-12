@@ -1,0 +1,57 @@
+@page "/leaderboard"
+
+<PageTitle>Leaderboard - Tech Trivia</PageTitle>
+
+<h1 class="mb-4">🏆 Leaderboard</h1>
+
+@if (_loading)
+{
+    <div class="text-center mt-5">
+        <div class="spinner-border" role="status"></div>
+    </div>
+}
+else if (_scores.Count == 0)
+{
+    <div class="text-center text-muted mt-5">
+        <p class="lead">No scores yet! Play a quiz to get started.</p>
+        <a class="btn btn-primary" href="/categories">Play Now</a>
+    </div>
+}
+else
+{
+    <div class="mb-3">
+        <small class="text-muted">
+            Total entries: @_scores.Count | Storage keys: @_keyCount
+            @if (_keys.Count > 0)
+            {
+                <span> (@string.Join(", ", _keys))</span>
+            }
+        </small>
+    </div>
+
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Category</th>
+                <th>Score</th>
+                <th>Time</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < _scores.Count; i++)
+            {
+                var entry = _scores[i];
+                var medal = i switch { 0 => "🥇", 1 => "🥈", 2 => "🥉", _ => $"{i + 1}" };
+                <tr>
+                    <td>@medal</td>
+                    <td>@entry.Category</td>
+                    <td>@entry.Score / @entry.TotalQuestions</td>
+                    <td>@entry.Duration.ToString(@"mm\:ss")</td>
+                    <td>@entry.Date.LocalDateTime.ToString("MMM dd, yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

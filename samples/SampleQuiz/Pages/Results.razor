@@ -1,0 +1,41 @@
+@page "/results/{Category}/{Score:int}/{Total:int}/{DurationSeconds:int}"
+
+<PageTitle>Results - Tech Trivia</PageTitle>
+
+<div class="text-center mt-4">
+    @{
+        var percent = Total > 0 ? (int)((double)Score / Total * 100) : 0;
+        var emoji = percent switch
+        {
+            >= 90 => "🏆",
+            >= 70 => "🌟",
+            >= 50 => "👍",
+            _ => "📚"
+        };
+        var message = percent switch
+        {
+            >= 90 => "Outstanding!",
+            >= 70 => "Great job!",
+            >= 50 => "Not bad!",
+            _ => "Keep learning!"
+        };
+    }
+
+    <div class="display-1 mb-2">@emoji</div>
+    <h1>@message</h1>
+    <p class="lead">You scored <strong>@Score</strong> out of <strong>@Total</strong> (@percent%)</p>
+    <p class="text-muted">Category: @Uri.UnescapeDataString(Category) | Time: @TimeSpan.FromSeconds(DurationSeconds).ToString(@"mm\:ss")</p>
+
+    @if (_saved)
+    {
+        <div class="alert alert-success mt-3">
+            ✅ Score saved! Check the leaderboard to see your ranking.
+        </div>
+    }
+
+    <div class="d-flex justify-content-center gap-3 mt-4">
+        <a class="btn btn-primary btn-lg" href="/categories">Play Again</a>
+        <a class="btn btn-outline-secondary btn-lg" href="/leaderboard">Leaderboard</a>
+        <a class="btn btn-outline-dark" href="/">Home</a>
+    </div>
+</div>

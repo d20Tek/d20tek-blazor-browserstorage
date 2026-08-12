@@ -9,6 +9,7 @@
   </Folder>
   <Folder Name="/samples/">
     <Project Path="samples/PreferenceDashboard/PreferenceDashboard.csproj" Id="5e561e11-7c2e-4a48-9c26-4df6123b58ca" />
+    <Project Path="samples/SampleQuiz/SampleQuiz.csproj" Id="de52bded-3f03-4d14-8569-a7e3ca9ee22e" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/D20Tek.Blazor.BrowserStorage/D20Tek.Blazor.BrowserStorage.csproj" Id="b4bb6d00-f69b-47c3-9f6c-fe923cc40f03" />

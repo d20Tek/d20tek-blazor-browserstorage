@@ -1,0 +1,14 @@
+﻿@inherits LayoutComponentBase
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark shadow-sm px-3 mb-4">
+    <a class="navbar-brand fw-bold" href="/">🧠 Tech Trivia</a>
+    <div class="navbar-nav ms-auto">
+        <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">Home</NavLink>
+        <NavLink class="nav-link" href="/categories">Play</NavLink>
+        <NavLink class="nav-link" href="/leaderboard">Leaderboard</NavLink>
+    </div>
+</nav>
+
+<div class="container">
+    @Body
+</div>
