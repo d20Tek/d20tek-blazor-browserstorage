@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="Microsoft.JSInterop" />
     <InternalsVisibleTo Include="D20Tek.Blazor.BrowserStorage.Tests" />
   </ItemGroup>
 
