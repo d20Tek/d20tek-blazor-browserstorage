@@ -1,0 +1,90 @@
+@page "/settings"
+@inject PreferenceDashboard.Services.PreferenceService PrefService
+
+<PageTitle>Settings - Preference Dashboard</PageTitle>
+
+<h1>Settings</h1>
+<p>Customize how your dashboard looks and feels. Changes are saved to your browser's local storage.</p>
+
+<div class="card p-4 mt-3" style="max-width: 600px;">
+    <h5 class="mb-3">Visual Preferences</h5>
+
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Theme</label>
+        <select class="form-select" @bind="_theme">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Accent Color</label>
+        <div class="d-flex gap-2 flex-wrap">
+            @foreach (var color in _accentColors)
+            {
+                <button class="btn rounded-circle border-2 @(color.Value == _accentColor ? "border-dark" : "")"
+                        style="width:40px; height:40px; background-color:@color.Value;"
+                        title="@color.Name"
+                        @onclick="() => _accentColor = color.Value">
+                </button>
+            }
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Font</label>
+        <select class="form-select" @bind="_fontFamily">
+            <option value="'Segoe UI', sans-serif">Segoe UI</option>
+            <option value="'Georgia', serif">Georgia</option>
+            <option value="'Courier New', monospace">Courier New</option>
+            <option value="'Arial', sans-serif">Arial</option>
+            <option value="'Verdana', sans-serif">Verdana</option>
+        </select>
+    </div>
+
+    <button class="btn btn-accent" @onclick="SavePreferences">Save Preferences</button>
+
+    @if (_saved)
+    {
+        <span class="text-success ms-3">✓ Saved!</span>
+    }
+</div>
+
+@code {
+    private string _theme = "light";
+    private string _accentColor = "#1b6ec2";
+    private string _fontFamily = "'Segoe UI', sans-serif";
+    private bool _saved;
+
+    private readonly (string Name, string Value)[] _accentColors =
+    [
+        ("Blue", "#1b6ec2"),
+        ("Purple", "#6c63ff"),
+        ("Teal", "#0d9488"),
+        ("Orange", "#ea580c"),
+        ("Pink", "#db2777"),
+        ("Green", "#16a34a")
+    ];
+
+    protected override void OnInitialized()
+    {
+        _theme = PrefService.Current.Theme;
+        _accentColor = PrefService.Current.AccentColor;
+        _fontFamily = PrefService.Current.FontFamily;
+    }
+
+    private async Task SavePreferences()
+    {
+        var prefs = new PreferenceDashboard.Models.UserPreferences
+        {
+            Theme = _theme,
+            AccentColor = _accentColor,
+            FontFamily = _fontFamily
+        };
+
+        await PrefService.SaveAsync(prefs);
+        _saved = true;
+        await Task.Delay(2000);
+        _saved = false;
+    }
+}
