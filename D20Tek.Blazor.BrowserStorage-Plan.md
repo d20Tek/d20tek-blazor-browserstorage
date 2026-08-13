@@ -2,7 +2,7 @@
 
 ## Overview
 
-A modern, lightweight browser storage library for Blazor WebAssembly and client-side Blazor render modes. Provides typed access to `localStorage` and `sessionStorage` via clean async APIs and `IJSRuntime` interop. Zero JS file dependencies — all interop is inline.
+A modern, lightweight browser storage library for Blazor WebAssembly and client-side Blazor render modes. Provides typed access to `localStorage` and `sessionStorage` via clean async APIs and `IJSRuntime` interop. Zero JS file dependencies to include (all interop is inline).
 
 ## Package Identity
 
@@ -336,11 +336,14 @@ This requires a small inline script registered during service initialization via
 | 7 | Implement DI extensions | `AddBrowserStorage`, `AddLocalStorage`, `AddSessionStorage` | Done |
 | 8 | Unit tests | Test all methods with mocked `IJSRuntime` | Done |
 | 9 | Sample app — Theme & Preferences | Blazor WASM app demonstrating basic usage with primitives | Done |
-| 10 | Sample app — Quiz/Trivia | Blazor WASM app demonstrating complex types and full feature set | |
-| 11 | Documentation | README, API docs, migration guide from Blazored | |
+| 10 | Sample app — Quiz/Trivia | Blazor WASM app demonstrating complex types and full feature set | Done |
+| 11 | Documentation | README, API docs, migration guide from Blazored | Done |
+| 11b | Documentation | Nuget package details and documentation | Done |
 | 12 | CI/CD | GitHub Actions for build, test, NuGet publish | |
 | 13 | Publish | NuGet package, GitHub release | |
 | 14 | DI extension with Lifecycle support | DI methods should support scoped, singleton, and transient lifetimes parameter | Done |
+| 15 | Rename Success to IsSuccess | The StorageResult.Success property should be renamed to IsSuccess | |
+
 
 ---
 

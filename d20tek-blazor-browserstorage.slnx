@@ -7,6 +7,11 @@
     <File Path="Directory.Packages.props" />
     <File Path="README.md" />
   </Folder>
+  <Folder Name="/docs/">
+    <File Path="docs/api-reference.md" />
+    <File Path="docs/blazored-migration.md" />
+    <File Path="docs/getting-started-detailed.md" />
+  </Folder>
   <Folder Name="/samples/">
     <Project Path="samples/PreferenceDashboard/PreferenceDashboard.csproj" Id="5e561e11-7c2e-4a48-9c26-4df6123b58ca" />
     <Project Path="samples/SampleQuiz/SampleQuiz.csproj" Id="de52bded-3f03-4d14-8569-a7e3ca9ee22e" />
