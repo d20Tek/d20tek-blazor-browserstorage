@@ -8,11 +8,13 @@ public partial class Categories
     private List<string> _unlockedCategories = [];
     private bool _loading = true;
 
-    [Inject]
-    private GameService Game { get; set; } = default!;
+    [Inject] private GameService Game { get; set; } = default!;
+
+    [Inject] private QuestionBank Questions { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
+        await Questions.LoadAsync();
         _unlockedCategories = await Game.GetCategoriesUnlockedAsync();
         _loading = false;
     }

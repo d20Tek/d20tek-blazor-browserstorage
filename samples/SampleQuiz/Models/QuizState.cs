@@ -9,4 +9,6 @@ public class QuizState
     public string Category { get; set; } = string.Empty;
 
     public DateTimeOffset StartTime { get; set; } = DateTimeOffset.UtcNow;
+
+    public List<QuizQuestion>? RoundQuestions { get; set; }
 }

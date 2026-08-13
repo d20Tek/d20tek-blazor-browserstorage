@@ -3,7 +3,7 @@ using SampleQuiz.Models;
 
 namespace SampleQuiz.Services;
 
-public class GameService
+public class GameService(ILocalStorageService local, ISessionStorageService session)
 {
     private const string ProfileKey = "player-profile";
     private const string HighScoresKey = "high-scores";
@@ -12,16 +12,8 @@ public class GameService
     private const string QuizStateKey = "quiz-state";
     private const string CurrentStreakKey = "current-streak";
 
-    private readonly ILocalStorageService _local;
-    private readonly ISessionStorageService _session;
-
-    public GameService(ILocalStorageService local, ISessionStorageService session)
-    {
-        _local = local;
-        _session = session;
-    }
-
-    // --- Player Profile (localStorage, complex object) ---
+    private readonly ILocalStorageService _local = local;
+    private readonly ISessionStorageService _session = session;
 
     public async Task<PlayerProfile?> GetProfileAsync()
     {
@@ -29,10 +21,7 @@ public class GameService
         return result.Success ? result.Value : null;
     }
 
-    public async Task SaveProfileAsync(PlayerProfile profile) =>
-        await _local.SetAsync(ProfileKey, profile);
-
-    // --- High Scores (localStorage, List<ScoreEntry>) ---
+    public async Task SaveProfileAsync(PlayerProfile profile) => await _local.SetAsync(ProfileKey, profile);
 
     public async Task<List<ScoreEntry>> GetHighScoresAsync()
     {
@@ -40,18 +29,13 @@ public class GameService
         return result.Success && result.Value is not null ? result.Value : [];
     }
 
-    public async Task SaveHighScoresAsync(List<ScoreEntry> scores) =>
-        await _local.SetAsync(HighScoresKey, scores);
-
-    // --- Games Played (localStorage, int) ---
+    public async Task SaveHighScoresAsync(List<ScoreEntry> scores) => await _local.SetAsync(HighScoresKey, scores);
 
     public async Task<int> GetGamesPlayedAsync()
     {
         var result = await _local.GetAsync<int>(GamesPlayedKey);
         return result.Success ? result.Value : 0;
     }
-
-    // --- Categories Unlocked (localStorage, List<string>) ---
 
     public async Task<List<string>> GetCategoriesUnlockedAsync()
     {
@@ -69,18 +53,13 @@ public class GameService
         }
     }
 
-    // --- Quiz State (sessionStorage, complex object) ---
-
     public async Task<QuizState?> GetQuizStateAsync()
     {
         var result = await _session.GetAsync<QuizState>(QuizStateKey);
         return result.Success ? result.Value : null;
     }
 
-    public async Task SaveQuizStateAsync(QuizState state) =>
-        await _session.SetAsync(QuizStateKey, state);
-
-    // --- Current Streak (sessionStorage, int) ---
+    public async Task SaveQuizStateAsync(QuizState state) => await _session.SetAsync(QuizStateKey, state);
 
     public async Task<int> GetCurrentStreakAsync()
     {
@@ -88,10 +67,7 @@ public class GameService
         return result.Success ? result.Value : 0;
     }
 
-    public async Task SaveCurrentStreakAsync(int streak) =>
-        await _session.SetAsync(CurrentStreakKey, streak);
-
-    // --- Bulk Save Results (demonstrates SetMultipleAsync) ---
+    public async Task SaveCurrentStreakAsync(int streak) => await _session.SetAsync(CurrentStreakKey, streak);
 
     public async Task SaveResultsAsync(ScoreEntry entry)
     {
@@ -122,22 +98,11 @@ public class GameService
         }
     }
 
-    // --- Clear Session State (demonstrates RemoveMultipleAsync) ---
+    public async Task ClearSessionStateAsync() => await _session.RemoveMultipleAsync([QuizStateKey, CurrentStreakKey]);
 
-    public async Task ClearSessionStateAsync()
-    {
-        await _session.RemoveMultipleAsync([QuizStateKey, CurrentStreakKey]);
-    }
+    public async Task<int> GetLocalStorageCountAsync() => await _local.LengthAsync();
 
-    // --- Storage Stats (demonstrates GetKeysAsync / LengthAsync) ---
-
-    public async Task<int> GetLocalStorageCountAsync() =>
-        await _local.LengthAsync();
-
-    public async Task<IReadOnlyList<string>> GetLocalStorageKeysAsync() =>
-        await _local.GetKeysAsync();
-
-    // --- Reset All Data (demonstrates ClearAsync) ---
+    public async Task<IReadOnlyList<string>> GetLocalStorageKeysAsync() => await _local.GetKeysAsync();
 
     public async Task ResetAllDataAsync()
     {

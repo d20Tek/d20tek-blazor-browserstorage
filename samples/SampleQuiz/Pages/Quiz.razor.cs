@@ -6,14 +6,13 @@ namespace SampleQuiz.Pages;
 
 public partial class Quiz
 {
-    [Parameter]
-    public string Category { get; set; } = string.Empty;
+    [Parameter] public string Category { get; set; } = string.Empty;
 
-    [Inject]
-    private GameService Game { get; set; } = default!;
+    [Inject] private GameService Game { get; set; } = default!;
 
-    [Inject]
-    private NavigationManager Nav { get; set; } = default!;
+    [Inject] private NavigationManager Nav { get; set; } = default!;
+
+    [Inject] private QuestionBank Questions { get; set; } = default!;
 
     private List<QuizQuestion> _questions = [];
     private int _currentIndex;
@@ -26,16 +25,15 @@ public partial class Quiz
     protected override async Task OnInitializedAsync()
     {
         var decoded = Uri.UnescapeDataString(Category);
-        _questions = QuestionBank.GetQuestions(decoded);
+        await Questions.LoadAsync();
 
         // Try to recover session state
         var savedState = await Game.GetQuizStateAsync();
-        if (savedState is not null && savedState.Category == decoded && savedState.QuestionIndex < _questions.Count)
+        if (savedState is not null && savedState.Category == decoded && savedState.QuestionIndex > 0)
         {
+            // Recover the same questions from saved state
+            _questions = savedState.RoundQuestions ?? Questions.GetRoundQuestions(decoded);
             _currentIndex = savedState.QuestionIndex;
-            _score = savedState.SelectedAnswers.Count(i => i >= 0 &&
-                i < _questions.Count &&
-                savedState.SelectedAnswers.IndexOf(i) < _questions.Count);
             _startTime = savedState.StartTime;
 
             // Recalculate score from saved answers
@@ -48,6 +46,7 @@ public partial class Quiz
         }
         else
         {
+            _questions = Questions.GetRoundQuestions(decoded);
             _startTime = DateTimeOffset.UtcNow;
         }
 
@@ -84,7 +83,8 @@ public partial class Quiz
             QuestionIndex = _currentIndex + 1,
             SelectedAnswers = GetAnswersSoFar(),
             Category = Uri.UnescapeDataString(Category),
-            StartTime = _startTime
+            StartTime = _startTime,
+            RoundQuestions = _questions
         };
         await Game.SaveQuizStateAsync(state);
     }

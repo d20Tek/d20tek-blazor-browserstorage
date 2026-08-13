@@ -1,16 +1,175 @@
 body {
     font-family: 'Segoe UI', sans-serif;
-    background-color: #f5f6fa;
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+h1:focus, h2:focus, h3:focus {
+    outline: none;
+}
+
+a {
+    color: #7db8f0;
+}
+
+a:hover {
+    color: #a8d4ff;
 }
 
 .card {
     border-radius: 0.75rem;
-    border: 1px solid #dee2e6;
+    border: 1px solid #2a2a3a;
+    background-color: #1e1e2e;
+    color: #e0e0e0;
+}
+
+.form-control {
+    background-color: #2a2a3a;
+    color: #e0e0e0;
+    border-color: #3a3a4a;
+}
+
+.form-control:focus {
+    background-color: #2a2a3a;
+    color: #e0e0e0;
+    border-color: #5b9bd5;
+    box-shadow: 0 0 0 0.25rem rgba(91, 155, 213, 0.25);
+}
+
+.form-control::placeholder {
+    color: #888;
+}
+
+.table {
+    color: #e0e0e0;
+    --bs-table-bg: transparent;
+    --bs-table-color: #e0e0e0;
+    border-color: #2a2a3a;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-bg-type: #1a1a2e;
+    color: #e0e0e0;
+}
+
+.table-striped > tbody > tr:nth-of-type(even) > * {
+    --bs-table-bg-type: transparent;
+    color: #e0e0e0;
+}
+
+.table > thead {
+    border-bottom-color: #5b9bd5;
+}
+
+.table-dark {
+    --bs-table-bg: #1e1e2e;
+    --bs-table-color: #e0e0e0;
+    --bs-table-border-color: #2a2a3a;
+}
+
+.btn-primary {
+    background-color: #5b9bd5;
+    border-color: #5b9bd5;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #4a8ac4;
+    border-color: #4a8ac4;
+    color: #fff;
+}
+
+.btn-outline-primary {
+    color: #7db8f0;
+    border-color: #5b9bd5;
+}
+
+.btn-outline-primary:hover {
+    background-color: #5b9bd5;
+    border-color: #5b9bd5;
+    color: #fff;
 }
 
 .btn-outline-primary.text-start {
     padding: 0.75rem 1rem;
     font-size: 1.05rem;
+}
+
+.btn-outline-secondary {
+    color: #aaa;
+    border-color: #555;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #333;
+    border-color: #666;
+    color: #e0e0e0;
+}
+
+.btn-outline-danger {
+    color: #f87171;
+    border-color: #ef4444;
+}
+
+.btn-outline-danger:hover {
+    background-color: #ef4444;
+    border-color: #ef4444;
+    color: #fff;
+}
+
+.btn-outline-dark {
+    color: #ccc;
+    border-color: #555;
+}
+
+.btn-outline-dark:hover {
+    background-color: #444;
+    color: #fff;
+}
+
+.btn-warning {
+    background-color: #f59e0b;
+    border-color: #f59e0b;
+    color: #1a1a2e;
+}
+
+.btn-success {
+    background-color: #22c55e;
+    border-color: #22c55e;
+}
+
+.btn-danger {
+    background-color: #ef4444;
+    border-color: #ef4444;
+}
+
+.btn-secondary {
+    background-color: #3a3a4a;
+    border-color: #3a3a4a;
+    color: #999;
+}
+
+.badge.bg-secondary {
+    background-color: #3a3a4a !important;
+    color: #ccc;
+}
+
+.progress {
+    background-color: #2a2a3a;
+}
+
+.alert-success {
+    background-color: #1a3a2a;
+    border-color: #22c55e;
+    color: #86efac;
+}
+
+.text-muted {
+    color: #888 !important;
+}
+
+.spinner-border {
+    color: #5b9bd5;
 }
 
 .valid.modified:not([type=checkbox]) {

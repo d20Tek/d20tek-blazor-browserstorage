@@ -1,0 +1,1202 @@
+﻿[
+    {
+        "Question":  "What language is most commonly associated with .NET development?",
+        "Options":  [
+                        "C#",
+                        "Java",
+                        "Python",
+                        "Ruby"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  ".NET",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "What does CLR stand for in .NET?",
+        "Options":  [
+                        "Core Language Runtime",
+                        "Common Language Runtime",
+                        "Compiled Language Runtime",
+                        "Central Library Resource"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  ".NET",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "Which file extension is used for C# source files?",
+        "Options":  [
+                        ".vb",
+                        ".fs",
+                        ".cs",
+                        ".cpp"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  ".NET",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "What is the base class for all .NET types?",
+        "Options":  [
+                        "System.Base",
+                        "System.Type",
+                        "System.Root",
+                        "System.Object"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  ".NET",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "Which keyword is used to define a class in C#?",
+        "Options":  [
+                        "class",
+                        "struct",
+                        "module",
+                        "define"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  ".NET",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "What tool is used to manage .NET projects from the command line?",
+        "Options":  [
+                        "npm",
+                        "dotnet CLI",
+                        "nuget.exe",
+                        "msbuild only"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  ".NET",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "Which .NET type is used for immutable, thread-safe string building?",
+        "Options":  [
+                        "StringBuilder",
+                        "StringWriter",
+                        "ReadOnlySpan\u003cchar\u003e",
+                        "string"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is the purpose of the \u0027async\u0027 keyword in C#?",
+        "Options":  [
+                        "Makes a method run on a background thread",
+                        "Forces parallel execution",
+                        "Enables multi-threading",
+                        "Marks a method that contains await expressions"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which collection type guarantees unique elements in .NET?",
+        "Options":  [
+                        "HashSet\u003cT\u003e",
+                        "List\u003cT\u003e",
+                        "Queue\u003cT\u003e",
+                        "LinkedList\u003cT\u003e"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What attribute marks a test method in MSTest?",
+        "Options":  [
+                        "[Fact]",
+                        "[TestMethod]",
+                        "[Test]",
+                        "[TestCase]"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "In .NET dependency injection, what is the default lifetime for services registered with AddScoped?",
+        "Options":  [
+                        "Singleton",
+                        "Transient",
+                        "Per HTTP request",
+                        "Per application domain"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which interface must a class implement to be used in a \u0027foreach\u0027 loop?",
+        "Options":  [
+                        "IComparable",
+                        "IDisposable",
+                        "IFormattable",
+                        "IEnumerable"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What does the \u0027record\u0027 keyword introduce in C# 9?",
+        "Options":  [
+                        "An immutable reference type with value equality",
+                        "A mutable reference type",
+                        "A database model",
+                        "A logging mechanism"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which NuGet package provides the System.Text.Json serializer?",
+        "Options":  [
+                        "Newtonsoft.Json",
+                        "System.Text.Json",
+                        "System.Runtime.Serialization",
+                        "System.Xml.Linq"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is the purpose of Span\u003cT\u003e in .NET?",
+        "Options":  [
+                        "Managed heap allocation for arrays",
+                        "Thread synchronization primitive",
+                        "Type-safe memory access without heap allocation",
+                        "Generic constraint for value types"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  ".NET",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "In .NET\u0027s garbage collector, what triggers a Gen 2 collection?",
+        "Options":  [
+                        "Every 10 seconds",
+                        "When Dispose is called",
+                        "On application shutdown only",
+                        "When Gen 0 and Gen 1 are insufficient to free memory"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  ".NET",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What does the [CallerMemberName] attribute do?",
+        "Options":  [
+                        "Automatically captures the calling method\u0027s name as a parameter",
+                        "Restricts method access to specific callers",
+                        "Validates caller permissions at runtime",
+                        "Logs the call stack to diagnostics"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  ".NET",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "Which pattern does the C# \u0027await using\u0027 syntax implement?",
+        "Options":  [
+                        "IDisposable",
+                        "IAsyncDisposable",
+                        "IAsyncEnumerable",
+                        "IObservable"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  ".NET",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What is the difference between \u0027ValueTask\u003cT\u003e\u0027 and \u0027Task\u003cT\u003e\u0027?",
+        "Options":  [
+                        "ValueTask is always faster",
+                        "Task supports cancellation but ValueTask does not",
+                        "ValueTask avoids heap allocation when the result is available synchronously",
+                        "There is no difference"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  ".NET",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "In Blazor WebAssembly, which interop mechanism is used to call JavaScript?",
+        "Options":  [
+                        "P/Invoke",
+                        "COM Interop",
+                        "HttpClient",
+                        "IJSRuntime"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  ".NET",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What does Azure App Service primarily provide?",
+        "Options":  [
+                        "Web application hosting",
+                        "Virtual machine management",
+                        "Database administration",
+                        "Network routing"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Azure",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "Which Azure service is used for object/blob storage?",
+        "Options":  [
+                        "Azure SQL",
+                        "Azure Blob Storage",
+                        "Azure Redis Cache",
+                        "Azure Service Bus"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Azure",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "What is the Azure CLI command prefix?",
+        "Options":  [
+                        "azure",
+                        "azcli",
+                        "az",
+                        "cloud"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Azure",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "Which Azure service provides serverless compute for running code on-demand?",
+        "Options":  [
+                        "Azure Virtual Machines",
+                        "Azure Kubernetes Service",
+                        "Azure Batch",
+                        "Azure Functions"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Azure",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "What does a Resource Group in Azure represent?",
+        "Options":  [
+                        "A logical container for related Azure resources",
+                        "A billing account",
+                        "A virtual network",
+                        "An availability zone"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Azure",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "What is the maximum size of a single block blob in Azure Blob Storage?",
+        "Options":  [
+                        "5 TB",
+                        "190.7 TiB",
+                        "1 PB",
+                        "256 GB"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which Azure service provides a fully managed NoSQL database?",
+        "Options":  [
+                        "Azure SQL Database",
+                        "Azure Table Storage",
+                        "Azure Cosmos DB",
+                        "Azure Database for MySQL"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is Azure DevOps Pipelines used for?",
+        "Options":  [
+                        "Monitoring application health",
+                        "Managing DNS records",
+                        "Virtual network peering",
+                        "Continuous integration and delivery"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which Azure service allows you to manage secrets, keys, and certificates?",
+        "Options":  [
+                        "Azure Key Vault",
+                        "Azure Active Directory",
+                        "Azure Policy",
+                        "Azure Monitor"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What does Azure Application Insights provide?",
+        "Options":  [
+                        "Blob storage analytics",
+                        "Application performance monitoring and diagnostics",
+                        "Virtual machine scaling",
+                        "Container orchestration"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "In Azure Functions, what is a \u0027binding\u0027?",
+        "Options":  [
+                        "A security constraint",
+                        "A load balancing strategy",
+                        "A declarative way to connect to data sources without manual code",
+                        "A deployment configuration"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which consistency level in Cosmos DB offers the strongest guarantees?",
+        "Options":  [
+                        "Eventual",
+                        "Session",
+                        "Bounded Staleness",
+                        "Strong"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is the Azure Well-Architected Framework\u0027s reliability pillar primarily concerned with?",
+        "Options":  [
+                        "Ensuring workloads perform their intended function consistently",
+                        "Minimizing cost",
+                        "Encrypting data at rest",
+                        "Automating deployments"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Azure",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "In Azure Kubernetes Service, what is a DaemonSet?",
+        "Options":  [
+                        "A horizontal pod autoscaler",
+                        "A pod that runs on every node in the cluster",
+                        "A network policy",
+                        "A storage class"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Azure",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What does Azure Front Door provide that a standard Load Balancer does not?",
+        "Options":  [
+                        "TCP load balancing",
+                        "Database connection pooling",
+                        "Global HTTP/HTTPS load balancing with WAF and CDN",
+                        "DNS zone management"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Azure",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "Which Azure service uses the Raft consensus algorithm for leader election?",
+        "Options":  [
+                        "Azure Functions",
+                        "Azure Logic Apps",
+                        "Azure Event Grid",
+                        "Azure Service Fabric"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Azure",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What is the purpose of Azure Private Link?",
+        "Options":  [
+                        "Secure access to Azure services over a private endpoint in your VNet",
+                        "Public DNS resolution",
+                        "Cross-region VM migration",
+                        "Automated certificate renewal"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Azure",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What is the Windows Registry used for?",
+        "Options":  [
+                        "File compression",
+                        "Storing system and application configuration settings",
+                        "Network packet routing",
+                        "Disk defragmentation"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Windows",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "Which keyboard shortcut opens Task Manager in Windows?",
+        "Options":  [
+                        "Ctrl+Alt+Delete",
+                        "Alt+F4",
+                        "Ctrl+Shift+Esc",
+                        "Win+R"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Windows",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "What file system does modern Windows primarily use?",
+        "Options":  [
+                        "ext4",
+                        "FAT32",
+                        "HFS+",
+                        "NTFS"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Windows",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "What is PowerShell?",
+        "Options":  [
+                        "A task automation and configuration management framework",
+                        "A graphics editor",
+                        "A web browser",
+                        "A disk utility"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Windows",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "Which Windows feature allows running Linux distributions natively?",
+        "Options":  [
+                        "Hyper-V",
+                        "Windows Subsystem for Linux (WSL)",
+                        "Windows Sandbox",
+                        "Remote Desktop"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Windows",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "What does the \u0027ipconfig\u0027 command display?",
+        "Options":  [
+                        "Running processes",
+                        "Disk usage",
+                        "Network configuration details",
+                        "Installed programs"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Windows",
+        "Difficulty":  "Easy"
+    },
+    {
+        "Question":  "What is the purpose of the Windows Event Viewer?",
+        "Options":  [
+                        "Managing scheduled tasks",
+                        "Configuring network adapters",
+                        "Managing user accounts",
+                        "Viewing system, security, and application logs"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Windows",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which Windows tool is used to manage Group Policy settings?",
+        "Options":  [
+                        "gpedit.msc",
+                        "regedit",
+                        "devmgmt.msc",
+                        "compmgmt.msc"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Windows",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is a Windows Service?",
+        "Options":  [
+                        "A desktop application with a GUI",
+                        "A long-running background process managed by the Service Control Manager",
+                        "A browser extension",
+                        "A type of DLL file"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Windows",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which command-line tool is used to query DNS records on Windows?",
+        "Options":  [
+                        "ping",
+                        "tracert",
+                        "nslookup",
+                        "netstat"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Windows",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What does DISM stand for in Windows administration?",
+        "Options":  [
+                        "Disk Image Service Manager",
+                        "Device Installation System Module",
+                        "Dynamic Integrated Security Manager",
+                        "Deployment Image Servicing and Management"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Windows",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is the Windows Filtering Platform (WFP)?",
+        "Options":  [
+                        "A set of APIs for creating network filtering applications",
+                        "A file indexing service",
+                        "A display driver framework",
+                        "A memory management subsystem"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Windows",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "In NTFS, what is an Alternate Data Stream (ADS)?",
+        "Options":  [
+                        "A backup copy of a file",
+                        "A hidden data fork attached to a file that can store metadata or additional content",
+                        "An encrypted file system extension",
+                        "A network file share protocol"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Windows",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What Windows mechanism does Address Space Layout Randomization (ASLR) provide?",
+        "Options":  [
+                        "Faster memory allocation",
+                        "Compresses virtual memory pages",
+                        "Randomizes memory addresses of executables to prevent exploit attacks",
+                        "Manages thread scheduling priority"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Windows",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "Which Windows API is used for asynchronous I/O operations?",
+        "Options":  [
+                        "CreateProcess",
+                        "RegOpenKey",
+                        "SetWindowsHookEx",
+                        "ReadFile with OVERLAPPED structure"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Windows",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What is the purpose of the \u0027yield return\u0027 statement in C#?",
+        "Options":  [
+                        "Produces a value in an iterator without allocating a full collection",
+                        "Returns a value and exits the method",
+                        "Pauses execution until the next GC cycle",
+                        "Throws a lazy evaluation exception"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which .NET attribute restricts a generic type parameter to reference types?",
+        "Options":  [
+                        "where T : struct",
+                        "where T : class",
+                        "where T : new()",
+                        "where T : IDisposable"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What does the \u0027sealed\u0027 keyword do on a C# class?",
+        "Options":  [
+                        "Makes the class abstract",
+                        "Makes all members readonly",
+                        "Prevents the class from being inherited",
+                        "Restricts access to the same assembly"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "In Entity Framework Core, what does \u0027AsNoTracking()\u0027 do?",
+        "Options":  [
+                        "Disables logging for the query",
+                        "Prevents lazy loading",
+                        "Skips database migration checks",
+                        "Returns entities without change tracking overhead"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which middleware in ASP.NET Core handles CORS?",
+        "Options":  [
+                        "UseCors",
+                        "UseAuthentication",
+                        "UseRouting",
+                        "UseHttpsRedirection"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is the default serialization behavior for System.Text.Json with properties?",
+        "Options":  [
+                        "Serializes all properties including private",
+                        "Only serializes properties matching PascalCase by default",
+                        "Only serializes public properties with camelCase naming",
+                        "Serializes fields and properties equally"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What does the \u0027init\u0027 accessor do in C# 9+?",
+        "Options":  [
+                        "Initializes the property to null",
+                        "Creates an immutable backing field",
+                        "Allows setting the property only during object initialization",
+                        "Triggers a constructor callback"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which channel type in System.Threading.Channels is bounded?",
+        "Options":  [
+                        "Channel.CreateUnbounded\u003cT\u003e()",
+                        "Channel.CreateSingle\u003cT\u003e()",
+                        "Channel.CreateStream\u003cT\u003e()",
+                        "Channel.CreateBounded\u003cT\u003e(capacity)"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  ".NET",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What is the purpose of IMemoryCache in ASP.NET Core?",
+        "Options":  [
+                        "Provides an in-process memory-based caching mechanism",
+                        "Persists data to disk for recovery",
+                        "Manages garbage collection thresholds",
+                        "Provides distributed caching via Redis"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "In .NET, what does ConfigureAwait(false) do?",
+        "Options":  [
+                        "Disables the await keyword",
+                        "Avoids capturing the synchronization context on continuation",
+                        "Forces the continuation to run on the thread pool",
+                        "Prevents deadlocks in all scenarios"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  ".NET",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What is a source generator in .NET?",
+        "Options":  [
+                        "A runtime code emitter using Reflection.Emit",
+                        "A NuGet package that scaffolds project templates",
+                        "A compile-time component that generates C# source files during compilation",
+                        "A debugger extension for generating test data"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  ".NET",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "Which .NET type provides lock-free thread-safe operations on a single value?",
+        "Options":  [
+                        "Mutex",
+                        "Monitor",
+                        "ReaderWriterLockSlim",
+                        "Interlocked"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  ".NET",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What is the primary purpose of the ObjectPool\u003cT\u003e pattern in ASP.NET Core?",
+        "Options":  [
+                        "Reusing expensive objects to reduce GC pressure",
+                        "Caching database connections",
+                        "Managing dependency injection scopes",
+                        "Throttling concurrent requests"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  ".NET",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What does the \u0027required\u0027 keyword in C# 11 enforce?",
+        "Options":  [
+                        "The property must have a default value",
+                        "The property must be set during object initialization",
+                        "The property cannot be null at runtime",
+                        "The property is validated by a source generator"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "In .NET, what is the difference between IEnumerable\u003cT\u003e and IQueryable\u003cT\u003e?",
+        "Options":  [
+                        "IEnumerable is faster",
+                        "IEnumerable works only with arrays",
+                        "IQueryable supports expression trees for deferred query translation",
+                        "IQueryable is synchronous only"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  ".NET",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What does the FrozenDictionary\u003cTKey, TValue\u003e type in .NET 8+ optimize for?",
+        "Options":  [
+                        "Thread-safe writes",
+                        "Automatic expiration of entries",
+                        "Sorted key enumeration",
+                        "Extremely fast read performance on immutable data"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  ".NET",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "Which Blazor render mode runs components on the server via SignalR?",
+        "Options":  [
+                        "InteractiveServer",
+                        "InteractiveWebAssembly",
+                        "StaticSSR",
+                        "InteractiveAuto"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is the purpose of the IHttpClientFactory in ASP.NET Core?",
+        "Options":  [
+                        "Creates singleton HttpClient instances",
+                        "Manages HttpClient lifetimes to avoid socket exhaustion",
+                        "Provides mock HTTP responses for testing",
+                        "Configures HTTPS certificates"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  ".NET",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What Azure service provides managed PostgreSQL databases?",
+        "Options":  [
+                        "Azure SQL Database",
+                        "Azure Cosmos DB",
+                        "Azure Database for PostgreSQL",
+                        "Azure Synapse Analytics"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is an Azure Availability Zone?",
+        "Options":  [
+                        "A region pair for disaster recovery",
+                        "A pricing tier for VMs",
+                        "A DNS routing policy",
+                        "A physically separate datacenter within an Azure region"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which Azure service is used for real-time messaging between applications?",
+        "Options":  [
+                        "Azure Service Bus",
+                        "Azure Blob Storage",
+                        "Azure Data Factory",
+                        "Azure Backup"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "In Azure App Service, what is a deployment slot?",
+        "Options":  [
+                        "A reserved IP address",
+                        "A separate instance for staging that can be swapped with production",
+                        "A container registry tag",
+                        "A scheduled deployment window"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What does Azure Managed Identity eliminate the need for?",
+        "Options":  [
+                        "Virtual networks",
+                        "Load balancers",
+                        "Storing credentials in code or configuration",
+                        "DNS zones"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which Azure storage tier is cheapest for rarely accessed data?",
+        "Options":  [
+                        "Hot",
+                        "Cool",
+                        "Premium",
+                        "Archive"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is Azure Bicep?",
+        "Options":  [
+                        "A domain-specific language for deploying Azure resources declaratively",
+                        "A monitoring tool",
+                        "A container runtime",
+                        "A database query language"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Azure",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is the maximum RU/s partition key limit in Azure Cosmos DB?",
+        "Options":  [
+                        "1,000 RU/s",
+                        "10,000 RU/s",
+                        "100,000 RU/s",
+                        "Unlimited"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Azure",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "Which Azure service provides a fully managed Apache Kafka experience?",
+        "Options":  [
+                        "Azure Service Bus",
+                        "Azure Event Grid",
+                        "Azure Event Hubs",
+                        "Azure Queue Storage"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Azure",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What is Azure Arc used for?",
+        "Options":  [
+                        "Monitoring network latency",
+                        "Encrypting storage accounts",
+                        "Auto-scaling web apps",
+                        "Extending Azure management to on-premises and multi-cloud resources"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Azure",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "In Azure API Management, what is a policy?",
+        "Options":  [
+                        "An XML-based configuration that modifies API behavior at the gateway",
+                        "A billing rule",
+                        "A user role assignment",
+                        "A deployment pipeline stage"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Azure",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What does Azure Confidential Computing protect?",
+        "Options":  [
+                        "Data at rest only",
+                        "Data in use through hardware-based trusted execution environments",
+                        "Data in transit only",
+                        "Data in backups"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Azure",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What is the purpose of Azure Traffic Manager?",
+        "Options":  [
+                        "Monitoring VM CPU usage",
+                        "Managing virtual network subnets",
+                        "DNS-based traffic load balancing across global endpoints",
+                        "Logging application exceptions"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Azure",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "In Azure Functions, what is a Durable Function orchestration?",
+        "Options":  [
+                        "A function with a longer timeout",
+                        "A function bound to a timer trigger",
+                        "A function that uses premium plan scaling",
+                        "A stateful workflow that coordinates multiple function calls with checkpointing"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Azure",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What does the Azure Well-Architected Framework\u0027s cost optimization pillar recommend?",
+        "Options":  [
+                        "Right-size resources and eliminate waste through monitoring and governance",
+                        "Always use premium tiers",
+                        "Avoid auto-scaling to prevent cost spikes",
+                        "Use a single region to reduce costs"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Azure",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What is the Windows Performance Monitor (PerfMon) primarily used for?",
+        "Options":  [
+                        "Editing the registry",
+                        "Collecting and viewing real-time performance counters",
+                        "Managing Windows updates",
+                        "Configuring firewall rules"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Windows",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is the purpose of the Windows Task Scheduler?",
+        "Options":  [
+                        "Managing user accounts",
+                        "Defragmenting hard drives",
+                        "Automating the execution of programs or scripts at specified times or events",
+                        "Monitoring network traffic"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Windows",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "Which Windows command displays all active network connections?",
+        "Options":  [
+                        "ipconfig",
+                        "ping",
+                        "route",
+                        "netstat"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Windows",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is Windows Sandbox?",
+        "Options":  [
+                        "A lightweight desktop environment for running applications in isolation",
+                        "A virtual network simulator",
+                        "A file encryption tool",
+                        "A container orchestrator"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Windows",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What does the \u0027sfc /scannow\u0027 command do in Windows?",
+        "Options":  [
+                        "Formats the system partition",
+                        "Scans and repairs protected system files",
+                        "Clears the DNS cache",
+                        "Lists installed drivers"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Windows",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "In Windows, what is the purpose of the Volume Shadow Copy Service (VSS)?",
+        "Options":  [
+                        "Encrypting disk volumes",
+                        "Managing disk quotas",
+                        "Creating consistent point-in-time snapshots of data for backup",
+                        "Compressing NTFS volumes"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Windows",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What is the Windows Credential Guard designed to protect?",
+        "Options":  [
+                        "File system permissions",
+                        "Network firewall rules",
+                        "Registry keys",
+                        "Derived domain credentials using virtualization-based security"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Windows",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "Which Windows kernel object is used for inter-process synchronization with a count?",
+        "Options":  [
+                        "Semaphore",
+                        "Mutex",
+                        "Event",
+                        "Critical Section"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Windows",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What is the purpose of the Windows Boot Configuration Data (BCD) store?",
+        "Options":  [
+                        "Storing user preferences",
+                        "Containing boot-time configuration parameters for the OS loader",
+                        "Managing device drivers",
+                        "Caching DNS entries"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Windows",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "In Windows, what does the Minifilter driver framework provide?",
+        "Options":  [
+                        "Audio processing capabilities",
+                        "Network packet inspection",
+                        "A simplified model for developing file system filter drivers",
+                        "GPU acceleration APIs"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Windows",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "What is the purpose of Windows ETW (Event Tracing for Windows)?",
+        "Options":  [
+                        "Managing Windows updates",
+                        "Configuring Hyper-V networking",
+                        "Encrypting event logs",
+                        "A high-performance kernel-level tracing facility for diagnostics"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Windows",
+        "Difficulty":  "Hard"
+    },
+    {
+        "Question":  "Which PowerShell command retrieves detailed information about running processes?",
+        "Options":  [
+                        "Get-Process",
+                        "Get-Service",
+                        "Get-EventLog",
+                        "Get-ChildItem"
+                    ],
+        "CorrectIndex":  0,
+        "Category":  "Windows",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is the purpose of the Windows Memory Diagnostic tool?",
+        "Options":  [
+                        "Defragmenting RAM",
+                        "Testing physical memory (RAM) for errors",
+                        "Clearing the page file",
+                        "Monitoring memory allocation per process"
+                    ],
+        "CorrectIndex":  1,
+        "Category":  "Windows",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "In Windows, what does the \u0027robocopy\u0027 command provide over \u0027xcopy\u0027?",
+        "Options":  [
+                        "Faster single-file copy",
+                        "Compressed file transfer",
+                        "Resilient file copy with retry, mirroring, and multi-threaded support",
+                        "Encrypted file copy"
+                    ],
+        "CorrectIndex":  2,
+        "Category":  "Windows",
+        "Difficulty":  "Medium"
+    },
+    {
+        "Question":  "What is the Windows Hyper-V hypervisor type?",
+        "Options":  [
+                        "Type 2 (hosted)",
+                        "Type 3 (containerized)",
+                        "Type 0 (firmware)",
+                        "Type 1 (bare-metal)"
+                    ],
+        "CorrectIndex":  3,
+        "Category":  "Windows",
+        "Difficulty":  "Hard"
+    }
+]

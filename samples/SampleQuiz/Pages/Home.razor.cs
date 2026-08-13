@@ -13,11 +13,9 @@ public partial class Home
     private int _storageCount;
     private bool _loading = true;
 
-    [Inject]
-    private GameService Game { get; set; } = default!;
+    [Inject] private GameService Game { get; set; } = default!;
 
-    [Inject]
-    private NavigationManager Nav { get; set; } = default!;
+    [Inject] private NavigationManager Nav { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
