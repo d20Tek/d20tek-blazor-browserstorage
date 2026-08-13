@@ -130,13 +130,13 @@ For a complete reference of all public interfaces, methods, events, extension me
 
 The repository includes two sample Blazor WebAssembly applications that demonstrate the library's features in realistic scenarios:
 
-### PreferenceDashboard
+### [PreferenceDashboard](samples/PreferenceDashboard)
 
 A settings and preferences dashboard that uses `localStorage` to persist visual preferences (theme, accent color, and font family) across browser sessions, and `sessionStorage` to track dismissal of a "What's New" banner within the current tab.
 
 **Features demonstrated:** `GetAsync<T>`, `SetAsync<T>`, `ContainsKeyAsync`, `ClearAsync`, key prefix namespacing, and the `Changed` event.
 
-### SampleQuiz
+### [SampleQuiz](samples/SampleQuiz)
 
 An interactive tech trivia game with 100 questions across .NET, Azure, and Windows categories. The application uses `localStorage` for persistent data such as player profiles, high scores, and game statistics, and `sessionStorage` for current quiz state with recovery on page refresh.
 
