@@ -1,0 +1,59 @@
+@page "/categories"
+
+<PageTitle>Categories - Tech Trivia</PageTitle>
+
+<h1 class="mb-4">Choose a Category</h1>
+
+@if (_loading)
+{
+    <div class="text-center mt-5">
+        <div class="spinner-border" role="status"></div>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var category in QuestionBank.Categories)
+        {
+            var isUnlocked = _unlockedCategories.Contains(category);
+            var icon = category switch { ".NET" => "💻", "Azure" => "☁️", "Windows" => "🪟", _ => "❓" };
+            var questionCount = Questions.GetQuestionCount(category);
+
+            <div class="col-md-4">
+                <div class="card h-100 p-4 text-center @(isUnlocked ? "" : "opacity-50")">
+                    <div class="display-3 mb-2">@icon</div>
+                    <h3>@category</h3>
+                    <p class="text-muted">@questionCount questions</p>
+
+                    @if (isUnlocked)
+                    {
+                        <a class="btn btn-primary mt-auto" href="/quiz/@Uri.EscapeDataString(category)">Start Quiz</a>
+                    }
+                    else
+                    {
+                        <button class="btn btn-secondary mt-auto" disabled>
+                            🔒 Play more to unlock
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="row g-4 mt-1">
+        <div class="col-md-6 mx-auto">
+            <div class="card p-4 text-center">
+                <div class="display-3 mb-2">🌐</div>
+                <h3>All Categories</h3>
+                <p class="text-muted">@Questions.GetQuestionCount(QuestionBank.AllCategory) questions from every category</p>
+                <a class="btn btn-primary mt-auto" href="/quiz/@Uri.EscapeDataString(QuestionBank.AllCategory)">Start Quiz</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <small class="text-muted">
+            🔓 Unlock new categories by completing quizzes! Azure unlocks after 2 games, Windows after 5.
+        </small>
+    </div>
+}

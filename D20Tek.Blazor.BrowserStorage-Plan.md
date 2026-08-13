@@ -2,7 +2,7 @@
 
 ## Overview
 
-A modern, lightweight browser storage library for Blazor WebAssembly and client-side Blazor render modes. Provides typed access to `localStorage` and `sessionStorage` via clean async APIs and `IJSRuntime` interop. Zero JS file dependencies — all interop is inline.
+A modern, lightweight browser storage library for Blazor WebAssembly and client-side Blazor render modes. Provides typed access to `localStorage` and `sessionStorage` via clean async APIs and `IJSRuntime` interop. Zero JS file dependencies to include (all interop is inline).
 
 ## Package Identity
 
@@ -335,10 +335,76 @@ This requires a small inline script registered during service initialization via
 | 6 | Implement `StorageEvent` listener | Cross-tab change detection + `Changed` event | Done |
 | 7 | Implement DI extensions | `AddBrowserStorage`, `AddLocalStorage`, `AddSessionStorage` | Done |
 | 8 | Unit tests | Test all methods with mocked `IJSRuntime` | Done |
-| 9 | Sample app | Blazor WASM app demonstrating all features | |
-| 10 | Documentation | README, API docs, migration guide from Blazored | |
-| 11 | CI/CD | GitHub Actions for build, test, NuGet publish | |
-| 12 | Publish | NuGet package, GitHub release | |
+| 9 | Sample app — Theme & Preferences | Blazor WASM app demonstrating basic usage with primitives | Done |
+| 10 | Sample app — Quiz/Trivia | Blazor WASM app demonstrating complex types and full feature set | Done |
+| 11 | Documentation | README, API docs, migration guide from Blazored | Done |
+| 11b | Documentation | Nuget package details and documentation | Done |
+| 12 | CI/CD | GitHub Actions for build, test, NuGet publish | |
+| 13 | Publish | NuGet package, GitHub release | |
+| 14 | DI extension with Lifecycle support | DI methods should support scoped, singleton, and transient lifetimes parameter | Done |
+| 15 | Rename Success to IsSuccess | The StorageResult.Success property should be renamed to IsSuccess | Done |
+
+
+---
+
+## Sample Apps
+
+### Sample 1: Theme & Preferences Dashboard
+
+A simple settings page demonstrating basic primitive storage and cross-tab sync.
+
+**localStorage (persists across sessions):**
+- Preferred theme (dark/light) — `string`
+- Accent color — `string`
+- Font size — `int`
+
+**sessionStorage (resets on tab close):**
+- "What's new" banner dismissed — `bool`
+
+**Features demonstrated:**
+- `GetAsync<T>` / `SetAsync<T>` with primitive types (string, int, bool)
+- `ContainsKeyAsync` for first-visit detection
+- `Changed` event for cross-tab theme synchronization
+- `RemoveAsync` for resetting individual preferences
+- Key prefix namespacing (`sample-`)
+- Result-based reads for missing keys with fallback defaults
+
+**Pages:**
+- Settings page with live preview of theme/accent/font changes
+- "Reset to defaults" button demonstrating `ClearAsync`
+
+---
+
+### Sample 2: Quiz/Trivia App
+
+An interactive quiz demonstrating complex typed objects, bulk operations, and full feature coverage.
+
+**localStorage (persists across sessions):**
+- Player profile — complex object (`{ Name, AvatarUrl, CreatedDate }`)
+- High scores list — `List<ScoreEntry>` with `{ Score, Date, Category }`
+- Total games played — `int`
+- Categories unlocked — `List<string>`
+
+**sessionStorage (resets on tab close):**
+- Current quiz state — complex object (`{ QuestionIndex, SelectedAnswers, Category, StartTime }`)
+- Timer remaining — `int` (seconds)
+- Current streak — `int`
+
+**Features demonstrated:**
+- Typed complex objects with `System.Text.Json` serialization
+- `StorageResult<T>` for handling first-time players (no saved profile)
+- `SetMultipleAsync` for saving quiz results (score + updated stats in one batch)
+- `RemoveMultipleAsync` for clearing session state on quiz completion
+- `GetKeysAsync` / `LengthAsync` for displaying saved data stats
+- `Changed` event for cross-tab "new high score" toast notification
+- `DateTimeOffset` and `TimeSpan` serialization for timestamps and durations
+
+**Pages:**
+- Home — player name entry or welcome back (result-based read)
+- Category selection — shows unlocked vs locked categories
+- Quiz — timed questions with session-state recovery on refresh
+- Results — score display, high score check, bulk save
+- Leaderboard — enumerated scores from localStorage
 
 ---
 

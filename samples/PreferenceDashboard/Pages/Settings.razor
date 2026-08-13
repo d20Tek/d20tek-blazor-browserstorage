@@ -1,0 +1,56 @@
+@page "/settings"
+<PageTitle>Settings - Preference Dashboard</PageTitle>
+
+<h1>Settings</h1>
+<p>Customize how your dashboard looks and feels. Changes are saved to your browser's local storage.</p>
+
+<div class="card p-4 mt-3" style="max-width: 600px;">
+    <h5 class="mb-3">Visual Preferences</h5>
+
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Theme</label>
+        <select class="form-select" @bind="_theme">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Accent Color</label>
+        <div class="d-flex gap-2 flex-wrap">
+            @foreach (var color in _accentColors)
+            {
+                <button class="btn rounded-circle border-2 @(color.Value == _accentColor ? "border-dark" : "")"
+                        style="width:40px; height:40px; background-color:@color.Value;"
+                        title="@color.Name"
+                        @onclick="() => _accentColor = color.Value">
+                </button>
+            }
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label fw-semibold">Font</label>
+        <select class="form-select" @bind="_fontFamily">
+            <option value="'Segoe UI', sans-serif">Segoe UI</option>
+            <option value="'Georgia', serif">Georgia</option>
+            <option value="'Courier New', monospace">Courier New</option>
+            <option value="'Arial', sans-serif">Arial</option>
+            <option value="'Verdana', sans-serif">Verdana</option>
+        </select>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-accent" @onclick="SavePreferences">Save Preferences</button>
+        <button class="btn btn-outline-danger" @onclick="ResetToDefaults">Reset to Defaults</button>
+
+        @if (_saved)
+        {
+            <span class="text-success">✓ Saved!</span>
+        }
+        @if (_reset)
+        {
+            <span class="text-warning">↺ Reset to defaults!</span>
+        }
+    </div>
+</div>

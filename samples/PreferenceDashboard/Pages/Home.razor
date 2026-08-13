@@ -1,0 +1,57 @@
+﻿@page "/"
+<PageTitle>Home - Preference Dashboard</PageTitle>
+
+@if (!_bannerDismissed)
+{
+    <div class="whats-new-banner d-flex justify-content-between align-items-start">
+        <div>
+            <h2 class="mb-1">🎉 What's New</h2>
+            <p class="mb-0">Personalize your dashboard! Head over to <a href="/settings" class="text-white text-decoration-underline">Settings</a> to choose your theme, accent color, and font.</p>
+        </div>
+        <button class="btn btn-sm btn-outline-light ms-3" @onclick="DismissBanner" title="Dismiss">✕</button>
+    </div>
+}
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card h-100 p-3">
+            <h5>📊 Activity</h5>
+            <p>You have <strong>12</strong> new notifications and <strong>3</strong> pending tasks this week.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 p-3">
+            <h5>📅 Upcoming</h5>
+            <p>Team standup tomorrow at 9:00 AM. Sprint review on Friday.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 p-3">
+            <h5>⭐ Favorites</h5>
+            <p>Quick access to your pinned projects and bookmarked pages.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-2">
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5>📝 Recent Notes</h5>
+            <ul class="mb-0">
+                <li>Design review feedback completed</li>
+                <li>Updated API documentation</li>
+                <li>New feature brainstorming session notes</li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5>🔗 Quick Links</h5>
+            <ul class="mb-0">
+                <li><a href="/settings">Dashboard Settings</a></li>
+                <li>Documentation</li>
+                <li>Help & Support</li>
+            </ul>
+        </div>
+    </div>
+</div>

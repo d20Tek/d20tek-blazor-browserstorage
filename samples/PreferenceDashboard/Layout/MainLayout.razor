@@ -1,0 +1,26 @@
+﻿@inherits LayoutComponentBase
+@inject PreferenceDashboard.Services.PreferenceService PrefService
+
+<div data-theme="@PrefService.Current.Theme"
+     style="--accent-color: @PrefService.Current.AccentColor; --font-family: @PrefService.Current.FontFamily; min-height: 100vh;">
+
+    <nav class="navbar navbar-expand-sm navbar-light shadow-sm px-3 mb-4">
+        <a class="navbar-brand fw-bold" href="/">⚙️ Preference Dashboard</a>
+        <div class="navbar-nav ms-auto">
+            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">Home</NavLink>
+            <NavLink class="nav-link" href="/settings">Settings</NavLink>
+        </div>
+    </nav>
+
+    <div class="container">
+        @Body
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await PrefService.LoadAsync();
+        PrefService.OnChanged += StateHasChanged;
+    }
+}
