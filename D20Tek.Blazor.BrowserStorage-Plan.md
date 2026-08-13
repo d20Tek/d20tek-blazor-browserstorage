@@ -342,7 +342,7 @@ This requires a small inline script registered during service initialization via
 | 12 | CI/CD | GitHub Actions for build, test, NuGet publish | |
 | 13 | Publish | NuGet package, GitHub release | |
 | 14 | DI extension with Lifecycle support | DI methods should support scoped, singleton, and transient lifetimes parameter | Done |
-| 15 | Rename Success to IsSuccess | The StorageResult.Success property should be renamed to IsSuccess | |
+| 15 | Rename Success to IsSuccess | The StorageResult.Success property should be renamed to IsSuccess | Done |
 
 
 ---

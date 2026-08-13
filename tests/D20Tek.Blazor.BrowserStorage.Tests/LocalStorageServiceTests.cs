@@ -24,7 +24,7 @@ public class LocalStorageServiceTests
         var result = await service.GetAsync<int>("age", CancellationToken.None);
 
         // Assert
-        Assert.IsTrue(result.Success);
+        Assert.IsTrue(result.IsSuccess);
         Assert.AreEqual(42, result.Value);
     }
 
@@ -39,7 +39,7 @@ public class LocalStorageServiceTests
         var result = await service.GetAsync<int>("missing", CancellationToken.None);
 
         // Assert
-        Assert.IsFalse(result.Success);
+        Assert.IsFalse(result.IsSuccess);
         Assert.AreEqual(default, result.Value);
     }
 
@@ -54,7 +54,7 @@ public class LocalStorageServiceTests
         var result = await service.GetAsync<TestData>("data", CancellationToken.None);
 
         // Assert
-        Assert.IsTrue(result.Success);
+        Assert.IsTrue(result.IsSuccess);
         Assert.AreEqual("test", result.Value!.Name);
         Assert.AreEqual(10, result.Value.Value);
     }

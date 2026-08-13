@@ -26,11 +26,11 @@ The `GetAsync<T>` method returns a `StorageResult<T>` rather than throwing an ex
 ```csharp
 // Simple types
 var result = await LocalStorage.GetAsync<int>("visit-count");
-int visits = result.Success ? result.Value : 0;
+int visits = result.IsSuccess ? result.Value : 0;
 
 // Complex objects
 var profileResult = await LocalStorage.GetAsync<UserProfile>("user-profile");
-if (profileResult.Success && profileResult.Value is not null)
+if (profileResult.IsSuccess && profileResult.Value is not null)
 {
 	var profile = profileResult.Value;
 }
@@ -40,7 +40,7 @@ The `StorageResult<T>` record struct contains two properties:
 
 | Property | Type | Description |
 |---|---|---|
-| `Success` | `bool` | Indicates whether the key was found and the value was deserialized successfully. |
+| `IsSuccess` | `bool` | Indicates whether the key was found and the value was deserialized successfully. |
 | `Value` | `T?` | The deserialized value, or the default value of `T` if the key was not found. |
 
 ### Writing Values

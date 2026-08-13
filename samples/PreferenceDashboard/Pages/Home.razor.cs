@@ -14,7 +14,7 @@ public partial class Home
     protected override async Task OnInitializedAsync()
     {
         var result = await SessionStorage.GetAsync<bool>(BannerDismissedKey);
-        _bannerDismissed = result.Success && result.Value;
+        _bannerDismissed = result.IsSuccess && result.Value;
     }
 
     private async Task DismissBanner()

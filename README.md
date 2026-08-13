@@ -34,7 +34,7 @@ This package was inspired by Blazored.LocalStorage/SessionStorage. Once I realiz
 ## Features
 
 - **Typed, async API**: Read and write any serializable .NET type with generic `GetAsync<T>` and `SetAsync<T>` methods. No manual JSON handling required.
-- **Result-based reads**: `GetAsync<T>` returns a `StorageResult<T>` with a `Success` flag, eliminating exceptions on missing keys and enabling safe fallback patterns.
+- **Result-based reads**: `GetAsync<T>` returns a `StorageResult<T>` with an `IsSuccess` flag, eliminating exceptions on missing keys and enabling safe fallback patterns.
 - **localStorage and sessionStorage**: Full support for both browser storage mechanisms through `ILocalStorageService` and `ISessionStorageService`.
 - **Bulk operations**: `SetMultipleAsync` and `RemoveMultipleAsync` extension methods for batch read/write scenarios.
 - **Key prefix namespacing**: Configure a prefix string (for example, `"myapp_"`) that is automatically prepended to all keys, preventing collisions between multiple applications or modules sharing the same origin.
@@ -112,7 +112,7 @@ await LocalStorage.SetAsync("username", "Alice");
 
 // Read a value
 var result = await LocalStorage.GetAsync<string>("username");
-if (result.Success)
+if (result.IsSuccess)
 {
     Console.WriteLine(result.Value); // "Alice"
 }

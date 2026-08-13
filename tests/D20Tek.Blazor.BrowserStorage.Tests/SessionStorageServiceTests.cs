@@ -34,7 +34,7 @@ public class SessionStorageServiceTests
         var result = await service.GetAsync<int>("count", CancellationToken.None);
 
         // Assert
-        Assert.IsTrue(result.Success);
+        Assert.IsTrue(result.IsSuccess);
         Assert.AreEqual(42, result.Value);
     }
 }

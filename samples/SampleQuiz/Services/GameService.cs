@@ -18,7 +18,7 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
     public async Task<PlayerProfile?> GetProfileAsync()
     {
         var result = await _local.GetAsync<PlayerProfile>(ProfileKey);
-        return result.Success ? result.Value : null;
+        return result.IsSuccess ? result.Value : null;
     }
 
     public async Task SaveProfileAsync(PlayerProfile profile) => await _local.SetAsync(ProfileKey, profile);
@@ -26,7 +26,7 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
     public async Task<List<ScoreEntry>> GetHighScoresAsync()
     {
         var result = await _local.GetAsync<List<ScoreEntry>>(HighScoresKey);
-        return result.Success && result.Value is not null ? result.Value : [];
+        return result.IsSuccess && result.Value is not null ? result.Value : [];
     }
 
     public async Task SaveHighScoresAsync(List<ScoreEntry> scores) => await _local.SetAsync(HighScoresKey, scores);
@@ -34,13 +34,13 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
     public async Task<int> GetGamesPlayedAsync()
     {
         var result = await _local.GetAsync<int>(GamesPlayedKey);
-        return result.Success ? result.Value : 0;
+        return result.IsSuccess ? result.Value : 0;
     }
 
     public async Task<List<string>> GetCategoriesUnlockedAsync()
     {
         var result = await _local.GetAsync<List<string>>(CategoriesUnlockedKey);
-        return result.Success && result.Value is not null ? result.Value : [QuestionBank.Categories[0]];
+        return result.IsSuccess && result.Value is not null ? result.Value : [QuestionBank.Categories[0]];
     }
 
     public async Task UnlockCategoryAsync(string category)
@@ -56,7 +56,7 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
     public async Task<QuizState?> GetQuizStateAsync()
     {
         var result = await _session.GetAsync<QuizState>(QuizStateKey);
-        return result.Success ? result.Value : null;
+        return result.IsSuccess ? result.Value : null;
     }
 
     public async Task SaveQuizStateAsync(QuizState state) => await _session.SetAsync(QuizStateKey, state);
@@ -64,7 +64,7 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
     public async Task<int> GetCurrentStreakAsync()
     {
         var result = await _session.GetAsync<int>(CurrentStreakKey);
-        return result.Success ? result.Value : 0;
+        return result.IsSuccess ? result.Value : 0;
     }
 
     public async Task SaveCurrentStreakAsync(int streak) => await _session.SetAsync(CurrentStreakKey, streak);

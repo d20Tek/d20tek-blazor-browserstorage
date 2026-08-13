@@ -15,7 +15,7 @@ public class PreferenceService(ILocalStorageService storage)
     public async Task LoadAsync()
     {
         var result = await _storage.GetAsync<UserPreferences>(StorageKey);
-        if (result.Success && result.Value is not null)
+        if (result.IsSuccess && result.Value is not null)
         {
             Current = result.Value;
         }

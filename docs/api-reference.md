@@ -23,7 +23,7 @@ This document provides a complete reference for all public types, interfaces, me
 
 | Method | Return Type | Description |
 |---|---|---|
-| `GetAsync<T>(string key, CancellationToken ct)` | `ValueTask<StorageResult<T>>` | Reads and deserializes a value from storage. Returns a result with `Success = false` if the key is not found. |
+| `GetAsync<T>(string key, CancellationToken ct)` | `ValueTask<StorageResult<T>>` | Reads and deserializes a value from storage. Returns a result with `IsSuccess = false` if the key is not found. |
 | `SetAsync<T>(string key, T value, CancellationToken ct)` | `ValueTask` | Serializes and writes a value to storage. |
 | `RemoveAsync(string key, CancellationToken ct)` | `ValueTask` | Removes a single key from storage. |
 | `ClearAsync(CancellationToken ct)` | `ValueTask` | Removes all keys from storage. |
@@ -66,7 +66,7 @@ A readonly record struct returned by `GetAsync<T>` that represents the outcome o
 
 | Property | Type | Description |
 |---|---|---|
-| `Success` | `bool` | Indicates whether the key was found and the value was deserialized successfully. |
+| `IsSuccess` | `bool` | Indicates whether the key was found and the value was deserialized successfully. |
 | `Value` | `T?` | The deserialized value, or the default value of `T` if the key was not found. |
 
 ### StorageChangedEventArgs
