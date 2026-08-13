@@ -4,7 +4,7 @@ A modern, lightweight .NET library that provides typed, asynchronous access to t
 
 This package was inspired by Blazored.LocalStorage/SessionStorage. Once I realized that it was deprecated and removed from NuGet.org, I needed my own implementation to use across my Blazor apps. While building on the basic functionality, D20Tek.Blazor.BrowserStorage provides additional features and a more modern, flexible API. The most significant difference is that `GetAsync<T>` returns a `StorageResult<T>` instead of throwing an exception when a key is not found, allowing for more graceful handling of missing keys.
 
-[![Build Status](https://github.com/d20Tek/d20tek-blazor-browserstorage/actions/workflows/build.yml/badge.svg)](https://github.com/d20Tek/d20tek-blazor-browserstorage/actions)
+[![Build Status](https://github.com/d20Tek/d20tek-blazor-browserstorage/actions/workflows/ci-build.yml/badge.svg)](https://github.com/d20Tek/d20tek-blazor-browserstorage/actions)
 [![NuGet](https://img.shields.io/nuget/v/D20Tek.Blazor.BrowserStorage)](https://www.nuget.org/packages/D20Tek.Blazor.BrowserStorage)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
