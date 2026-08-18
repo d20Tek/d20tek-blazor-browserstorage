@@ -339,7 +339,7 @@ This requires a small inline script registered during service initialization via
 | 10 | Sample app — Quiz/Trivia | Blazor WASM app demonstrating complex types and full feature set | Done |
 | 11 | Documentation | README, API docs, migration guide from Blazored | Done |
 | 11b | Documentation | Nuget package details and documentation | Done |
-| 12 | CI/CD | GitHub Actions for build, test, NuGet publish | |
+| 12 | CI/CD | GitHub Actions for build, test, NuGet publish | Done |
 | 13 | Publish | NuGet package, GitHub release | |
 | 14 | DI extension with Lifecycle support | DI methods should support scoped, singleton, and transient lifetimes parameter | Done |
 | 15 | Rename Success to IsSuccess | The StorageResult.Success property should be renamed to IsSuccess | Done |
