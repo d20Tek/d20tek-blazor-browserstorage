@@ -31,6 +31,26 @@ This package was inspired by Blazored.LocalStorage/SessionStorage. Once I realiz
 - [Migration from Blazored.LocalStorage](docs/blazored-migration.md)
 - [License](#license)
 
+## Why This Library Exists
+Blazor does not provide a built‑in way to access localStorage or sessionStorage from .NET. The only way to use browser storage is to call JavaScript manually through IJSRuntime, which leads to several problems:
+- You must write JS interop boilerplate for every read/write.
+- Storage access becomes stringly‑typed, error‑prone, and repetitive.
+- You have to handle JSON serialization yourself.
+- There’s no clean way to expose storage as a typed .NET service.
+- Previously used Blazored.LocalStorage package for these purposes, but that has been deprecated and no longer available.
+
+For a framework that encourages strong typing, DI, and clean architecture, browser storage ends up feeling like a low‑level workaround. And this library exists to fix that.
+
+D20Tek.Blazor.BrowserStorage provides:
+- A fully typed storage API
+- A clean async interface
+- Zero‑boilerplate JSON handling
+- A simple, DI‑friendly .NET service
+- Support for both localStorage and sessionStorage
+- A modern API designed for Blazor WebAssembly and Blazor SSR
+
+It gives Blazor developers a first‑class, standard way to use browser storage, without having to touch JavaScript.
+
 ## Features
 
 - **Typed, async API**: Read and write any serializable .NET type with generic `GetAsync<T>` and `SetAsync<T>` methods. No manual JSON handling required.
@@ -119,33 +139,29 @@ if (result.IsSuccess)
 ```
 
 ## Usage and Configuration
-
 For detailed usage instructions covering all storage operations (reading, writing, removing, checking keys, enumerating, bulk operations, and change notifications) as well as configuration options (key prefixing, custom JSON serialization, and service lifetimes), see the [Detailed Getting Started Guide](docs/getting-started-detailed.md).
 
 ## API Reference
-
 For a complete reference of all public interfaces, methods, events, extension methods, and types, see the [API Reference](docs/api-reference.md).
 
 ## Sample Applications
-
 The repository includes two sample Blazor WebAssembly applications that demonstrate the library's features in realistic scenarios:
 
 ### [PreferenceDashboard](samples/PreferenceDashboard)
-
 A settings and preferences dashboard that uses `localStorage` to persist visual preferences (theme, accent color, and font family) across browser sessions, and `sessionStorage` to track dismissal of a "What's New" banner within the current tab.
 
 **Features demonstrated:** `GetAsync<T>`, `SetAsync<T>`, `ContainsKeyAsync`, `ClearAsync`, key prefix namespacing, and the `Changed` event.
 
 ### [SampleQuiz](samples/SampleQuiz)
-
 An interactive tech trivia game with 100 questions across .NET, Azure, and Windows categories. The application uses `localStorage` for persistent data such as player profiles, high scores, and game statistics, and `sessionStorage` for current quiz state with recovery on page refresh.
 
 **Features demonstrated:** Complex object serialization, `StorageResult<T>` for first-time player detection, `SetMultipleAsync` for batch result saving, `RemoveMultipleAsync` for session cleanup, `GetKeysAsync` and `LengthAsync` for storage statistics, and `ClearAsync` for data reset.
 
 ## Migration from Blazored.LocalStorage
-
 If you are migrating from the Blazored.LocalStorage and Blazored.SessionStorage packages, see the [Migration Guide](docs/blazored-migration.md) for a detailed comparison of methods, return types, and registration patterns.
 
-## License
+## Used by
+Used in my Blazor projects and internal apps.
 
+## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
