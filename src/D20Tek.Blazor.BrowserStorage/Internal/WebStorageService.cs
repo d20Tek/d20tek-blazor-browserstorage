@@ -4,11 +4,14 @@ namespace D20Tek.Blazor.BrowserStorage.Internal;
 
 internal abstract class WebStorageService : IBrowserStorageService
 {
+    private static readonly IReadOnlyList<string> EmptyKeys = Array.Empty<string>();
+
     private readonly string _storageName;
     private readonly IJSRuntime _jsRuntime;
     private readonly BrowserStorageOptions _options;
     private readonly JsonSerializerOptions _jsonOptions;
     private readonly StorageListenerManager _listenerManager;
+    private bool? _isAvailable;
 
     protected WebStorageService(string storageName, IJSRuntime jsRuntime, IOptions<BrowserStorageOptions> options)
     {
@@ -37,8 +40,26 @@ internal abstract class WebStorageService : IBrowserStorageService
 
     private event EventHandler<StorageChangedEventArgs>? ChangedInternal;
 
+    public async ValueTask<bool> IsAvailableAsync(CancellationToken ct = default)
+    {
+        if (_isAvailable is bool cached) return cached;
+
+        try
+        {
+            _isAvailable = await JsInterop.IsStorageAvailableAsync(_jsRuntime, _storageName, ct);
+        }
+        catch
+        {
+            _isAvailable = false;
+        }
+
+        return _isAvailable.Value;
+    }
+
     public async ValueTask<StorageResult<T>> GetAsync<T>(string key, CancellationToken ct = default)
     {
+        if (!await IsAvailableAsync(ct)) return new StorageResult<T>(false, default);
+
         var json = await JsInterop.GetItemAsync(_jsRuntime, _storageName, _options.PrefixKey(key), ct);
         return (json is null)
             ? new StorageResult<T>(false, default)
@@ -47,6 +68,8 @@ internal abstract class WebStorageService : IBrowserStorageService
 
     public async ValueTask SetAsync<T>(string key, T value, CancellationToken ct = default)
     {
+        if (!await IsAvailableAsync(ct)) return;
+
         var prefixedKey = _options.PrefixKey(key);
         var oldJson = await JsInterop.GetItemAsync(_jsRuntime, _storageName, prefixedKey, ct);
         var json = StorageSerializer.Serialize(value, _jsonOptions);
@@ -58,6 +81,8 @@ internal abstract class WebStorageService : IBrowserStorageService
 
     public async ValueTask RemoveAsync(string key, CancellationToken ct = default)
     {
+        if (!await IsAvailableAsync(ct)) return;
+
         var prefixedKey = _options.PrefixKey(key);
         var oldJson = await JsInterop.GetItemAsync(_jsRuntime, _storageName, prefixedKey, ct);
 
@@ -65,18 +90,32 @@ internal abstract class WebStorageService : IBrowserStorageService
         RaiseChanged(key, DeserializeRaw(oldJson), null);
     }
 
-    public ValueTask ClearAsync(CancellationToken ct = default) => JsInterop.ClearAsync(_jsRuntime, _storageName, ct);
+    public async ValueTask ClearAsync(CancellationToken ct = default)
+    {
+        if (!await IsAvailableAsync(ct)) return;
+
+        await JsInterop.ClearAsync(_jsRuntime, _storageName, ct);
+    }
 
     public async ValueTask<bool> ContainsKeyAsync(string key, CancellationToken ct = default)
     {
+        if (!await IsAvailableAsync(ct)) return false;
+
         var json = await JsInterop.GetItemAsync(_jsRuntime, _storageName, _options.PrefixKey(key), ct);
         return json is not null;
     }
 
-    public ValueTask<int> LengthAsync(CancellationToken ct = default) => JsInterop.LengthAsync(_jsRuntime, _storageName, ct);
+    public async ValueTask<int> LengthAsync(CancellationToken ct = default)
+    {
+        if (!await IsAvailableAsync(ct)) return 0;
+
+        return await JsInterop.LengthAsync(_jsRuntime, _storageName, ct);
+    }
 
     public async ValueTask<IReadOnlyList<string>> GetKeysAsync(CancellationToken ct = default)
     {
+        if (!await IsAvailableAsync(ct)) return EmptyKeys;
+
         var length = await JsInterop.LengthAsync(_jsRuntime, _storageName, ct);
         var keys = new List<string>(length);
 
@@ -92,11 +131,11 @@ internal abstract class WebStorageService : IBrowserStorageService
         return keys;
     }
 
-    private object? DeserializeRaw(string? json) => json is null ? null : StorageSerializer.Deserialize<object>(json, _jsonOptions);
+    private object? DeserializeRaw(string? json) => 
+        json is null ? null : StorageSerializer.Deserialize<object>(json, _jsonOptions);
 
     private void RaiseChanged(string key, object? oldValue, object? newValue) =>
         ChangedInternal?.Invoke(this, new StorageChangedEventArgs(key, oldValue, newValue));
 
     public ValueTask DisposeAsync() => _listenerManager.DisposeAsync();
 }
-

@@ -59,6 +59,16 @@ public interface IBrowserStorageService : IAsyncDisposable
     ValueTask<IReadOnlyList<string>> GetKeysAsync(CancellationToken ct = default);
 
     /// <summary>
+    /// Checks whether the underlying browser storage is available. Storage may be unavailable
+    /// when the user has blocked site data, when the browser is in a restricted private mode,
+    /// or when the storage quota has been exceeded. When storage is unavailable, read operations
+    /// return empty results and write operations are silently ignored (no exception is thrown).
+    /// </summary>
+    /// <param name="ct">Optional cancellation token.</param>
+    /// <returns>True if browser storage is available; otherwise false.</returns>
+    ValueTask<bool> IsAvailableAsync(CancellationToken ct = default);
+
+    /// <summary>
     /// Raised when a storage value changes.
     /// </summary>
     event EventHandler<StorageChangedEventArgs>? Changed;
