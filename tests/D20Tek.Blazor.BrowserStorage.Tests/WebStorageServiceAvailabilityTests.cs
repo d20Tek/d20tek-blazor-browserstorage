@@ -76,6 +76,28 @@ public class WebStorageServiceAvailabilityTests
         Assert.AreEqual(1, probeCount);
     }
 
+    [TestMethod]
+    public async Task IsAvailableAsync_RunsProbeOnce_UnderConcurrentCallers()
+    {
+        // Arrange
+        var service = CreateService();
+
+        // Act
+        var callers = Enumerable.Range(0, 32)
+            .Select(_ => Task.Run(async () => await service.IsAvailableAsync(CancellationToken.None)))
+            .ToArray();
+        var results = await Task.WhenAll(callers);
+
+        // Assert
+        Assert.IsTrue(results.All(r => r));
+        var probeCount = _jsRuntime.Invocations.Count([ExcludeFromCodeCoverage](i) =>
+            i.Identifier == "eval" &&
+            i.Args.Length > 0 &&
+            i.Args[0] is string s &&
+            s.Contains("__d20tek_probe__"));
+        Assert.AreEqual(1, probeCount);
+    }
+
     // --- GetAsync ---
 
     [TestMethod]

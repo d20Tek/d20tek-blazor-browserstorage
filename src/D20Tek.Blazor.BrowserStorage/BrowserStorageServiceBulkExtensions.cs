@@ -16,6 +16,9 @@ public static class BrowserStorageServiceBulkExtensions
         IEnumerable<KeyValuePair<string, object>> items,
         CancellationToken ct = default)
     {
+        ArgumentNullException.ThrowIfNull(service);
+        ArgumentNullException.ThrowIfNull(items);
+
         foreach (var (key, value) in items)
         {
             await service.SetAsync(key, value, ct);
@@ -33,6 +36,9 @@ public static class BrowserStorageServiceBulkExtensions
         IEnumerable<string> keys,
         CancellationToken ct = default)
     {
+        ArgumentNullException.ThrowIfNull(service);
+        ArgumentNullException.ThrowIfNull(keys);
+
         foreach (var key in keys)
         {
             await service.RemoveAsync(key, ct);

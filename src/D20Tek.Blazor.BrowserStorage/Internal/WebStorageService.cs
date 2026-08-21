@@ -4,14 +4,14 @@ namespace D20Tek.Blazor.BrowserStorage.Internal;
 
 internal abstract class WebStorageService : IBrowserStorageService
 {
-    private static readonly IReadOnlyList<string> EmptyKeys = Array.Empty<string>();
+    private static readonly IReadOnlyList<string> EmptyKeys = [];
 
     private readonly string _storageName;
     private readonly IJSRuntime _jsRuntime;
     private readonly BrowserStorageOptions _options;
     private readonly JsonSerializerOptions _jsonOptions;
     private readonly StorageListenerManager _listenerManager;
-    private bool? _isAvailable;
+    private Lazy<Task<bool>>? _availabilityCheck;
 
     protected WebStorageService(string storageName, IJSRuntime jsRuntime, IOptions<BrowserStorageOptions> options)
     {
@@ -40,34 +40,56 @@ internal abstract class WebStorageService : IBrowserStorageService
 
     private event EventHandler<StorageChangedEventArgs>? ChangedInternal;
 
-    public async ValueTask<bool> IsAvailableAsync(CancellationToken ct = default)
+    public ValueTask<bool> IsAvailableAsync(CancellationToken ct = default)
     {
-        if (_isAvailable is bool cached) return cached;
+        var lazy = LazyInitializer.EnsureInitialized(
+            ref _availabilityCheck,
+            () => new Lazy<Task<bool>>(
+                () => ProbeAvailabilityAsync(),
+                LazyThreadSafetyMode.ExecutionAndPublication));
+        return new ValueTask<bool>(lazy.Value.WaitAsync(ct));
+    }
 
+    private async Task<bool> ProbeAvailabilityAsync()
+    {
         try
         {
-            _isAvailable = await JsInterop.IsStorageAvailableAsync(_jsRuntime, _storageName, ct);
+            return await JsInterop.IsStorageAvailableAsync(_jsRuntime, _storageName, CancellationToken.None)
+                                  .ConfigureAwait(false);
         }
         catch
         {
-            _isAvailable = false;
+            return false;
         }
-
-        return _isAvailable.Value;
     }
 
     public async ValueTask<StorageResult<T>> GetAsync<T>(string key, CancellationToken ct = default)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
         if (!await IsAvailableAsync(ct)) return new StorageResult<T>(false, default);
 
         var json = await JsInterop.GetItemAsync(_jsRuntime, _storageName, _options.PrefixKey(key), ct);
-        return (json is null)
-            ? new StorageResult<T>(false, default)
-            : new StorageResult<T>(true, StorageSerializer.Deserialize<T>(json, _jsonOptions));
+        if (json is null) return new StorageResult<T>(false, default);
+
+        try
+        {
+            return new StorageResult<T>(true, StorageSerializer.Deserialize<T>(json, _jsonOptions));
+        }
+        catch (Exception ex) when (ex is JsonException
+                                      or FormatException
+                                      or OverflowException
+                                      or NotSupportedException
+                                      or ArgumentException)
+        {
+            // Stored value is corrupt, was written under a different schema/type, or the target type cannot be deserialized.
+            // Honor the no-exception contract of GetAsync and return failure instead of surfacing raw parser errors to callers.
+            return new StorageResult<T>(false, default);
+        }
     }
 
     public async ValueTask SetAsync<T>(string key, T value, CancellationToken ct = default)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
         if (!await IsAvailableAsync(ct)) return;
 
         var prefixedKey = _options.PrefixKey(key);
@@ -81,6 +103,7 @@ internal abstract class WebStorageService : IBrowserStorageService
 
     public async ValueTask RemoveAsync(string key, CancellationToken ct = default)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
         if (!await IsAvailableAsync(ct)) return;
 
         var prefixedKey = _options.PrefixKey(key);
@@ -99,6 +122,7 @@ internal abstract class WebStorageService : IBrowserStorageService
 
     public async ValueTask<bool> ContainsKeyAsync(string key, CancellationToken ct = default)
     {
+        ArgumentException.ThrowIfNullOrEmpty(key);
         if (!await IsAvailableAsync(ct)) return false;
 
         var json = await JsInterop.GetItemAsync(_jsRuntime, _storageName, _options.PrefixKey(key), ct);
