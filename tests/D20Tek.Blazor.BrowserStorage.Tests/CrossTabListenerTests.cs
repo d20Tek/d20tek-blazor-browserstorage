@@ -64,16 +64,21 @@ public class CrossTabListenerTests
     }
 
     [TestMethod]
-    public void ChangedSubscription_ImportsJsModule()
+    public async Task ChangedSubscription_ImportsJsModule()
     {
         // Arrange
         var service = CreateService();
+        Assert.IsFalse(service.ListenerManager.IsInitialized);
 
         // Act
         service.Changed += [ExcludeFromCodeCoverage](_, _) => { };
 
+        // Allow the fire-and-forget InitializeAsync to complete before asserting IsInitialized.
+        await Task.Delay(10, CancellationToken.None);
+
         // Assert
         Assert.Contains(i => i.Identifier == "import", _jsRuntime.Invocations);
+        Assert.IsTrue(service.ListenerManager.IsInitialized);
     }
 
     [TestMethod]
@@ -122,5 +127,38 @@ public class CrossTabListenerTests
         // Assert - import was only called once
         var importCount = _jsRuntime.Invocations.Count(i => i.Identifier == "import");
         Assert.AreEqual(1, importCount);
+    }
+
+    [TestMethod]
+    public async Task ChangedSubscription_WritesToConsoleError_WhenModuleImportFails()
+    {
+        // Arrange
+        _jsRuntime.ModuleReference = _moduleRef;
+        _jsRuntime.ExceptionForIdentifier["import"] = new InvalidOperationException("module import failed");
+        var options = Options.Create(new BrowserStorageOptions());
+        var service = new LocalStorageService(_jsRuntime, options);
+
+        var originalError = Console.Error;
+        using var captured = new StringWriter();
+        Console.SetError(captured);
+
+        try
+        {
+            // Act
+            service.Changed += [ExcludeFromCodeCoverage](_, _) => { };
+
+            // Allow the fire-and-forget continuation to observe the fault.
+            await Task.Delay(50, CancellationToken.None);
+        }
+        finally
+        {
+            Console.SetError(originalError);
+        }
+
+        // Assert
+        var output = captured.ToString();
+        Assert.Contains("D20Tek.Blazor.BrowserStorage", output);
+        Assert.Contains("Failed to initialize storage change listener", output);
+        Assert.Contains("module import failed", output);
     }
 }

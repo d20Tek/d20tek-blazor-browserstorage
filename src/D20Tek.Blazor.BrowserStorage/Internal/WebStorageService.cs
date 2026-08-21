@@ -19,11 +19,23 @@ internal abstract class WebStorageService : IBrowserStorageService
         _jsRuntime = jsRuntime;
         _options = options.Value;
         _jsonOptions = _options.JsonOptions ?? new(JsonSerializerDefaults.Web);
+
+        // Freeze the serializer options so any post-registration mutation cannot silently
+        // change (de)serialization behavior at runtime. Passing populateMissingResolver: true
+        // ensures a reflection-based resolver is attached when none was configured, matching
+        // the default behavior of JsonSerializer.Serialize/Deserialize.
+        if (!_jsonOptions.IsReadOnly)
+        {
+            _jsonOptions.MakeReadOnly(populateMissingResolver: true);
+        }
+
         _listenerManager = new StorageListenerManager(jsRuntime, storageName, _options, RaiseChanged);
         _availability = new StorageAvailabilityGate(storageName, jsRuntime);
     }
 
     internal StorageListenerManager ListenerManager => _listenerManager;
+
+    private int _listenerInitStarted;
 
     [ExcludeFromCodeCoverage]
     public event EventHandler<StorageChangedEventArgs>? Changed
@@ -31,7 +43,10 @@ internal abstract class WebStorageService : IBrowserStorageService
         add
         {
             ChangedInternal += value;
-            if (ChangedInternal is not null && !_listenerManager.IsInitialized)
+
+            // Only one subscriber may kick off the JS listener import; concurrent add
+            // accessors would otherwise race on IsInitialized and double-import the module.
+            if (value is not null && Interlocked.CompareExchange(ref _listenerInitStarted, 1, 0) == 0)
             {
                 _listenerManager.InitializeListenerAsync();
             }
@@ -80,9 +95,9 @@ internal abstract class WebStorageService : IBrowserStorageService
         {
             await JsInterop.SetItemAsync(_jsRuntime, _storageName, prefixedKey, json, ct);
         }
-        catch (JSException ex)
+        catch (Exception ex) when (ex is JSException or JSDisconnectedException)
         {
-            // The browser storage may be full, disabled, or otherwise unavailable.
+            // The browser storage may be full, disabled, or the circuit may have disconnected.
             return StorageResult.Failure(StorageMessages.WriteFailed(_storageName, key, ex));
         }
 
@@ -102,7 +117,7 @@ internal abstract class WebStorageService : IBrowserStorageService
         {
             await JsInterop.RemoveItemAsync(_jsRuntime, _storageName, prefixedKey, ct);
         }
-        catch (JSException ex)
+        catch (Exception ex) when (ex is JSException or JSDisconnectedException)
         {
             return StorageResult.Failure(StorageMessages.RemoveFailed(_storageName, key, ex));
         }
@@ -123,7 +138,7 @@ internal abstract class WebStorageService : IBrowserStorageService
         {
             await JsInterop.ClearAsync(_jsRuntime, _storageName, cancellationToken);
         }
-        catch (JSException ex)
+        catch (Exception ex) when (ex is JSException or JSDisconnectedException)
         {
             return StorageResult.Failure(StorageMessages.ClearFailed(_storageName, ex));
         }

@@ -33,6 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Concurrency-safe availability probe using `Lazy<Task<bool>>` — the probe now runs only once even under concurrent callers.
+- Availability probe now treats `JSDisconnectedException` and prerender `InvalidOperationException` ("JavaScript interop calls cannot be issued at this time...") as unavailable rather than propagating. `SetAsync`, `RemoveAsync`, and `ClearAllAsync` also catch `JSDisconnectedException` and return a failure `StorageResult`, so consumers using mixed render modes no longer see raw interop exceptions.
+- `Changed` event subscription is now race-safe: concurrent `add` accessors can no longer double-initialize the JS listener module. The fire-and-forget initialization also observes failures instead of silently swallowing them.
+- `BrowserStorageOptions.JsonOptions` is frozen (`MakeReadOnly`) when the service is constructed, so post-registration mutation cannot silently change (de)serialization behavior at runtime.
 
 ## [1.0.2] - Initial release
 

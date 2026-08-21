@@ -21,8 +21,15 @@ internal sealed class StorageAvailabilityGate(string storageName, IJSRuntime jsR
             return await JsInterop.IsStorageAvailableAsync(_jsRuntime, _storageName, CancellationToken.None)
                                   .ConfigureAwait(false);
         }
-        catch
+        catch (Exception ex)
         {
+            var reason = ex switch
+            {
+                JSDisconnectedException => "Blazor Server circuit disconnected",
+                InvalidOperationException => "Blazor Server prerendering",
+                _ => "Unexpected error",
+            };
+            Console.WriteLine($"{reason}. Treating storage '{_storageName}' as unavailable.");
             return false;
         }
     }

@@ -57,6 +57,35 @@ public class WebStorageServiceAvailabilityTests
     }
 
     [TestMethod]
+    public async Task IsAvailableAsync_ReturnsFalse_WhenCircuitDisconnected()
+    {
+        // Arrange
+        _jsRuntime.ExceptionForIdentifier["eval"] = new JSDisconnectedException("circuit disconnected");
+        var service = CreateService();
+
+        // Act
+        var result = await service.IsAvailableAsync(CancellationToken.None);
+
+        // Assert
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public async Task IsAvailableAsync_ReturnsFalse_WhenPrerendering()
+    {
+        // Arrange
+        _jsRuntime.ExceptionForIdentifier["eval"] =
+            new InvalidOperationException("JavaScript interop calls cannot be issued at this time.");
+        var service = CreateService();
+
+        // Act
+        var result = await service.IsAvailableAsync(CancellationToken.None);
+
+        // Assert
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
     public async Task IsAvailableAsync_CachesResult_AcrossMultipleCalls()
     {
         // Arrange
