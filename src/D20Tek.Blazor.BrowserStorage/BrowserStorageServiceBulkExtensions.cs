@@ -12,6 +12,12 @@ public static class BrowserStorageServiceBulkExtensions
     /// <param name="items">The key-value pairs to store.</param>
     /// <param name="ct">Optional cancellation token.</param>
     /// <returns>A success result if all writes succeeded; otherwise the first failing result.</returns>
+    /// <remarks>
+    /// Values are serialized via <see cref="IBrowserStorageService.SetAsync{T}(string, T, CancellationToken)"/>.
+    /// See its trimming/AOT compatibility notes.
+    /// </remarks>
+    [RequiresUnreferencedCode(TrimmingMessages.RequiresUnreferencedCode)]
+    [RequiresDynamicCode(TrimmingMessages.RequiresDynamicCode)]
     public static async ValueTask<StorageResult> SetMultipleAsync(
         this IBrowserStorageService service,
         IEnumerable<KeyValuePair<string, object>> items,

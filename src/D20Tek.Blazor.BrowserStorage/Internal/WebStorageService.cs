@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace D20Tek.Blazor.BrowserStorage.Internal;
 
 internal abstract class WebStorageService : IBrowserStorageService
@@ -58,6 +56,8 @@ internal abstract class WebStorageService : IBrowserStorageService
 
     public ValueTask<bool> IsAvailableAsync(CancellationToken ct = default) => _availability.IsAvailableAsync(ct);
 
+    [RequiresUnreferencedCode(TrimmingMessages.RequiresUnreferencedCode)]
+    [RequiresDynamicCode(TrimmingMessages.RequiresDynamicCode)]
     public async ValueTask<StorageResult<T>> GetAsync<T>(string key, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(key);
@@ -82,6 +82,8 @@ internal abstract class WebStorageService : IBrowserStorageService
         }
     }
 
+    [RequiresUnreferencedCode(TrimmingMessages.RequiresUnreferencedCode)]
+    [RequiresDynamicCode(TrimmingMessages.RequiresDynamicCode)]
     public async ValueTask<StorageResult> SetAsync<T>(string key, T value, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(key);
@@ -181,6 +183,11 @@ internal abstract class WebStorageService : IBrowserStorageService
         return keys;
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2026",
+        Justification = "DeserializeRaw is used to surface previous stored values on Changed events. Callers who rely on " +
+                        "the Changed event with non-primitive types are already surfaced through GetAsync<T>/SetAsync<T> warnings.")]
+    [UnconditionalSuppressMessage("AOT", "IL3050",
+        Justification = "See IL2026 justification above.")]
     private object? DeserializeRaw(string? json) =>
         json is null ? null : StorageSerializer.Deserialize<object>(json, _jsonOptions);
 

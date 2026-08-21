@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Symbol package (`.snupkg`) generation and source embedding for consumer debugging.
 - New documentation: `docs/api-reference.md`, `docs/getting-started-detailed.md`, `docs/blazored-migration.md`.
 - Sample applications: `PreferenceDashboard` and `SampleQuiz`.
+- `[RequiresUnreferencedCode]` / `[RequiresDynamicCode]` annotations on `GetAsync<T>`, `SetAsync<T>`, and `SetMultipleAsync` so consumers building with trimming or AOT get an actionable warning at their call site pointing them at `BrowserStorageOptions.JsonOptions.TypeInfoResolver`. Reflection-based JSON is still used at runtime; a source-generated `JsonTypeInfo<T>` overload path is planned as a follow-up.
 
 ### Changed
 

@@ -103,3 +103,29 @@ Configuration class used to customize storage service behavior during dependency
 |---|---|---|---|
 | `KeyPrefix` | `string` | `""` (empty) | A prefix string that is automatically prepended to all storage keys. |
 | `JsonOptions` | `JsonSerializerOptions?` | `null` | Custom JSON serializer options. When null, the library uses `JsonSerializerDefaults.Web`. |
+
+## Trimming and AOT
+
+`GetAsync<T>` and `SetAsync<T>` (and by extension `SetMultipleAsync`) are annotated with `[RequiresUnreferencedCode]` and `[RequiresDynamicCode]`. For types outside the built-in primitive set, they fall back to reflection-based `System.Text.Json`, which is not compatible with:
+
+- Blazor WebAssembly AOT compilation (`<RunAOTCompilation>true</RunAOTCompilation>`)
+- Full trim mode (`<TrimMode>full</TrimMode>`) without root descriptors for your stored types
+- Native AOT
+
+To use the library from an AOT- or trim-enabled project, configure `BrowserStorageOptions.JsonOptions.TypeInfoResolver` with a source-generated `JsonSerializerContext` covering the types you store:
+
+```csharp
+[JsonSerializable(typeof(UserPreferences))]
+[JsonSerializable(typeof(HighScore))]
+internal partial class AppJsonContext : JsonSerializerContext { }
+
+services.AddLocalStorage(options =>
+{
+    options.JsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web)
+    {
+        TypeInfoResolver = AppJsonContext.Default,
+    };
+});
+```
+
+Consumers who don't publish with trimming/AOT can suppress the warnings with `[UnconditionalSuppressMessage("Trimming", "IL2026")]` at their call sites, or ignore them — the library will continue to use reflection at runtime.

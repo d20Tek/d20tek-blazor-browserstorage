@@ -12,6 +12,14 @@ public interface IBrowserStorageService : IAsyncDisposable
     /// <param name="key">The storage key.</param>
     /// <param name="cancellationToken">Optional cancellation token.</param>
     /// <returns>A result indicating success and the deserialized value.</returns>
+    /// <remarks>
+    /// For types outside the built-in primitive set, this method uses reflection-based
+    /// <see cref="JsonSerializer"/> and is not compatible with trimming or AOT unless
+    /// <c>BrowserStorageOptions.JsonOptions.TypeInfoResolver</c> is set to a source-generated
+    /// <see cref="System.Text.Json.Serialization.JsonSerializerContext"/>.
+    /// </remarks>
+    [RequiresUnreferencedCode(TrimmingMessages.RequiresUnreferencedCode)]
+    [RequiresDynamicCode(TrimmingMessages.RequiresDynamicCode)]
     ValueTask<StorageResult<T>> GetAsync<T>(string key, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -22,6 +30,14 @@ public interface IBrowserStorageService : IAsyncDisposable
     /// <param name="value">The value to serialize and store.</param>
     /// <param name="cancellationToken">Optional cancellation token.</param>
     /// <returns>A result indicating whether the write succeeded, with an error message on failure.</returns>
+    /// <remarks>
+    /// For types outside the built-in primitive set, this method uses reflection-based
+    /// <see cref="JsonSerializer"/> and is not compatible with trimming or AOT unless
+    /// <c>BrowserStorageOptions.JsonOptions.TypeInfoResolver</c> is set to a source-generated
+    /// <see cref="System.Text.Json.Serialization.JsonSerializerContext"/>.
+    /// </remarks>
+    [RequiresUnreferencedCode(TrimmingMessages.RequiresUnreferencedCode)]
+    [RequiresDynamicCode(TrimmingMessages.RequiresDynamicCode)]
     ValueTask<StorageResult> SetAsync<T>(string key, T value, CancellationToken cancellationToken = default);
 
     /// <summary>
