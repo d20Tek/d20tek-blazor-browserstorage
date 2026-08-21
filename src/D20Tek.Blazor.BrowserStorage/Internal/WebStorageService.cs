@@ -11,7 +11,7 @@ internal abstract class WebStorageService : IBrowserStorageService
     private readonly BrowserStorageOptions _options;
     private readonly JsonSerializerOptions _jsonOptions;
     private readonly StorageListenerManager _listenerManager;
-    private Lazy<Task<bool>>? _availabilityCheck;
+    private readonly StorageAvailabilityGate _availability;
 
     protected WebStorageService(string storageName, IJSRuntime jsRuntime, IOptions<BrowserStorageOptions> options)
     {
@@ -20,6 +20,7 @@ internal abstract class WebStorageService : IBrowserStorageService
         _options = options.Value;
         _jsonOptions = _options.JsonOptions ?? new(JsonSerializerDefaults.Web);
         _listenerManager = new StorageListenerManager(jsRuntime, storageName, _options, RaiseChanged);
+        _availability = new StorageAvailabilityGate(storageName, jsRuntime);
     }
 
     internal StorageListenerManager ListenerManager => _listenerManager;
@@ -40,37 +41,15 @@ internal abstract class WebStorageService : IBrowserStorageService
 
     private event EventHandler<StorageChangedEventArgs>? ChangedInternal;
 
-    public ValueTask<bool> IsAvailableAsync(CancellationToken ct = default)
-    {
-        var lazy = LazyInitializer.EnsureInitialized(
-            ref _availabilityCheck,
-            () => new Lazy<Task<bool>>(
-                () => ProbeAvailabilityAsync(),
-                LazyThreadSafetyMode.ExecutionAndPublication));
-        return new ValueTask<bool>(lazy.Value.WaitAsync(ct));
-    }
-
-    private async Task<bool> ProbeAvailabilityAsync()
-    {
-        try
-        {
-            return await JsInterop.IsStorageAvailableAsync(_jsRuntime, _storageName, CancellationToken.None)
-                                  .ConfigureAwait(false);
-        }
-        catch
-        {
-            return false;
-        }
-    }
+    public ValueTask<bool> IsAvailableAsync(CancellationToken ct = default) => _availability.IsAvailableAsync(ct);
 
     public async ValueTask<StorageResult<T>> GetAsync<T>(string key, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(key);
-        if (!await IsAvailableAsync(ct))
-            return StorageResult<T>.Failure($"Browser {_storageName} is not available.");
+        if (!await IsAvailableAsync(ct)) return StorageResult<T>.Failure(StorageMessages.Unavailable(_storageName));
 
         var json = await JsInterop.GetItemAsync(_jsRuntime, _storageName, _options.PrefixKey(key), ct);
-        if (json is null) return StorageResult<T>.Failure($"Key '{key}' not found in {_storageName}.");
+        if (json is null) return StorageResult<T>.Failure(StorageMessages.KeyNotFound(_storageName, key));
 
         try
         {
@@ -91,8 +70,7 @@ internal abstract class WebStorageService : IBrowserStorageService
     public async ValueTask<StorageResult> SetAsync<T>(string key, T value, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(key);
-        if (!await IsAvailableAsync(ct))
-            return StorageResult.Failure($"Browser {_storageName} is not available.");
+        if (!await IsAvailableAsync(ct)) return StorageResult.Failure(StorageMessages.Unavailable(_storageName));
 
         var prefixedKey = _options.PrefixKey(key);
         var oldJson = await JsInterop.GetItemAsync(_jsRuntime, _storageName, prefixedKey, ct);
@@ -105,7 +83,7 @@ internal abstract class WebStorageService : IBrowserStorageService
         catch (JSException ex)
         {
             // The browser storage may be full, disabled, or otherwise unavailable.
-            return StorageResult.Failure($"Failed to write value to {_storageName} for key '{key}': {ex.Message}");
+            return StorageResult.Failure(StorageMessages.WriteFailed(_storageName, key, ex));
         }
 
         RaiseChanged(key, DeserializeRaw(oldJson), value);
@@ -115,8 +93,7 @@ internal abstract class WebStorageService : IBrowserStorageService
     public async ValueTask<StorageResult> RemoveAsync(string key, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(key);
-        if (!await IsAvailableAsync(ct))
-            return StorageResult.Failure($"Browser {_storageName} is not available.");
+        if (!await IsAvailableAsync(ct)) return StorageResult.Failure(StorageMessages.Unavailable(_storageName));
 
         var prefixedKey = _options.PrefixKey(key);
         var oldJson = await JsInterop.GetItemAsync(_jsRuntime, _storageName, prefixedKey, ct);
@@ -127,7 +104,7 @@ internal abstract class WebStorageService : IBrowserStorageService
         }
         catch (JSException ex)
         {
-            return StorageResult.Failure($"Failed to remove value from {_storageName} for key '{key}': {ex.Message}");
+            return StorageResult.Failure(StorageMessages.RemoveFailed(_storageName, key, ex));
         }
 
         RaiseChanged(key, DeserializeRaw(oldJson), null);
@@ -136,8 +113,7 @@ internal abstract class WebStorageService : IBrowserStorageService
 
     public async ValueTask<StorageResult> ClearAsync(CancellationToken ct = default)
     {
-        if (!await IsAvailableAsync(ct))
-            return StorageResult.Failure($"Browser {_storageName} is not available.");
+        if (!await IsAvailableAsync(ct)) return StorageResult.Failure(StorageMessages.Unavailable(_storageName));
 
         try
         {
@@ -145,7 +121,7 @@ internal abstract class WebStorageService : IBrowserStorageService
         }
         catch (JSException ex)
         {
-            return StorageResult.Failure($"Failed to clear {_storageName}: {ex.Message}");
+            return StorageResult.Failure(StorageMessages.ClearFailed(_storageName, ex));
         }
 
         return StorageResult.Success();
@@ -186,7 +162,7 @@ internal abstract class WebStorageService : IBrowserStorageService
         return keys;
     }
 
-    private object? DeserializeRaw(string? json) => 
+    private object? DeserializeRaw(string? json) =>
         json is null ? null : StorageSerializer.Deserialize<object>(json, _jsonOptions);
 
     private void RaiseChanged(string key, object? oldValue, object? newValue) =>
