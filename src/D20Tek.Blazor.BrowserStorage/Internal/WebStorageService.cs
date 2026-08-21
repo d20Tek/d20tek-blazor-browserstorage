@@ -66,14 +66,15 @@ internal abstract class WebStorageService : IBrowserStorageService
     public async ValueTask<StorageResult<T>> GetAsync<T>(string key, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(key);
-        if (!await IsAvailableAsync(ct)) return new StorageResult<T>(false, default);
+        if (!await IsAvailableAsync(ct))
+            return StorageResult<T>.Failure($"Browser {_storageName} is not available.");
 
         var json = await JsInterop.GetItemAsync(_jsRuntime, _storageName, _options.PrefixKey(key), ct);
-        if (json is null) return new StorageResult<T>(false, default);
+        if (json is null) return StorageResult<T>.Failure($"Key '{key}' not found in {_storageName}.");
 
         try
         {
-            return new StorageResult<T>(true, StorageSerializer.Deserialize<T>(json, _jsonOptions));
+            return StorageResult<T>.Success(StorageSerializer.Deserialize<T>(json, _jsonOptions));
         }
         catch (Exception ex) when (ex is JsonException
                                       or FormatException
@@ -83,41 +84,71 @@ internal abstract class WebStorageService : IBrowserStorageService
         {
             // Stored value is corrupt, was written under a different schema/type, or the target type cannot be deserialized.
             // Honor the no-exception contract of GetAsync and return failure instead of surfacing raw parser errors to callers.
-            return new StorageResult<T>(false, default);
+            return StorageResult<T>.Failure(ex.Message);
         }
     }
 
-    public async ValueTask SetAsync<T>(string key, T value, CancellationToken ct = default)
+    public async ValueTask<StorageResult> SetAsync<T>(string key, T value, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(key);
-        if (!await IsAvailableAsync(ct)) return;
+        if (!await IsAvailableAsync(ct))
+            return StorageResult.Failure($"Browser {_storageName} is not available.");
 
         var prefixedKey = _options.PrefixKey(key);
         var oldJson = await JsInterop.GetItemAsync(_jsRuntime, _storageName, prefixedKey, ct);
         var json = StorageSerializer.Serialize(value, _jsonOptions);
 
-        await JsInterop.SetItemAsync(_jsRuntime, _storageName, prefixedKey, json, ct);
+        try
+        {
+            await JsInterop.SetItemAsync(_jsRuntime, _storageName, prefixedKey, json, ct);
+        }
+        catch (JSException ex)
+        {
+            // The browser storage may be full, disabled, or otherwise unavailable.
+            return StorageResult.Failure($"Failed to write value to {_storageName} for key '{key}': {ex.Message}");
+        }
 
         RaiseChanged(key, DeserializeRaw(oldJson), value);
+        return StorageResult.Success();
     }
 
-    public async ValueTask RemoveAsync(string key, CancellationToken ct = default)
+    public async ValueTask<StorageResult> RemoveAsync(string key, CancellationToken ct = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(key);
-        if (!await IsAvailableAsync(ct)) return;
+        if (!await IsAvailableAsync(ct))
+            return StorageResult.Failure($"Browser {_storageName} is not available.");
 
         var prefixedKey = _options.PrefixKey(key);
         var oldJson = await JsInterop.GetItemAsync(_jsRuntime, _storageName, prefixedKey, ct);
 
-        await JsInterop.RemoveItemAsync(_jsRuntime, _storageName, prefixedKey, ct);
+        try
+        {
+            await JsInterop.RemoveItemAsync(_jsRuntime, _storageName, prefixedKey, ct);
+        }
+        catch (JSException ex)
+        {
+            return StorageResult.Failure($"Failed to remove value from {_storageName} for key '{key}': {ex.Message}");
+        }
+
         RaiseChanged(key, DeserializeRaw(oldJson), null);
+        return StorageResult.Success();
     }
 
-    public async ValueTask ClearAsync(CancellationToken ct = default)
+    public async ValueTask<StorageResult> ClearAsync(CancellationToken ct = default)
     {
-        if (!await IsAvailableAsync(ct)) return;
+        if (!await IsAvailableAsync(ct))
+            return StorageResult.Failure($"Browser {_storageName} is not available.");
 
-        await JsInterop.ClearAsync(_jsRuntime, _storageName, ct);
+        try
+        {
+            await JsInterop.ClearAsync(_jsRuntime, _storageName, ct);
+        }
+        catch (JSException ex)
+        {
+            return StorageResult.Failure($"Failed to clear {_storageName}: {ex.Message}");
+        }
+
+        return StorageResult.Success();
     }
 
     public async ValueTask<bool> ContainsKeyAsync(string key, CancellationToken ct = default)

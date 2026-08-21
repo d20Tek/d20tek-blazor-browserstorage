@@ -21,20 +21,23 @@ public interface IBrowserStorageService : IAsyncDisposable
     /// <param name="key">The storage key.</param>
     /// <param name="value">The value to serialize and store.</param>
     /// <param name="ct">Optional cancellation token.</param>
-    ValueTask SetAsync<T>(string key, T value, CancellationToken ct = default);
+    /// <returns>A result indicating whether the write succeeded, with an error message on failure.</returns>
+    ValueTask<StorageResult> SetAsync<T>(string key, T value, CancellationToken ct = default);
 
     /// <summary>
     /// Removes a key from storage.
     /// </summary>
     /// <param name="key">The storage key to remove.</param>
     /// <param name="ct">Optional cancellation token.</param>
-    ValueTask RemoveAsync(string key, CancellationToken ct = default);
+    /// <returns>A result indicating whether the remove succeeded, with an error message on failure.</returns>
+    ValueTask<StorageResult> RemoveAsync(string key, CancellationToken ct = default);
 
     /// <summary>
     /// Clears all keys from storage.
     /// </summary>
     /// <param name="ct">Optional cancellation token.</param>
-    ValueTask ClearAsync(CancellationToken ct = default);
+    /// <returns>A result indicating whether the clear succeeded, with an error message on failure.</returns>
+    ValueTask<StorageResult> ClearAsync(CancellationToken ct = default);
 
     /// <summary>
     /// Checks whether a key exists in storage.
