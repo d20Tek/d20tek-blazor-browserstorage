@@ -111,13 +111,17 @@ internal abstract class WebStorageService : IBrowserStorageService
         return StorageResult.Success();
     }
 
-    public async ValueTask<StorageResult> ClearAsync(CancellationToken ct = default)
+    // Clears the entire browser storage area (localStorage or sessionStorage) for the current
+    // origin. This is destructive and area-wide: it removes every key, including those written
+    // by other libraries or app code sharing the same storage. The configured KeyPrefix is NOT
+    // honored here — enumerate GetKeysAsync + RemoveAsync to scope the delete to this service.
+    public async ValueTask<StorageResult> ClearAllAsync(CancellationToken cancellationToken = default)
     {
-        if (!await IsAvailableAsync(ct)) return StorageResult.Failure(StorageMessages.Unavailable(_storageName));
+        if (!await IsAvailableAsync(cancellationToken)) return StorageResult.Failure(StorageMessages.Unavailable(_storageName));
 
         try
         {
-            await JsInterop.ClearAsync(_jsRuntime, _storageName, ct);
+            await JsInterop.ClearAsync(_jsRuntime, _storageName, cancellationToken);
         }
         catch (JSException ex)
         {

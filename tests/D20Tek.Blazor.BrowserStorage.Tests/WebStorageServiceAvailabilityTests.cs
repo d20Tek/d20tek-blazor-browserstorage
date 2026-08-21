@@ -164,17 +164,17 @@ public class WebStorageServiceAvailabilityTests
         Assert.DoesNotContain(i => i.Identifier == "localStorage.removeItem", _jsRuntime.Invocations);
     }
 
-    // --- ClearAsync ---
+    // --- ClearAllAsync ---
 
     [TestMethod]
-    public async Task ClearAsync_IsNoOp_WhenStorageUnavailable()
+    public async Task ClearAllAsync_IsNoOp_WhenStorageUnavailable()
     {
         // Arrange
         MakeStorageUnavailable();
         var service = CreateService();
 
         // Act
-        await service.ClearAsync(CancellationToken.None);
+        await service.ClearAllAsync(CancellationToken.None);
 
         // Assert
         Assert.DoesNotContain(i => i.Identifier == "localStorage.clear", _jsRuntime.Invocations);

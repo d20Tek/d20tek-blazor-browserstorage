@@ -113,8 +113,8 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
 
     public async Task ResetAllDataAsync()
     {
-        LogIfFailure(await _local.ClearAsync(), $"{nameof(ResetAllDataAsync)} (local)");
-        LogIfFailure(await _session.ClearAsync(), $"{nameof(ResetAllDataAsync)} (session)");
+        LogIfFailure(await _local.ClearAllAsync(), $"{nameof(ResetAllDataAsync)} (local)");
+        LogIfFailure(await _session.ClearAllAsync(), $"{nameof(ResetAllDataAsync)} (session)");
     }
 
     private static void LogIfFailure(StorageResult result, string operation)

@@ -12,8 +12,8 @@ public readonly record struct StorageResult<T>(bool IsSuccess, T? Value, string?
     /// <summary>Creates a successful result with no error message.</summary>
     public static StorageResult<T> Success(T? value) => new(true, value);
 
-/// <summary>Creates a failure result with the specified error message.</summary>
-public static StorageResult<T> Failure(string errorMessage) => new(false, default, errorMessage);
+    /// <summary>Creates a failure result with the specified error message.</summary>
+    public static StorageResult<T> Failure(string errorMessage) => new(false, default, errorMessage);
 }
 
 /// <summary>

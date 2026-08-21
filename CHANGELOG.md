@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **BREAKING**: `IBrowserStorageService.SetAsync<T>` now returns `ValueTask<StorageResult>` instead of `ValueTask`.
 - **BREAKING**: `IBrowserStorageService.RemoveAsync` now returns `ValueTask<StorageResult>` instead of `ValueTask`.
-- **BREAKING**: `IBrowserStorageService.ClearAsync` now returns `ValueTask<StorageResult>` instead of `ValueTask`.
+- **BREAKING**: `IBrowserStorageService.ClearAsync` has been renamed to `ClearAllAsync` and now returns `ValueTask<StorageResult>` instead of `ValueTask`. The rename clarifies that the method wipes the entire browser storage area for the current origin — including keys written by other libraries — and does not honor the configured `KeyPrefix`. To delete only keys owned by this service, enumerate `GetKeysAsync` and call `RemoveAsync` for each.
 - **BREAKING**: `BrowserStorageServiceBulkExtensions.SetMultipleAsync` and `RemoveMultipleAsync` now return `ValueTask<StorageResult>` with fail-fast semantics — the first failing per-item result is returned and remaining items are not attempted.
 - **BREAKING**: `StorageResult<T>.Success` property was renamed to `IsSuccess` (from the initial API).
 - `SetAsync<T>` no longer throws on JS interop failures (quota exceeded, storage disabled). Failures are surfaced through `StorageResult.ErrorMessage` instead.
@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `ILocalStorageService` and `ISessionStorageService` with typed, async CRUD (`GetAsync<T>`, `SetAsync<T>`, `RemoveAsync`, `ClearAsync`).
+- `ILocalStorageService` and `ISessionStorageService` with typed, async CRUD (`GetAsync<T>`, `SetAsync<T>`, `RemoveAsync`, `ClearAllAsync`).
 - `StorageResult<T>` for result-based reads instead of exceptions on missing keys.
 - `ContainsKeyAsync`, `LengthAsync`, `GetKeysAsync` query methods.
 - `Changed` event with `StorageChangedEventArgs`.

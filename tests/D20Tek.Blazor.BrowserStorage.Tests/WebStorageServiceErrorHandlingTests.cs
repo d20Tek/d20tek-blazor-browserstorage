@@ -142,17 +142,17 @@ public class WebStorageServiceErrorHandlingTests
         Assert.IsNull(result.ErrorMessage);
     }
 
-    // --- ClearAsync ---
+    // --- ClearAllAsync ---
 
     [TestMethod]
-    public async Task ClearAsync_ReturnsFailureResult_WhenJsInteropThrows()
+    public async Task ClearAllAsync_ReturnsFailureResult_WhenJsInteropThrows()
     {
         // Arrange
         _jsRuntime.ExceptionForIdentifier["localStorage.clear"] = new JSException("clear failed");
         var service = CreateService();
 
         // Act
-        var result = await service.ClearAsync(CancellationToken.None);
+        var result = await service.ClearAllAsync(CancellationToken.None);
 
         // Assert
         Assert.IsFalse(result.IsSuccess);
@@ -161,14 +161,14 @@ public class WebStorageServiceErrorHandlingTests
     }
 
     [TestMethod]
-    public async Task ClearAsync_ReturnsFailureResult_WhenStorageUnavailable()
+    public async Task ClearAllAsync_ReturnsFailureResult_WhenStorageUnavailable()
     {
         // Arrange
         MakeStorageUnavailable();
         var service = CreateService();
 
         // Act
-        var result = await service.ClearAsync(CancellationToken.None);
+        var result = await service.ClearAllAsync(CancellationToken.None);
 
         // Assert
         Assert.IsFalse(result.IsSuccess);
@@ -176,13 +176,13 @@ public class WebStorageServiceErrorHandlingTests
     }
 
     [TestMethod]
-    public async Task ClearAsync_ReturnsSuccessResult_OnHappyPath()
+    public async Task ClearAllAsync_ReturnsSuccessResult_OnHappyPath()
     {
         // Arrange
         var service = CreateService();
 
         // Act
-        var result = await service.ClearAsync(CancellationToken.None);
+        var result = await service.ClearAllAsync(CancellationToken.None);
 
         // Assert
         Assert.IsTrue(result.IsSuccess);

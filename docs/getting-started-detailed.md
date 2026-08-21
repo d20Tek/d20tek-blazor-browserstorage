@@ -70,19 +70,22 @@ await LocalStorage.SetAsync("high-scores", scores);
 
 ### Removing and Clearing Data
 
-Remove a single key or clear all keys from storage. Both methods return a `StorageResult` for consistency with `SetAsync`:
+Remove a single key, or clear the entire storage area. Both methods return a `StorageResult` for consistency with `SetAsync`:
 
 ```csharp
 // Remove a specific key
 await LocalStorage.RemoveAsync("username");
 
-// Clear all keys from storage
-await LocalStorage.ClearAsync();
+// Clear ALL keys in this browser storage area (destructive, area-wide).
+// This removes every key in localStorage/sessionStorage for the current origin,
+// including keys written by other libraries. The configured KeyPrefix is NOT
+// honored — enumerate GetKeysAsync + RemoveAsync to scope the delete instead.
+await LocalStorage.ClearAllAsync();
 ```
 
 ### Handling Failures
 
-All mutation methods (`SetAsync`, `RemoveAsync`, `ClearAsync`) return a `StorageResult` with `IsSuccess` and an optional `ErrorMessage`. This lets you surface storage problems (quota exceeded, disabled site data, private-mode restrictions) without exception handling:
+All mutation methods (`SetAsync`, `RemoveAsync`, `ClearAllAsync`) return a `StorageResult` with `IsSuccess` and an optional `ErrorMessage`. This lets you surface storage problems (quota exceeded, disabled site data, private-mode restrictions) without exception handling:
 
 ```csharp
 var result = await LocalStorage.SetAsync("user-profile", profile);

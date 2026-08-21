@@ -191,16 +191,16 @@ public class LocalStorageServiceTests
         Assert.IsNull(eventArgs.NewValue);
     }
 
-    // --- ClearAsync ---
+    // --- ClearAllAsync ---
 
     [TestMethod]
-    public async Task ClearAsync_InvokesClear()
+    public async Task ClearAllAsync_InvokesClear()
     {
         // Arrange
         var service = CreateService();
 
         // Act
-        await service.ClearAsync(CancellationToken.None);
+        await service.ClearAllAsync(CancellationToken.None);
 
         // Assert
         Assert.IsTrue(_jsRuntime.Invocations.Any(i => i.Identifier == "localStorage.clear"));

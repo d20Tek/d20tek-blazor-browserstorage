@@ -11,7 +11,7 @@ The following table maps Blazored.LocalStorage methods to their D20Tek.Blazor.Br
 | `ILocalStorageService.GetItemAsync<T>(key)` | `ILocalStorageService.GetAsync<T>(key)` | Returns `StorageResult<T>` instead of throwing on missing keys. Check `.IsSuccess` before accessing `.Value`. |
 | `ILocalStorageService.SetItemAsync(key, value)` | `ILocalStorageService.SetAsync(key, value)` | Returns `StorageResult`. Check `.IsSuccess` to detect quota/blocked-storage failures. |
 | `ILocalStorageService.RemoveItemAsync(key)` | `ILocalStorageService.RemoveAsync(key)` | Returns `StorageResult`. |
-| `ILocalStorageService.ClearAsync()` | `ILocalStorageService.ClearAsync()` | Returns `StorageResult`. |
+| `ILocalStorageService.ClearAsync()` | `ILocalStorageService.ClearAllAsync()` | Returns `StorageResult`. Renamed to reflect that it clears the entire browser storage area, not just prefixed keys. |
 | `ILocalStorageService.ContainKeyAsync(key)` | `ILocalStorageService.ContainsKeyAsync(key)` | Note the corrected method name spelling. |
 | `ILocalStorageService.LengthAsync()` | `ILocalStorageService.LengthAsync()` | Identical behavior. |
 | `builder.Services.AddBlazoredLocalStorage()` | `builder.Services.AddBrowserStorage()` | Also registers `ISessionStorageService`. Use `AddLocalStorage()` for localStorage only. |
@@ -83,7 +83,7 @@ D20Tek.Blazor.BrowserStorage includes several features not available in Blazored
 
 - **Key prefix namespacing** via `BrowserStorageOptions.KeyPrefix`
 - **Availability probing** via `IsAvailableAsync` to detect blocked or disabled storage
-- **Result-based writes** — `SetAsync`, `RemoveAsync`, and `ClearAsync` return `StorageResult` so quota / blocked-storage failures are non-throwing
+- **Result-based writes** — `SetAsync`, `RemoveAsync`, and `ClearAllAsync` return `StorageResult` so quota / blocked-storage failures are non-throwing
 - **Bulk operations** via `SetMultipleAsync` and `RemoveMultipleAsync` (fail-fast, returning a `StorageResult`)
 - **Change notifications** via the `Changed` event
 - **Configurable DI service lifetimes** (Scoped, Singleton, or Transient)
