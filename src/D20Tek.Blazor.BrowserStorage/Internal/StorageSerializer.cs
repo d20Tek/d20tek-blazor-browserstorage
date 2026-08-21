@@ -30,6 +30,8 @@ internal static class StorageSerializer
         [typeof(Guid)] = new TypeConverter<Guid>(v => v.ToString(), s => Guid.Parse(s))
     };
 
+    [RequiresUnreferencedCode(TrimmingMessages.RequiresUnreferencedCode)]
+    [RequiresDynamicCode(TrimmingMessages.RequiresDynamicCode)]
     public static string Serialize<T>(T value, JsonSerializerOptions jsonOptions)
     {
         if (value is null) return "null";
@@ -40,6 +42,8 @@ internal static class StorageSerializer
             : JsonSerializer.Serialize(value, jsonOptions);
     }
 
+    [RequiresUnreferencedCode(TrimmingMessages.RequiresUnreferencedCode)]
+    [RequiresDynamicCode(TrimmingMessages.RequiresDynamicCode)]
     public static T? Deserialize<T>(string json, JsonSerializerOptions jsonOptions)
     {
         var underlyingType = GetUnderlyingType<T>();

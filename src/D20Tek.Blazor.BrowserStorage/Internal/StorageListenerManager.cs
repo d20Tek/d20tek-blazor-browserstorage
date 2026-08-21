@@ -26,7 +26,18 @@ internal sealed class StorageListenerManager(
         }
     }
 
-    internal async void InitializeListenerAsync() => await InitializeAsync();
+    internal void InitializeListenerAsync()
+    {
+        // Fire-and-forget: the Changed event add accessor cannot await. Observe the
+        // task so a failed JS module import (prerender, disconnected circuit, blocked
+        // storage, missing static asset) is surfaced instead of being swallowed.
+        _ = InitializeAsync().AsTask().ContinueWith(
+            t => Console.Error.WriteLine(
+                $"[D20Tek.Blazor.BrowserStorage] Failed to initialize storage change listener for {storageName}: {t.Exception!.GetBaseException().Message}"),
+            CancellationToken.None,
+            TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+            TaskScheduler.Default);
+    }
 
     [JSInvokable]
     public void OnStorageChanged(string? key, string? oldValue, string? newValue)

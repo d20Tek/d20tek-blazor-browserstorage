@@ -21,7 +21,8 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
         return result.IsSuccess ? result.Value : null;
     }
 
-    public async Task SaveProfileAsync(PlayerProfile profile) => await _local.SetAsync(ProfileKey, profile);
+    public async Task SaveProfileAsync(PlayerProfile profile) =>
+        LogIfFailure(await _local.SetAsync(ProfileKey, profile), nameof(SaveProfileAsync));
 
     public async Task<List<ScoreEntry>> GetHighScoresAsync()
     {
@@ -29,7 +30,8 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
         return result.IsSuccess && result.Value is not null ? result.Value : [];
     }
 
-    public async Task SaveHighScoresAsync(List<ScoreEntry> scores) => await _local.SetAsync(HighScoresKey, scores);
+    public async Task SaveHighScoresAsync(List<ScoreEntry> scores) =>
+        LogIfFailure(await _local.SetAsync(HighScoresKey, scores), nameof(SaveHighScoresAsync));
 
     public async Task<int> GetGamesPlayedAsync()
     {
@@ -49,7 +51,7 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
         if (!unlocked.Contains(category))
         {
             unlocked.Add(category);
-            await _local.SetAsync(CategoriesUnlockedKey, unlocked);
+            LogIfFailure(await _local.SetAsync(CategoriesUnlockedKey, unlocked), nameof(UnlockCategoryAsync));
         }
     }
 
@@ -59,7 +61,8 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
         return result.IsSuccess ? result.Value : null;
     }
 
-    public async Task SaveQuizStateAsync(QuizState state) => await _session.SetAsync(QuizStateKey, state);
+    public async Task SaveQuizStateAsync(QuizState state) =>
+        LogIfFailure(await _session.SetAsync(QuizStateKey, state), nameof(SaveQuizStateAsync));
 
     public async Task<int> GetCurrentStreakAsync()
     {
@@ -67,7 +70,8 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
         return result.IsSuccess ? result.Value : 0;
     }
 
-    public async Task SaveCurrentStreakAsync(int streak) => await _session.SetAsync(CurrentStreakKey, streak);
+    public async Task SaveCurrentStreakAsync(int streak) =>
+        LogIfFailure(await _session.SetAsync(CurrentStreakKey, streak), nameof(SaveCurrentStreakAsync));
 
     public async Task SaveResultsAsync(ScoreEntry entry)
     {
@@ -84,7 +88,7 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
             new(HighScoresKey, scores),
             new(GamesPlayedKey, gamesPlayed)
         };
-        await _local.SetMultipleAsync(items);
+        LogIfFailure(await _local.SetMultipleAsync(items), nameof(SaveResultsAsync));
 
         // Unlock next category based on games played
         var categories = QuestionBank.Categories;
@@ -98,7 +102,10 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
         }
     }
 
-    public async Task ClearSessionStateAsync() => await _session.RemoveMultipleAsync([QuizStateKey, CurrentStreakKey]);
+    public async Task ClearSessionStateAsync() =>
+        LogIfFailure(
+            await _session.RemoveMultipleAsync([QuizStateKey, CurrentStreakKey]),
+            nameof(ClearSessionStateAsync));
 
     public async Task<int> GetLocalStorageCountAsync() => await _local.LengthAsync();
 
@@ -106,7 +113,15 @@ public class GameService(ILocalStorageService local, ISessionStorageService sess
 
     public async Task ResetAllDataAsync()
     {
-        await _local.ClearAsync();
-        await _session.ClearAsync();
+        LogIfFailure(await _local.ClearAllAsync(), $"{nameof(ResetAllDataAsync)} (local)");
+        LogIfFailure(await _session.ClearAllAsync(), $"{nameof(ResetAllDataAsync)} (session)");
+    }
+
+    private static void LogIfFailure(StorageResult result, string operation)
+    {
+        if (!result.IsSuccess)
+        {
+            Console.Error.WriteLine($"[GameService.{operation}] Storage operation failed: {result.ErrorMessage}");
+        }
     }
 }

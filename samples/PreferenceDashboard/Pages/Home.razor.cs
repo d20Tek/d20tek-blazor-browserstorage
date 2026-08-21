@@ -20,6 +20,10 @@ public partial class Home
     private async Task DismissBanner()
     {
         _bannerDismissed = true;
-        await SessionStorage.SetAsync(BannerDismissedKey, true);
+        var result = await SessionStorage.SetAsync(BannerDismissedKey, true);
+        if (!result.IsSuccess)
+        {
+            Console.Error.WriteLine($"[Home] Failed to persist banner-dismissed flag: {result.ErrorMessage}");
+        }
     }
 }

@@ -18,9 +18,12 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddBrowserStorage(
         this IServiceCollection services,
         Action<BrowserStorageOptions>? configure = null,
-        ServiceLifetime lifetime = ServiceLifetime.Scoped) =>
-        services.AddLocalStorage(configure, lifetime)
-                .AddSessionStorage(configure, lifetime);
+        ServiceLifetime lifetime = ServiceLifetime.Scoped)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        return services.AddLocalStorage(configure, lifetime)
+                       .AddSessionStorage(configure, lifetime);
+    }
 
     /// <summary>
     /// Registers the local storage service.
@@ -34,6 +37,8 @@ public static class ServiceCollectionExtensions
         Action<BrowserStorageOptions>? configure = null,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
+        ArgumentNullException.ThrowIfNull(services);
+
         services.Configure(configure ?? (_ => { }));
         services.TryAdd(new ServiceDescriptor(typeof(ILocalStorageService), typeof(LocalStorageService), lifetime));
         return services;
@@ -51,6 +56,8 @@ public static class ServiceCollectionExtensions
         Action<BrowserStorageOptions>? configure = null,
         ServiceLifetime lifetime = ServiceLifetime.Scoped)
     {
+        ArgumentNullException.ThrowIfNull(services);
+
         services.Configure(configure ?? (_ => { }));
         services.TryAdd(new ServiceDescriptor(typeof(ISessionStorageService), typeof(SessionStorageService), lifetime));
         return services;

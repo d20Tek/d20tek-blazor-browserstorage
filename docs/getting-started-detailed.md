@@ -8,8 +8,10 @@ This document provides detailed usage instructions and configuration options for
   - [Reading Values](#reading-values)
   - [Writing Values](#writing-values)
   - [Removing and Clearing Data](#removing-and-clearing-data)
+  - [Handling Failures](#handling-failures)
   - [Checking for Keys](#checking-for-keys)
   - [Enumerating Storage](#enumerating-storage)
+  - [Checking Storage Availability](#checking-storage-availability)
   - [Bulk Operations](#bulk-operations)
   - [Change Notifications](#change-notifications)
 - [Configuration](#configuration)
@@ -68,15 +70,35 @@ await LocalStorage.SetAsync("high-scores", scores);
 
 ### Removing and Clearing Data
 
-Remove a single key or clear all keys from storage:
+Remove a single key, or clear the entire storage area. Both methods return a `StorageResult` for consistency with `SetAsync`:
 
 ```csharp
 // Remove a specific key
 await LocalStorage.RemoveAsync("username");
 
-// Clear all keys from storage
-await LocalStorage.ClearAsync();
+// Clear ALL keys in this browser storage area (destructive, area-wide).
+// This removes every key in localStorage/sessionStorage for the current origin,
+// including keys written by other libraries. The configured KeyPrefix is NOT
+// honored — enumerate GetKeysAsync + RemoveAsync to scope the delete instead.
+await LocalStorage.ClearAllAsync();
 ```
+
+### Handling Failures
+
+All mutation methods (`SetAsync`, `RemoveAsync`, `ClearAllAsync`) return a `StorageResult` with `IsSuccess` and an optional `ErrorMessage`. This lets you surface storage problems (quota exceeded, disabled site data, private-mode restrictions) without exception handling:
+
+```csharp
+var result = await LocalStorage.SetAsync("user-profile", profile);
+if (!result.IsSuccess)
+{
+	// Show a message, fall back to in-memory state, or retry.
+	logger.LogWarning("Storage write failed: {Error}", result.ErrorMessage);
+}
+```
+
+Similarly, `GetAsync<T>` populates `ErrorMessage` when the failure is not a simple missing key (for example, when the stored JSON is corrupt or storage is unavailable).
+
+The bulk extensions (`SetMultipleAsync`, `RemoveMultipleAsync`) use fail-fast semantics: the first failing item's result is returned and remaining items are not attempted.
 
 ### Checking for Keys
 
@@ -106,9 +128,22 @@ foreach (var key in keys)
 }
 ```
 
+### Checking Storage Availability
+
+Use `IsAvailableAsync` to detect whether the underlying browser storage is usable before performing operations. Storage can be unavailable when the browser is in a restricted private mode, when the user has blocked site data, or when quota has been exhausted. The result is cached after the first check.
+
+```csharp
+if (!await LocalStorage.IsAvailableAsync())
+{
+	// Fall back to in-memory state or notify the user.
+}
+```
+
+When storage is unavailable, read operations return empty/failure results and write operations return a failure result with an explanatory `ErrorMessage` rather than throwing.
+
 ### Bulk Operations
 
-The `SetMultipleAsync` and `RemoveMultipleAsync` extension methods allow batch operations in a single logical call. These methods iterate over the provided items and perform individual storage operations for each entry.
+The `SetMultipleAsync` and `RemoveMultipleAsync` extension methods allow batch operations in a single logical call. These methods iterate over the provided items and perform individual storage operations for each entry. Both return a `StorageResult` and fail fast on the first item that cannot be written or removed.
 
 ```csharp
 // Write multiple values at once
@@ -118,7 +153,11 @@ var items = new List<KeyValuePair<string, object>>
 	new("games-played", gamesPlayed),
 	new("last-played", DateTimeOffset.UtcNow)
 };
-await LocalStorage.SetMultipleAsync(items);
+var bulkResult = await LocalStorage.SetMultipleAsync(items);
+if (!bulkResult.IsSuccess)
+{
+	logger.LogWarning("Bulk save stopped: {Error}", bulkResult.ErrorMessage);
+}
 
 // Remove multiple keys at once
 await SessionStorage.RemoveMultipleAsync(["quiz-state", "current-streak", "timer"]);

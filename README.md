@@ -54,9 +54,10 @@ It gives Blazor developers a first‑class, standard way to use browser storage,
 ## Features
 
 - **Typed, async API**: Read and write any serializable .NET type with generic `GetAsync<T>` and `SetAsync<T>` methods. No manual JSON handling required.
-- **Result-based reads**: `GetAsync<T>` returns a `StorageResult<T>` with an `IsSuccess` flag, eliminating exceptions on missing keys and enabling safe fallback patterns.
+- **Result-based reads and writes**: `GetAsync<T>` returns a `StorageResult<T>` and `SetAsync<T>` / `RemoveAsync` / `ClearAllAsync` return a `StorageResult`, each with an `IsSuccess` flag and an optional `ErrorMessage`. Missing keys, corrupt values, quota-exceeded, and blocked-storage conditions surface as results rather than exceptions.
+- **Availability probing**: `IsAvailableAsync` detects whether browser storage is usable (private mode, disabled site data, quota exhausted) and caches the result.
 - **localStorage and sessionStorage**: Full support for both browser storage mechanisms through `ILocalStorageService` and `ISessionStorageService`.
-- **Bulk operations**: `SetMultipleAsync` and `RemoveMultipleAsync` extension methods for batch read/write scenarios.
+- **Bulk operations**: `SetMultipleAsync` and `RemoveMultipleAsync` extension methods for batch read/write scenarios, with fail-fast semantics that return the first failing `StorageResult`.
 - **Key prefix namespacing**: Configure a prefix string (for example, `"myapp_"`) that is automatically prepended to all keys, preventing collisions between multiple applications or modules sharing the same origin.
 - **Change notifications**: Subscribe to the `Changed` event on either service to receive `StorageChangedEventArgs` whenever a value is added, modified, or removed.
 - **Configurable JSON serialization**: Provide custom `JsonSerializerOptions` for scenarios that require specific naming policies, converters, or formatting.
@@ -128,7 +129,12 @@ private ILocalStorageService LocalStorage { get; set; } = default!;
 
 ```csharp
 // Write a value
-await LocalStorage.SetAsync("username", "Alice");
+var writeResult = await LocalStorage.SetAsync("username", "Alice");
+if (!writeResult.IsSuccess)
+{
+    // Storage may be full, disabled, or otherwise unavailable.
+    Console.WriteLine(writeResult.ErrorMessage);
+}
 
 // Read a value
 var result = await LocalStorage.GetAsync<string>("username");
@@ -150,12 +156,12 @@ The repository includes two sample Blazor WebAssembly applications that demonstr
 ### [PreferenceDashboard](samples/PreferenceDashboard)
 A settings and preferences dashboard that uses `localStorage` to persist visual preferences (theme, accent color, and font family) across browser sessions, and `sessionStorage` to track dismissal of a "What's New" banner within the current tab.
 
-**Features demonstrated:** `GetAsync<T>`, `SetAsync<T>`, `ContainsKeyAsync`, `ClearAsync`, key prefix namespacing, and the `Changed` event.
+**Features demonstrated:** `GetAsync<T>`, `SetAsync<T>`, `ContainsKeyAsync`, `ClearAllAsync`, key prefix namespacing, and the `Changed` event.
 
 ### [SampleQuiz](samples/SampleQuiz)
 An interactive tech trivia game with 100 questions across .NET, Azure, and Windows categories. The application uses `localStorage` for persistent data such as player profiles, high scores, and game statistics, and `sessionStorage` for current quiz state with recovery on page refresh.
 
-**Features demonstrated:** Complex object serialization, `StorageResult<T>` for first-time player detection, `SetMultipleAsync` for batch result saving, `RemoveMultipleAsync` for session cleanup, `GetKeysAsync` and `LengthAsync` for storage statistics, and `ClearAsync` for data reset.
+**Features demonstrated:** Complex object serialization, `StorageResult<T>` for first-time player detection, `SetMultipleAsync` for batch result saving, `RemoveMultipleAsync` for session cleanup, `GetKeysAsync` and `LengthAsync` for storage statistics, and `ClearAllAsync` for data reset.
 
 ## Migration from Blazored.LocalStorage
 If you are migrating from the Blazored.LocalStorage and Blazored.SessionStorage packages, see the [Migration Guide](docs/blazored-migration.md) for a detailed comparison of methods, return types, and registration patterns.

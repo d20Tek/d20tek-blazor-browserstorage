@@ -70,7 +70,8 @@ public class LocalStorageServiceTests
         await service.GetAsync<string>("key", CancellationToken.None);
 
         // Assert
-        Assert.AreEqual("app_key", _jsRuntime.Invocations[0].Args[0]);
+        var getItemCall = _jsRuntime.Invocations.First(i => i.Identifier == "localStorage.getItem");
+        Assert.AreEqual("app_key", getItemCall.Args[0]);
     }
 
     // --- SetAsync ---
@@ -190,19 +191,19 @@ public class LocalStorageServiceTests
         Assert.IsNull(eventArgs.NewValue);
     }
 
-    // --- ClearAsync ---
+    // --- ClearAllAsync ---
 
     [TestMethod]
-    public async Task ClearAsync_InvokesClear()
+    public async Task ClearAllAsync_InvokesClear()
     {
         // Arrange
         var service = CreateService();
 
         // Act
-        await service.ClearAsync(CancellationToken.None);
+        await service.ClearAllAsync(CancellationToken.None);
 
         // Assert
-        Assert.AreEqual("localStorage.clear", _jsRuntime.Invocations[0].Identifier);
+        Assert.IsTrue(_jsRuntime.Invocations.Any(i => i.Identifier == "localStorage.clear"));
     }
 
     // --- ContainsKeyAsync ---

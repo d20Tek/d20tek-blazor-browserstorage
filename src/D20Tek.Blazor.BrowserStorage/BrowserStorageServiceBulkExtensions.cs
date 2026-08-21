@@ -6,36 +6,56 @@ namespace D20Tek.Blazor.BrowserStorage;
 public static class BrowserStorageServiceBulkExtensions
 {
     /// <summary>
-    /// Sets multiple key-value pairs in storage.
+    /// Sets multiple key-value pairs in storage. Stops on the first failure.
     /// </summary>
     /// <param name="service">The storage service.</param>
     /// <param name="items">The key-value pairs to store.</param>
     /// <param name="ct">Optional cancellation token.</param>
-    public static async ValueTask SetMultipleAsync(
+    /// <returns>A success result if all writes succeeded; otherwise the first failing result.</returns>
+    /// <remarks>
+    /// Values are serialized via <see cref="IBrowserStorageService.SetAsync{T}(string, T, CancellationToken)"/>.
+    /// See its trimming/AOT compatibility notes.
+    /// </remarks>
+    [RequiresUnreferencedCode(TrimmingMessages.RequiresUnreferencedCode)]
+    [RequiresDynamicCode(TrimmingMessages.RequiresDynamicCode)]
+    public static async ValueTask<StorageResult> SetMultipleAsync(
         this IBrowserStorageService service,
         IEnumerable<KeyValuePair<string, object>> items,
         CancellationToken ct = default)
     {
+        ArgumentNullException.ThrowIfNull(service);
+        ArgumentNullException.ThrowIfNull(items);
+
         foreach (var (key, value) in items)
         {
-            await service.SetAsync(key, value, ct);
+            var result = await service.SetAsync(key, value, ct);
+            if (!result.IsSuccess) return result;
         }
+
+        return StorageResult.Success();
     }
 
     /// <summary>
-    /// Removes multiple keys from storage.
+    /// Removes multiple keys from storage. Stops on the first failure.
     /// </summary>
     /// <param name="service">The storage service.</param>
     /// <param name="keys">The keys to remove.</param>
     /// <param name="ct">Optional cancellation token.</param>
-    public static async ValueTask RemoveMultipleAsync(
+    /// <returns>A success result if all removes succeeded; otherwise the first failing result.</returns>
+    public static async ValueTask<StorageResult> RemoveMultipleAsync(
         this IBrowserStorageService service,
         IEnumerable<string> keys,
         CancellationToken ct = default)
     {
+        ArgumentNullException.ThrowIfNull(service);
+        ArgumentNullException.ThrowIfNull(keys);
+
         foreach (var key in keys)
         {
-            await service.RemoveAsync(key, ct);
+            var result = await service.RemoveAsync(key, ct);
+            if (!result.IsSuccess) return result;
         }
+
+        return StorageResult.Success();
     }
 }

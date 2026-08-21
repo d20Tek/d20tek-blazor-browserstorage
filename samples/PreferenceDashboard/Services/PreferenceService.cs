@@ -24,14 +24,22 @@ public class PreferenceService(ILocalStorageService storage)
     public async Task SaveAsync(UserPreferences preferences)
     {
         Current = preferences;
-        await _storage.SetAsync(StorageKey, preferences);
+        var result = await _storage.SetAsync(StorageKey, preferences);
+        if (!result.IsSuccess)
+        {
+            Console.Error.WriteLine($"[PreferenceService] Failed to save preferences: {result.ErrorMessage}");
+        }
         OnChanged?.Invoke();
     }
 
     public async Task ClearAsync()
     {
         Current = UserPreferences.Default;
-        await _storage.RemoveAsync(StorageKey);
+        var result = await _storage.RemoveAsync(StorageKey);
+        if (!result.IsSuccess)
+        {
+            Console.Error.WriteLine($"[PreferenceService] Failed to clear preferences: {result.ErrorMessage}");
+        }
         OnChanged?.Invoke();
     }
 }
