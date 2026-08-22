@@ -29,6 +29,8 @@ This package was inspired by Blazored.LocalStorage/SessionStorage. Once I realiz
 - [API Reference](docs/api-reference.md)
 - [Sample Applications](#sample-applications)
 - [Testing](#testing)
+  - [Testing Guide](docs/testing.md)
+  - [Testing API Reference](docs/testing-api-reference.md)
 - [Migration from Blazored.LocalStorage](docs/blazored-migration.md)
 - [License](#license)
 
@@ -183,7 +185,7 @@ cut.Find("button.reset").Click();
 Assert.False(ctx.GetLocalStorage().Snapshot.ContainsKey("app_prefs"));
 ```
 
-See [docs/testing.md](docs/testing.md) for the full guide — seeding, `Snapshot` inspection, availability simulation, and cross-tab `Changed` event simulation.
+See [docs/testing.md](docs/testing.md) for the full guide — seeding, `Snapshot` inspection, availability simulation, and cross-tab `Changed` event simulation. For the complete list of public types, methods, and extensions in the testing package, see the [Testing API Reference](docs/testing-api-reference.md).
 
 ## Migration from Blazored.LocalStorage
 If you are migrating from the Blazored.LocalStorage and Blazored.SessionStorage packages, see the [Migration Guide](docs/blazored-migration.md) for a detailed comparison of methods, return types, and registration patterns.
