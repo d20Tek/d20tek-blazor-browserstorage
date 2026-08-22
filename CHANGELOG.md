@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- New companion package **`D20Tek.Blazor.BrowserStorage.Testing`** that provides:
+  - In-memory implementations of `ILocalStorageService` and `ISessionStorageService` that mirror the real service's serialization, key-prefixing, `StorageResult`, and `Changed`-event semantics.
+  - An `IInMemoryStorage` test surface with `Seed`, `Snapshot`, `SimulateUnavailable`, `RestoreAvailable`, and `RaiseExternalChange` (cross-tab simulation) helpers.
+  - bUnit `BunitContext` extensions: `AddBrowserStorage`, `AddLocalStorage`, `AddSessionStorage`, `GetLocalStorage`, and `GetSessionStorage`.
+- New documentation: [`docs/testing.md`](docs/testing.md).
 - **`StorageResult` (non-generic)** result type for storage mutations, with `IsSuccess`, `ErrorMessage`, and `Success` / `Failure(string)` factory members.
 - **`ErrorMessage`** property on `StorageResult<T>`; populated on failure paths for `GetAsync<T>` (unavailable storage, corrupt/mismatched JSON, missing key).
 - **`IsAvailableAsync`** on `IBrowserStorageService` for probing whether the underlying browser storage is usable (private mode, disabled site data, quota exhausted). The result is cached and concurrency-safe.
@@ -23,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bumped bUnit reference to `2.9.0` and `Microsoft.Extensions.*` on the `net9.0` target to `9.0.12` to align with bUnit 2.9.0's transitive requirements.
 - **BREAKING**: `IBrowserStorageService.SetAsync<T>` now returns `ValueTask<StorageResult>` instead of `ValueTask`.
 - **BREAKING**: `IBrowserStorageService.RemoveAsync` now returns `ValueTask<StorageResult>` instead of `ValueTask`.
 - **BREAKING**: `IBrowserStorageService.ClearAsync` has been renamed to `ClearAllAsync` and now returns `ValueTask<StorageResult>` instead of `ValueTask`. The rename clarifies that the method wipes the entire browser storage area for the current origin — including keys written by other libraries — and does not honor the configured `KeyPrefix`. To delete only keys owned by this service, enumerate `GetKeysAsync` and call `RemoveAsync` for each.
