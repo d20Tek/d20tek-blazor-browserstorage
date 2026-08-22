@@ -55,4 +55,25 @@ public class BrowserStorageTestContextExtensionsTests
         Assert.IsNotNull(ctx.Services.GetService<ILocalStorageService>());
         Assert.IsNull(ctx.Services.GetService<ISessionStorageService>());
     }
+
+    [TestMethod]
+    public void AddSessionStorage_OnlyRegistersSession()
+    {
+        // Arrange
+        using var ctx = new BunitContext();
+
+        // Act
+        ctx.AddSessionStorage(o => o.KeyPrefix = "s_");
+
+        // Assert
+        Assert.IsNotNull(ctx.Services.GetService<ISessionStorageService>());
+        Assert.IsNull(ctx.Services.GetService<ILocalStorageService>());
+        ctx.GetSessionStorage().Seed("k", "\"v\"");
+        Assert.IsTrue(ctx.GetSessionStorage().Snapshot.ContainsKey("s_k"));
+    }
+
+    [TestMethod]
+    public void AddSessionStorage_ThrowsArgumentNullException_WhenContextIsNull() =>
+        Assert.ThrowsExactly<ArgumentNullException>(
+            [ExcludeFromCodeCoverage]() => ((BunitContext)null!).AddSessionStorage());
 }

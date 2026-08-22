@@ -11,12 +11,15 @@ public class InMemoryWebStorageServiceTests
     [TestMethod]
     public async Task SetAsync_ThenGetAsync_RoundTripsValue()
     {
+        // Arrange
         var svc = CreateLocal();
         var value = new Prefs("Dark", 14);
 
-        var setResult = await svc.SetAsync("prefs", value);
-        var getResult = await svc.GetAsync<Prefs>("prefs");
+        // Act
+        var setResult = await svc.SetAsync("prefs", value, CancellationToken.None);
+        var getResult = await svc.GetAsync<Prefs>("prefs", CancellationToken.None);
 
+        // Assert
         Assert.IsTrue(setResult.IsSuccess);
         Assert.IsTrue(getResult.IsSuccess);
         Assert.AreEqual(value, getResult.Value);
@@ -25,10 +28,13 @@ public class InMemoryWebStorageServiceTests
     [TestMethod]
     public async Task GetAsync_MissingKey_ReturnsFailure()
     {
+        // Arrange
         var svc = CreateLocal();
 
-        var result = await svc.GetAsync<Prefs>("missing");
+        // Act
+        var result = await svc.GetAsync<Prefs>("missing", CancellationToken.None);
 
+        // Assert
         Assert.IsFalse(result.IsSuccess);
         Assert.IsNotNull(result.ErrorMessage);
     }
@@ -36,65 +42,78 @@ public class InMemoryWebStorageServiceTests
     [TestMethod]
     public async Task RemoveAsync_RemovesKey()
     {
+        // Arrange
         var svc = CreateLocal();
-        await svc.SetAsync("k", 42);
+        await svc.SetAsync("k", 42, CancellationToken.None);
 
-        var result = await svc.RemoveAsync("k");
+        // Act
+        var result = await svc.RemoveAsync("k", CancellationToken.None);
 
+        // Assert
         Assert.IsTrue(result.IsSuccess);
-        Assert.IsFalse(await svc.ContainsKeyAsync("k"));
+        Assert.IsFalse(await svc.ContainsKeyAsync("k", CancellationToken.None));
     }
 
     [TestMethod]
     public async Task ClearAllAsync_RemovesEverything()
     {
+        // Arrange
         var svc = CreateLocal();
-        await svc.SetAsync("a", 1);
-        await svc.SetAsync("b", 2);
+        await svc.SetAsync("a", 1, CancellationToken.None);
+        await svc.SetAsync("b", 2, CancellationToken.None);
 
-        var result = await svc.ClearAllAsync();
+        // Act
+        var result = await svc.ClearAllAsync(CancellationToken.None);
 
+        // Assert
         Assert.IsTrue(result.IsSuccess);
-        Assert.AreEqual(0, await svc.LengthAsync());
+        Assert.AreEqual(0, await svc.LengthAsync(CancellationToken.None));
     }
 
     [TestMethod]
     public async Task GetKeysAsync_StripsKeyPrefix()
     {
+        // Arrange
         var svc = CreateLocal("app_");
-        await svc.SetAsync("one", 1);
-        await svc.SetAsync("two", 2);
+        await svc.SetAsync("one", 1, CancellationToken.None);
+        await svc.SetAsync("two", 2, CancellationToken.None);
 
-        var keys = await svc.GetKeysAsync();
+        // Act
+        var keys = await svc.GetKeysAsync(CancellationToken.None);
 
-        CollectionAssert.AreEquivalent(new[] { "one", "two" }, keys.ToArray());
+        // Assert
+        Assert.AreSequenceEqual(["one", "two"], [.. keys], SequenceOrder.InAnyOrder);
     }
 
     [TestMethod]
     public void Seed_AppliesKeyPrefix_AndDoesNotRaiseChanged()
     {
+        // Arrange
         var svc = CreateLocal("app_");
-        IInMemoryStorage store = svc;
         using var _ = svc.RecordChanges(out var events);
 
-        store.Seed("k", 42);
+        // Act
+        ((IInMemoryStorage)svc).Seed("k", 42);
 
-        Assert.IsTrue(store.Snapshot.ContainsKey("app_k"));
-        Assert.AreEqual(0, events.Count);
+        // Assert
+        Assert.IsTrue(svc.Snapshot.ContainsKey("app_k"));
+        Assert.IsEmpty(events);
     }
 
     [TestMethod]
     [ExcludeFromCodeCoverage]
     public async Task SetAsync_RaisesChanged_WithOldAndNewValues()
     {
+        // Arrange
         var svc = CreateLocal();
-        await svc.SetAsync("k", 1);
-
+        await svc.SetAsync("k", 1, CancellationToken.None);
         using var _ = svc.RecordChanges(out var events);
 
-        await svc.SetAsync("k", 2);
+        // Act
+        await svc.SetAsync("k", 2, CancellationToken.None);
 
-        Assert.AreEqual(1, events.Count);
+        // Assert
+        Assert.HasCount(1, events);
         var captured = events[0];
         Assert.AreEqual("k", captured.Key);
         Assert.AreEqual(2, captured.NewValue is JsonElement je ? je.GetInt32() : (int)captured.NewValue!);
@@ -103,76 +122,296 @@ public class InMemoryWebStorageServiceTests
     [TestMethod]
     public async Task SimulateUnavailable_MakesOperationsFail()
     {
+        // Arrange
         var svc = CreateLocal();
-        IInMemoryStorage store = svc;
-        await svc.SetAsync("k", 1);
+        await svc.SetAsync("k", 1, CancellationToken.None);
 
-        store.SimulateUnavailable();
+        // Act
+        svc.SimulateUnavailable();
 
-        Assert.IsFalse(await svc.IsAvailableAsync());
-        Assert.IsFalse((await svc.GetAsync<int>("k")).IsSuccess);
-        Assert.IsFalse((await svc.SetAsync("k", 2)).IsSuccess);
-        Assert.IsFalse(await svc.ContainsKeyAsync("k"));
+        // Assert
+        Assert.IsFalse(await svc.IsAvailableAsync(CancellationToken.None));
+        Assert.IsFalse((await svc.GetAsync<int>("k", CancellationToken.None)).IsSuccess);
+        Assert.IsFalse((await svc.SetAsync("k", 2, CancellationToken.None)).IsSuccess);
+        Assert.IsFalse(await svc.ContainsKeyAsync("k", CancellationToken.None));
 
-        store.RestoreAvailable();
+        // Act
+        svc.RestoreAvailable();
 
-        Assert.IsTrue(await svc.IsAvailableAsync());
-        Assert.IsTrue((await svc.GetAsync<int>("k")).IsSuccess);
+        // Assert
+        Assert.IsTrue(await svc.IsAvailableAsync(CancellationToken.None));
+        Assert.IsTrue((await svc.GetAsync<int>("k", CancellationToken.None)).IsSuccess);
     }
 
     [TestMethod]
     public void RaiseExternalChange_FiresChangedEvent()
     {
+        // Arrange
         var svc = CreateLocal();
-        IInMemoryStorage store = svc;
         using var _ = svc.RecordChanges(out var events);
 
-        store.RaiseExternalChange("k", oldValue: "1", newValue: "2");
+        // Act
+        svc.RaiseExternalChange("k", oldValue: "1", newValue: "2");
 
-        Assert.AreEqual(1, events.Count);
+        // Assert
+        Assert.HasCount(1, events);
         Assert.AreEqual("k", events[0].Key);
     }
 
     [TestMethod]
     public void Clear_RemovesAllEntriesWithoutRaisingChanged()
     {
+        // Arrange
         var svc = CreateLocal();
-        IInMemoryStorage store = svc;
-        store.Seed("a", 1);
-        store.Seed("b", 2);
+        ((IInMemoryStorage)svc).Seed("a", 1);
+        ((IInMemoryStorage)svc).Seed("b", 2);
         using var _ = svc.RecordChanges(out var events);
 
-        store.Clear();
+        // Act
+        ((IInMemoryStorage)svc).Clear();
 
-        Assert.AreEqual(0, store.Snapshot.Count);
-        Assert.AreEqual(0, events.Count);
+        // Assert
+        Assert.IsEmpty(((IInMemoryStorage)svc).Snapshot);
+        Assert.HasCount(0, events);
+    }
+
+    [TestMethod]
+    public void Seed_BulkRaw_WritesAllEntries_AndDoesNotRaiseChanged()
+    {
+        // Arrange
+        var svc = CreateLocal("app_");
+        using var _ = svc.RecordChanges(out var events);
+        var entries = new Dictionary<string, string>
+        {
+            ["a"] = "1",
+            ["b"] = "\"hello\"",
+        };
+
+        // Act
+        svc.Seed(entries);
+
+        // Assert
+        Assert.HasCount(2, svc.Snapshot);
+        Assert.AreEqual("1", svc.Snapshot["app_a"]);
+        Assert.AreEqual("\"hello\"", svc.Snapshot["app_b"]);
+        Assert.HasCount(0, events);
+    }
+
+    [TestMethod]
+    public void Seed_BulkRaw_ThrowsArgumentNullException_WhenEntriesIsNull()
+    {
+        // Arrange
+        var svc = CreateLocal();
+
+        // Act & Assert
+        Assert.ThrowsExactly<ArgumentNullException>(
+            [ExcludeFromCodeCoverage]() => svc.Seed((IEnumerable<KeyValuePair<string, string>>)null!));
     }
 
     [TestMethod]
     public void Seed_BulkTyped_WritesAllEntries()
     {
+        // Arrange
         var svc = CreateLocal();
-        IInMemoryStorage store = svc;
 
-        store.Seed(new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 });
+        // Act
+        ((IInMemoryStorage)svc).Seed(new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 });
 
-        Assert.AreEqual(2, store.Snapshot.Count);
+        // Assert
+        Assert.HasCount(2, svc.Snapshot);
     }
 
     [TestMethod]
     public async Task RecordChanges_CapturesEventsUntilDisposed()
     {
+        // Arrange
         var svc = CreateLocal();
 
+        // Act & Assert (inside scope)
         using (svc.RecordChanges(out var events))
         {
-            await svc.SetAsync("k", 1);
-            await svc.SetAsync("k", 2);
+            await svc.SetAsync("k", 1, CancellationToken.None);
+            await svc.SetAsync("k", 2, CancellationToken.None);
 
-            Assert.AreEqual(2, events.Count);
+            Assert.HasCount(2, events);
             Assert.AreEqual("k", events[0].Key);
         }
 
-        await svc.SetAsync("k", 3);
+        // Act (post-dispose write should not throw or be captured by the disposed handle)
+        await svc.SetAsync("k", 3, CancellationToken.None);
+    }
+
+    [TestMethod]
+    public async Task GetAsync_ReturnsFailure_WhenUnavailable()
+    {
+        // Arrange
+        var svc = CreateLocal();
+        await svc.SetAsync("k", 1, CancellationToken.None);
+        svc.SimulateUnavailable();
+
+        // Act
+        var result = await svc.GetAsync<int>("k", CancellationToken.None);
+
+        // Assert
+        Assert.IsFalse(result.IsSuccess);
+        Assert.IsNotNull(result.ErrorMessage);
+    }
+
+    [TestMethod]
+    public async Task SetAsync_ReturnsFailure_AndDoesNotRaiseChanged_WhenUnavailable()
+    {
+        // Arrange
+        var svc = CreateLocal();
+        svc.SimulateUnavailable();
+        using var _ = svc.RecordChanges(out var events);
+
+        // Act
+        var result = await svc.SetAsync("k", 1, CancellationToken.None);
+
+        // Assert
+        Assert.IsFalse(result.IsSuccess);
+        Assert.HasCount(0, events);
+        Assert.HasCount(0, svc.Snapshot);
+    }
+
+    [TestMethod]
+    public async Task RemoveAsync_ReturnsFailure_AndDoesNotRaiseChanged_WhenUnavailable()
+    {
+        // Arrange
+        var svc = CreateLocal();
+        await svc.SetAsync("k", 1, CancellationToken.None);
+        svc.SimulateUnavailable();
+        using var _ = svc.RecordChanges(out var events);
+
+        // Act
+        var result = await svc.RemoveAsync("k", CancellationToken.None);
+
+        // Assert
+        Assert.IsFalse(result.IsSuccess);
+        Assert.HasCount(0, events);
+        Assert.HasCount(1, svc.Snapshot);
+    }
+
+    [TestMethod]
+    public async Task ClearAllAsync_ReturnsFailure_WhenUnavailable()
+    {
+        // Arrange
+        var svc = CreateLocal();
+        await svc.SetAsync("k", 1, CancellationToken.None);
+        svc.SimulateUnavailable();
+
+        // Act
+        var result = await svc.ClearAllAsync(CancellationToken.None);
+
+        // Assert
+        Assert.IsFalse(result.IsSuccess);
+        Assert.HasCount(1, svc.Snapshot);
+    }
+
+    [TestMethod]
+    public async Task ContainsKeyAsync_ReturnsFalse_WhenUnavailable()
+    {
+        // Arrange
+        var svc = CreateLocal();
+        await svc.SetAsync("k", 1, CancellationToken.None);
+        svc.SimulateUnavailable();
+
+        // Act
+        var contains = await svc.ContainsKeyAsync("k", CancellationToken.None);
+
+        // Assert
+        Assert.IsFalse(contains);
+    }
+
+    [TestMethod]
+    public async Task LengthAsync_ReturnsZero_WhenUnavailable()
+    {
+        // Arrange
+        var svc = CreateLocal();
+        await svc.SetAsync("a", 1, CancellationToken.None);
+        await svc.SetAsync("b", 2, CancellationToken.None);
+        svc.SimulateUnavailable();
+
+        // Act
+        var length = await svc.LengthAsync(CancellationToken.None);
+
+        // Assert
+        Assert.AreEqual(0, length);
+    }
+
+    [TestMethod]
+    public async Task GetKeysAsync_ReturnsEmpty_WhenUnavailable()
+    {
+        // Arrange
+        var svc = CreateLocal();
+        await svc.SetAsync("a", 1, CancellationToken.None);
+        svc.SimulateUnavailable();
+
+        // Act
+        var keys = await svc.GetKeysAsync(CancellationToken.None);
+
+        // Assert
+        Assert.IsEmpty(keys);
+    }
+
+    [TestMethod]
+    public async Task GetAsync_ReturnsFailure_WhenStoredJsonIsMalformed()
+    {
+        // Arrange
+        var svc = CreateLocal();
+        svc.Seed("k", "not-json");
+
+        // Act
+        var result = await svc.GetAsync<int>("k", CancellationToken.None);
+
+        // Assert
+        Assert.IsFalse(result.IsSuccess);
+        Assert.IsNotNull(result.ErrorMessage);
+    }
+
+    [TestMethod]
+    public async Task GetAsync_ReturnsFailure_WhenStoredJsonHasWrongShape()
+    {
+        // Arrange
+        var svc = CreateLocal();
+        svc.Seed("prefs", "{\"Theme\":123}");
+
+        // Act
+        var result = await svc.GetAsync<Prefs>("prefs", CancellationToken.None);
+
+        // Assert
+        Assert.IsFalse(result.IsSuccess);
+        Assert.IsNotNull(result.ErrorMessage);
+    }
+
+    [TestMethod]
+    public async Task DisposeAsync_CompletesSynchronously_AndLeavesfServiceUsable()
+    {
+        // Arrange
+        var svc = CreateLocal();
+        await svc.SetAsync("k", 1, CancellationToken.None);
+
+        // Act
+        var task = svc.DisposeAsync();
+
+        // Assert
+        Assert.IsTrue(task.IsCompletedSuccessfully);
+        await task;
+        // The in-memory store holds no unmanaged resources, so the service remains usable.
+        Assert.IsTrue((await svc.GetAsync<int>("k", CancellationToken.None)).IsSuccess);
+    }
+
+    [TestMethod]
+    public async Task IsAvailableAsync_ReturnsFalse_AfterSimulateUnavailable()
+    {
+        // Arrange
+        var svc = CreateLocal();
+
+        // Act & Assert
+        Assert.IsTrue(await svc.IsAvailableAsync(CancellationToken.None));
+        svc.SimulateUnavailable();
+        Assert.IsFalse(await svc.IsAvailableAsync(CancellationToken.None));
+        svc.RestoreAvailable();
+        Assert.IsTrue(await svc.IsAvailableAsync(CancellationToken.None));
     }
 }
