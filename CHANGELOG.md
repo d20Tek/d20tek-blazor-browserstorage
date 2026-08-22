@@ -10,8 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - New companion package **`D20Tek.Blazor.BrowserStorage.Testing`** that provides:
-  - In-memory implementations of `ILocalStorageService` and `ISessionStorageService` that mirror the real service's serialization, key-prefixing, `StorageResult`, and `Changed`-event semantics.
-  - An `IInMemoryStorage` test surface with `Seed`, `Snapshot`, `SimulateUnavailable`, `RestoreAvailable`, and `RaiseExternalChange` (cross-tab simulation) helpers.
+  - In-memory implementations of `ILocalStorageService` and `ISessionStorageService` that mirror the real service's serialization, key-prefixing, `StorageResult`, and `Changed`-event semantics. The classes are public and expose parameterless, `BrowserStorageOptions`, and `IOptions<BrowserStorageOptions>` constructors so they can be used with or without DI.
+  - An `IInMemoryStorage` test surface with `Snapshot`, single- and bulk-`Seed` overloads (raw and typed), `Clear`, `SimulateUnavailable`, `RestoreAvailable`, and `RaiseExternalChange` (cross-tab simulation) helpers.
+  - A `RecordChanges` extension on `IBrowserStorageService` that subscribes to `Changed`, returns an `IDisposable`, and exposes a thread-safe live list of captured events — works with both the in-memory services and the real `WebStorageService`.
+  - Framework-agnostic `IServiceCollection` extensions: `AddInMemoryBrowserStorage`, `AddInMemoryLocalStorage`, `AddInMemorySessionStorage`, `GetInMemoryLocalStorage`, `GetInMemorySessionStorage`, and `ReplaceWithInMemoryBrowserStorage` / `ReplaceWithInMemoryLocalStorage` / `ReplaceWithInMemorySessionStorage` for swapping real registrations in `WebApplicationFactory` and similar hosts.
   - bUnit `BunitContext` extensions: `AddBrowserStorage`, `AddLocalStorage`, `AddSessionStorage`, `GetLocalStorage`, and `GetSessionStorage`.
 - New documentation: [`docs/testing.md`](docs/testing.md).
 - **`StorageResult` (non-generic)** result type for storage mutations, with `IsSuccess`, `ErrorMessage`, and `Success` / `Failure(string)` factory members.

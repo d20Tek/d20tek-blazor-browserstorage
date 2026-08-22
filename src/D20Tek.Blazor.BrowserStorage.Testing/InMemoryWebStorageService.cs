@@ -26,18 +26,14 @@ public abstract class InMemoryWebStorageService : IBrowserStorageService, IInMem
         _options = options.Value;
         _jsonOptions = _options.JsonOptions ?? new JsonSerializerOptions(JsonSerializerDefaults.Web);
 
-        if (!_jsonOptions.IsReadOnly)
-        {
-            _jsonOptions.MakeReadOnly(populateMissingResolver: true);
-        }
+        if (!_jsonOptions.IsReadOnly) _jsonOptions.MakeReadOnly(populateMissingResolver: true);
     }
 
     /// <inheritdoc />
     public event EventHandler<StorageChangedEventArgs>? Changed;
 
     /// <inheritdoc />
-    public ValueTask<bool> IsAvailableAsync(CancellationToken cancellationToken = default) =>
-        new(_available);
+    public ValueTask<bool> IsAvailableAsync(CancellationToken cancellationToken = default) => new(_available);
 
     /// <inheritdoc />
     [RequiresUnreferencedCode(TrimmingMessages.RequiresUnreferencedCode)]
@@ -48,9 +44,7 @@ public abstract class InMemoryWebStorageService : IBrowserStorageService, IInMem
         if (!_available) return new(StorageResult<T>.Failure(StorageMessages.Unavailable(_storageName)));
 
         if (!_store.TryGetValue(_options.PrefixKey(key), out var json))
-        {
             return new(StorageResult<T>.Failure(StorageMessages.KeyNotFound(_storageName, key)));
-        }
 
         try
         {
@@ -115,8 +109,7 @@ public abstract class InMemoryWebStorageService : IBrowserStorageService, IInMem
     }
 
     /// <inheritdoc />
-    public ValueTask<int> LengthAsync(CancellationToken cancellationToken = default) =>
-        new(_available ? _store.Count : 0);
+    public ValueTask<int> LengthAsync(CancellationToken cancellationToken = default) => new(_available ? _store.Count : 0);
 
     /// <inheritdoc />
     public ValueTask<IReadOnlyList<string>> GetKeysAsync(CancellationToken cancellationToken = default)
@@ -145,8 +138,7 @@ public abstract class InMemoryWebStorageService : IBrowserStorageService, IInMem
     // --- IInMemoryStorage ------------------------------------------------------------------
 
     /// <inheritdoc />
-    public IReadOnlyDictionary<string, string> Snapshot =>
-        new Dictionary<string, string>(_store, StringComparer.Ordinal);
+    public IReadOnlyDictionary<string, string> Snapshot => new Dictionary<string, string>(_store, StringComparer.Ordinal);
 
     /// <inheritdoc />
     public void Seed(string key, string rawJson)

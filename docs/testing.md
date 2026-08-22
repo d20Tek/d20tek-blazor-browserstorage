@@ -5,7 +5,9 @@ The `D20Tek.Blazor.BrowserStorage.Testing` package lets you unit- and component-
 It provides:
 
 - Real-behavior in-memory implementations of `ILocalStorageService` and `ISessionStorageService` that route through the same serializer, key-prefix rules, and `StorageResult` semantics as the production service.
-- A test-time `IInMemoryStorage` handle for seeding data, inspecting the store, simulating unavailability, and raising cross-tab `Changed` events.
+- A test-time `IInMemoryStorage` handle for seeding data (single or bulk), clearing the store, inspecting a snapshot, simulating unavailability, and raising cross-tab `Changed` events.
+- A `RecordChanges` extension on `IBrowserStorageService` that captures `Changed` events without boilerplate — works with the in-memory services and the real service.
+- Framework-agnostic `IServiceCollection` extensions (`AddInMemoryBrowserStorage`, `ReplaceWithInMemoryBrowserStorage`, and matching local/session-only variants) for xUnit, MSTest, NUnit, `WebApplicationFactory`, and any other DI-based test host.
 - bUnit `BunitContext` extension methods that wire everything up in a single line.
 
 ## Install
@@ -97,6 +99,24 @@ ctx.GetLocalStorage().Seed("token", "abc123");                 // typed
 ctx.GetLocalStorage().Seed("session", "\"raw-json-string\"");  // raw JSON
 ```
 
+Bulk overloads take any `IEnumerable<KeyValuePair<string, T>>` (typed) or `IEnumerable<KeyValuePair<string, string>>` (raw):
+
+```csharp
+ctx.GetLocalStorage().Seed(new Dictionary<string, int>
+{
+	["counter"] = 3,
+	["retries"] = 0,
+});
+```
+
+## Resetting between tests with `Clear`
+
+`Clear` synchronously empties the store and — like `Seed` — does not raise `Changed`. Useful for shared fixtures or per-test teardown:
+
+```csharp
+ctx.GetLocalStorage().Clear();
+```
+
 ## Inspecting the store
 
 `Snapshot` returns a read-only view of the underlying dictionary. Keys appear in their prefixed form, matching what the real browser storage would see.
@@ -129,13 +149,49 @@ store.RestoreAvailable();
 
 ```csharp
 var local = ctx.Services.GetRequiredService<ILocalStorageService>();
-StorageChangedEventArgs? captured = null;
-local.Changed += (_, e) => captured = e;
+using var _ = local.RecordChanges(out var events);
 
 ctx.GetLocalStorage().RaiseExternalChange("theme", oldValue: "\"Light\"", newValue: "\"Dark\"");
 
-Assert.Equal("theme", captured!.Key);
+Assert.Equal("theme", events[0].Key);
 ```
+
+## Capturing `Changed` events with `RecordChanges`
+
+`RecordChanges` is an extension on `IBrowserStorageService` that subscribes to the `Changed` event, returns an `IDisposable`, and exposes a thread-safe live list of captured events. It works with the in-memory services *and* the real `WebStorageService` — anywhere the event fires.
+
+```csharp
+var local = sp.GetRequiredService<ILocalStorageService>();
+using (local.RecordChanges(out var events))
+{
+	await local.SetAsync("theme", "Dark");
+	await local.SetAsync("fontSize", 14);
+
+	Assert.Equal(2, events.Count);
+	Assert.Equal("theme", events[0].Key);
+}
+// After dispose, later events are no longer captured.
+```
+
+## Swapping the real services in existing test hosts
+
+For integration-test hosts that already register the production storage services (`WebApplicationFactory`, `TestServer`, custom hosts, etc.), use the `ReplaceWithInMemory*` helpers to remove the real registration and install the in-memory implementation in its place:
+
+```csharp
+using var factory = new WebApplicationFactory<Program>()
+	.WithWebHostBuilder(builder =>
+	{
+		builder.ConfigureServices(services =>
+		{
+			services.ReplaceWithInMemoryBrowserStorage(o => o.KeyPrefix = "app_");
+			// or, for one storage type only:
+			// services.ReplaceWithInMemoryLocalStorage();
+			// services.ReplaceWithInMemorySessionStorage();
+		});
+	});
+```
+
+Unlike `AddInMemoryBrowserStorage`, the `ReplaceWith*` methods explicitly remove any prior `ILocalStorageService` / `ISessionStorageService` registrations first, so they are safe to call after the production `AddBrowserStorage` has already run.
 
 ## Using with xUnit / MSTest / NUnit
 

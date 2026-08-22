@@ -12,9 +12,7 @@ public static class BrowserStorageTestContextExtensions
     /// Registers in-memory local and session storage services on the bUnit
     /// <paramref name="context"/>.
     /// </summary>
-    public static BunitContext AddBrowserStorage(
-        this BunitContext context,
-        Action<BrowserStorageOptions>? configure = null)
+    public static BunitContext AddBrowserStorage(this BunitContext context, Action<BrowserStorageOptions>? configure = null)
     {
         ArgumentNullException.ThrowIfNull(context);
         context.Services.AddInMemoryBrowserStorage(configure);
@@ -25,9 +23,7 @@ public static class BrowserStorageTestContextExtensions
     /// Registers an in-memory <see cref="ILocalStorageService"/> on the bUnit
     /// <paramref name="context"/>.
     /// </summary>
-    public static BunitContext AddLocalStorage(
-        this BunitContext context,
-        Action<BrowserStorageOptions>? configure = null)
+    public static BunitContext AddLocalStorage(this BunitContext context, Action<BrowserStorageOptions>? configure = null)
     {
         ArgumentNullException.ThrowIfNull(context);
         context.Services.AddInMemoryLocalStorage(configure);
@@ -38,9 +34,7 @@ public static class BrowserStorageTestContextExtensions
     /// Registers an in-memory <see cref="ISessionStorageService"/> on the bUnit
     /// <paramref name="context"/>.
     /// </summary>
-    public static BunitContext AddSessionStorage(
-        this BunitContext context,
-        Action<BrowserStorageOptions>? configure = null)
+    public static BunitContext AddSessionStorage(this BunitContext context, Action<BrowserStorageOptions>? configure = null)
     {
         ArgumentNullException.ThrowIfNull(context);
         context.Services.AddInMemorySessionStorage(configure);
