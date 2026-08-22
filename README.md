@@ -28,6 +28,9 @@ This package was inspired by Blazored.LocalStorage/SessionStorage. Once I realiz
   - [Service Lifetime](docs/getting-started-detailed.md#service-lifetime)
 - [API Reference](docs/api-reference.md)
 - [Sample Applications](#sample-applications)
+- [Testing](#testing)
+  - [Testing Guide](docs/testing.md)
+  - [Testing API Reference](docs/testing-api-reference.md)
 - [Migration from Blazored.LocalStorage](docs/blazored-migration.md)
 - [License](#license)
 
@@ -162,6 +165,27 @@ A settings and preferences dashboard that uses `localStorage` to persist visual 
 An interactive tech trivia game with 100 questions across .NET, Azure, and Windows categories. The application uses `localStorage` for persistent data such as player profiles, high scores, and game statistics, and `sessionStorage` for current quiz state with recovery on page refresh.
 
 **Features demonstrated:** Complex object serialization, `StorageResult<T>` for first-time player detection, `SetMultipleAsync` for batch result saving, `RemoveMultipleAsync` for session cleanup, `GetKeysAsync` and `LengthAsync` for storage statistics, and `ClearAllAsync` for data reset.
+
+## Testing
+
+For unit and component tests, install the companion package **[D20Tek.Blazor.BrowserStorage.Testing](https://www.nuget.org/packages/D20Tek.Blazor.BrowserStorage.Testing)**. It ships in-memory implementations of `ILocalStorageService` and `ISessionStorageService` plus bUnit `BunitContext` extensions so you can test components that depend on browser storage without spinning up a real browser or mocking `IJSRuntime` by hand.
+
+```bash
+dotnet add package D20Tek.Blazor.BrowserStorage.Testing
+```
+
+```csharp
+using var ctx = new BunitContext();
+ctx.AddBrowserStorage(o => o.KeyPrefix = "app_");
+ctx.GetLocalStorage().Seed("prefs", new UserPreferences { Theme = "Dark" });
+
+var cut = ctx.Render<PreferencesPanel>();
+cut.Find("button.reset").Click();
+
+Assert.False(ctx.GetLocalStorage().Snapshot.ContainsKey("app_prefs"));
+```
+
+See [docs/testing.md](docs/testing.md) for the full guide — seeding, `Snapshot` inspection, availability simulation, and cross-tab `Changed` event simulation. For the complete list of public types, methods, and extensions in the testing package, see the [Testing API Reference](docs/testing-api-reference.md).
 
 ## Migration from Blazored.LocalStorage
 If you are migrating from the Blazored.LocalStorage and Blazored.SessionStorage packages, see the [Migration Guide](docs/blazored-migration.md) for a detailed comparison of methods, return types, and registration patterns.

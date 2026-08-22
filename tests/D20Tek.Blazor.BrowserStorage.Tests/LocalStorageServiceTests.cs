@@ -70,8 +70,8 @@ public class LocalStorageServiceTests
         await service.GetAsync<string>("key", CancellationToken.None);
 
         // Assert
-        var getItemCall = _jsRuntime.Invocations.First(i => i.Identifier == "localStorage.getItem");
-        Assert.AreEqual("app_key", getItemCall.Args[0]);
+        var (Identifier, Args) = _jsRuntime.Invocations.First(i => i.Identifier == "localStorage.getItem");
+        Assert.AreEqual("app_key", Args[0]);
     }
 
     // --- SetAsync ---
@@ -128,14 +128,14 @@ public class LocalStorageServiceTests
         // Arrange
         _jsRuntime.Results["localStorage.getItem"] = null;
         var service = CreateService();
-        StorageChangedEventArgs? eventArgs = null;
-        service.Changed += (_, e) => eventArgs = e;
+        using var _ = service.RecordChanges(out var events);
 
         // Act
         await service.SetAsync("key", "newValue", CancellationToken.None);
 
         // Assert
-        Assert.IsNotNull(eventArgs);
+        Assert.HasCount(1, events);
+        var eventArgs = events[0];
         Assert.AreEqual("key", eventArgs.Key);
         Assert.IsNull(eventArgs.OldValue);
         Assert.AreEqual("newValue", eventArgs.NewValue);
@@ -179,14 +179,14 @@ public class LocalStorageServiceTests
         // Arrange
         _jsRuntime.Results["localStorage.getItem"] = "\"old\"";
         var service = CreateService();
-        StorageChangedEventArgs? eventArgs = null;
-        service.Changed += (_, e) => eventArgs = e;
+        using var _ = service.RecordChanges(out var events);
 
         // Act
         await service.RemoveAsync("key", CancellationToken.None);
 
         // Assert
-        Assert.IsNotNull(eventArgs);
+        Assert.HasCount(1, events);
+        var eventArgs = events[0];
         Assert.AreEqual("key", eventArgs.Key);
         Assert.IsNull(eventArgs.NewValue);
     }
@@ -203,7 +203,7 @@ public class LocalStorageServiceTests
         await service.ClearAllAsync(CancellationToken.None);
 
         // Assert
-        Assert.IsTrue(_jsRuntime.Invocations.Any(i => i.Identifier == "localStorage.clear"));
+        Assert.Contains(i => i.Identifier == "localStorage.clear", _jsRuntime.Invocations);
     }
 
     // --- ContainsKeyAsync ---

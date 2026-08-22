@@ -12,7 +12,7 @@
     <Product>D20Tek.Blazor.BrowserStorage</Product>
     <Description>A modern, lightweight .NET library that provides typed, asynchronous access to the browser's localStorage and sessionStorage APIs for Blazor WebAssembly and client-side render modes. Features include result-based reads with StorageResult, key prefix namespacing, bulk operations, change notifications, configurable JSON serialization, and flexible service lifetimes.</Description>
     <PackageTags>blazor;blazor-webassembly;localstorage;sessionstorage;browser storage;wasm;client-side;webstorage;blazored;blazored replacement</PackageTags>
-    <PackageProjectUrl>https://github.com/d20Tek/d20tek-blazor-browserstorage</PackageProjectUrl>
+    <PackageProjectUrl>https://d20tek.com/projects/browser-storage/docs</PackageProjectUrl>
     <RepositoryUrl>https://github.com/d20Tek/d20tek-blazor-browserstorage</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -41,6 +41,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="Microsoft.JSInterop" />
     <InternalsVisibleTo Include="D20Tek.Blazor.BrowserStorage.Tests" />
+    <InternalsVisibleTo Include="D20Tek.Blazor.BrowserStorage.Testing" />
   </ItemGroup>
 
 </Project>

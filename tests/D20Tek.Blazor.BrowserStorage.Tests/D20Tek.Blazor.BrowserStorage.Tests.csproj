@@ -7,10 +7,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="MSTest" />
+    <PackageReference Include="bunit" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\D20Tek.Blazor.BrowserStorage\D20Tek.Blazor.BrowserStorage.csproj" />
+    <ProjectReference Include="..\..\src\D20Tek.Blazor.BrowserStorage.Testing\D20Tek.Blazor.BrowserStorage.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>

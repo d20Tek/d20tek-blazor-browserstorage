@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net9.0;net10.0</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <!-- NuGet Package Metadata -->
+    <PackageId>D20Tek.Blazor.BrowserStorage.Testing</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>DarthPedro</Authors>
+    <Company>D20Tek</Company>
+    <Product>D20Tek.Blazor.BrowserStorage.Testing</Product>
+    <Description>Testing companion for D20Tek.Blazor.BrowserStorage. Provides in-memory implementations of ILocalStorageService and ISessionStorageService plus bUnit TestContext extensions so Blazor components that depend on browser storage can be unit- and component-tested without a real browser or hand-rolled IJSRuntime fakes.</Description>
+    <PackageTags>blazor;bunit;testing;localstorage;sessionstorage;browser storage;in-memory;test-helpers;blazored replacement</PackageTags>
+    <PackageProjectUrl>https://d20tek.com/projects/browser-storage/docs</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/d20Tek/d20tek-blazor-browserstorage</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>Initial release: in-memory ILocalStorageService and ISessionStorageService with seeding, failure-injection, and cross-tab simulation APIs, plus bUnit TestContext extensions.</PackageReleaseNotes>
+    <Copyright>Copyright (c) 2025 D20Tek. All rights reserved.</Copyright>
+
+    <!-- Symbol Package for Debugging -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageIcon>package-icon.png</PackageIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\package-icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\D20Tek.Blazor.BrowserStorage\D20Tek.Blazor.BrowserStorage.csproj" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="bunit" />
+    <InternalsVisibleTo Include="D20Tek.Blazor.BrowserStorage.Tests" />
+  </ItemGroup>
+
+</Project>

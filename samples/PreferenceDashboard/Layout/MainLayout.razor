@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @inject PreferenceDashboard.Services.PreferenceService PrefService
+@attribute [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
 
 <div data-theme="@PrefService.Current.Theme"
      style="--accent-color: @PrefService.Current.AccentColor; --font-family: @PrefService.Current.FontFamily; min-height: 100vh;">
