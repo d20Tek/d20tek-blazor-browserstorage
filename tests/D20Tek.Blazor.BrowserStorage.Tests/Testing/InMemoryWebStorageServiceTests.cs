@@ -75,13 +75,12 @@ public class InMemoryWebStorageServiceTests
     {
         var svc = CreateLocal("app_");
         IInMemoryStorage store = svc;
-        var raised = 0;
-        svc.Changed += [ExcludeFromCodeCoverage](_, _) => raised++;
+        using var _ = svc.RecordChanges(out var events);
 
         store.Seed("k", 42);
 
         Assert.IsTrue(store.Snapshot.ContainsKey("app_k"));
-        Assert.AreEqual(0, raised);
+        Assert.AreEqual(0, events.Count);
     }
 
     [TestMethod]
@@ -91,13 +90,13 @@ public class InMemoryWebStorageServiceTests
         var svc = CreateLocal();
         await svc.SetAsync("k", 1);
 
-        StorageChangedEventArgs? captured = null;
-        svc.Changed += (_, e) => captured = e;
+        using var _ = svc.RecordChanges(out var events);
 
         await svc.SetAsync("k", 2);
 
-        Assert.IsNotNull(captured);
-        Assert.AreEqual("k", captured!.Key);
+        Assert.AreEqual(1, events.Count);
+        var captured = events[0];
+        Assert.AreEqual("k", captured.Key);
         Assert.AreEqual(2, captured.NewValue is JsonElement je ? je.GetInt32() : (int)captured.NewValue!);
     }
 
@@ -126,12 +125,54 @@ public class InMemoryWebStorageServiceTests
     {
         var svc = CreateLocal();
         IInMemoryStorage store = svc;
-        StorageChangedEventArgs? captured = null;
-        svc.Changed += (_, e) => captured = e;
+        using var _ = svc.RecordChanges(out var events);
 
         store.RaiseExternalChange("k", oldValue: "1", newValue: "2");
 
-        Assert.IsNotNull(captured);
-        Assert.AreEqual("k", captured!.Key);
+        Assert.AreEqual(1, events.Count);
+        Assert.AreEqual("k", events[0].Key);
+    }
+
+    [TestMethod]
+    public void Clear_RemovesAllEntriesWithoutRaisingChanged()
+    {
+        var svc = CreateLocal();
+        IInMemoryStorage store = svc;
+        store.Seed("a", 1);
+        store.Seed("b", 2);
+        using var _ = svc.RecordChanges(out var events);
+
+        store.Clear();
+
+        Assert.AreEqual(0, store.Snapshot.Count);
+        Assert.AreEqual(0, events.Count);
+    }
+
+    [TestMethod]
+    public void Seed_BulkTyped_WritesAllEntries()
+    {
+        var svc = CreateLocal();
+        IInMemoryStorage store = svc;
+
+        store.Seed(new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 });
+
+        Assert.AreEqual(2, store.Snapshot.Count);
+    }
+
+    [TestMethod]
+    public async Task RecordChanges_CapturesEventsUntilDisposed()
+    {
+        var svc = CreateLocal();
+
+        using (svc.RecordChanges(out var events))
+        {
+            await svc.SetAsync("k", 1);
+            await svc.SetAsync("k", 2);
+
+            Assert.AreEqual(2, events.Count);
+            Assert.AreEqual("k", events[0].Key);
+        }
+
+        await svc.SetAsync("k", 3);
     }
 }

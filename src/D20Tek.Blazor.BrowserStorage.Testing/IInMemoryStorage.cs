@@ -37,7 +37,29 @@ public interface IInMemoryStorage
     void Seed<T>(string key, T value);
 
     /// <summary>
-    /// Marks the store as unavailable. Subsequent read operations return empty results and
+    /// Silently seeds many raw entries at once. See <see cref="Seed(string, string)"/>.
+    /// </summary>
+    /// <param name="entries">The unprefixed key / raw-JSON pairs to seed.</param>
+    void Seed(IEnumerable<KeyValuePair<string, string>> entries);
+
+    /// <summary>
+    /// Silently seeds many typed entries at once. See <see cref="Seed{T}(string, T)"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the values to serialize.</typeparam>
+    /// <param name="entries">The unprefixed key / value pairs to seed.</param>
+    [RequiresUnreferencedCode(TrimmingMessages.RequiresUnreferencedCode)]
+    [RequiresDynamicCode(TrimmingMessages.RequiresDynamicCode)]
+    void Seed<T>(IEnumerable<KeyValuePair<string, T>> entries);
+
+    /// <summary>
+    /// Synchronously removes every key from the store without raising
+    /// <see cref="IBrowserStorageService.Changed"/>. Intended for test setup / teardown
+    /// (mirrors the silent-arrange semantics of <see cref="Seed(string, string)"/>).
+    /// </summary>
+    void Clear();
+
+    /// <summary>
+    /// Marks the store as unavailable.
     /// write operations return failure <see cref="StorageResult"/>s, matching the behavior of
     /// the real service when the browser blocks storage.
     /// </summary>

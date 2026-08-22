@@ -167,14 +167,13 @@ public class WebStorageServiceAvailabilityTests
         // Arrange
         MakeStorageUnavailable();
         var service = CreateService();
-        StorageChangedEventArgs? eventArgs = null;
-        service.Changed += [ExcludeFromCodeCoverage] (_, e) => eventArgs = e;
+        using var _ = service.RecordChanges(out var events);
 
         // Act
         await service.SetAsync("key", "value", CancellationToken.None);
 
         // Assert
-        Assert.IsNull(eventArgs);
+        Assert.IsEmpty(events);
     }
 
     // --- RemoveAsync ---

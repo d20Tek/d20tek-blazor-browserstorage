@@ -89,4 +89,52 @@ public static class InMemoryBrowserStorageServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
         return services.GetRequiredKeyedService<IInMemoryStorage>(SessionStorageKey);
     }
+
+    /// <summary>
+    /// Removes any prior <see cref="ILocalStorageService"/> and <see cref="ISessionStorageService"/>
+    /// registrations (including the production ones added by
+    /// <c>ServiceCollectionExtensions.AddBrowserStorage</c>) and registers the in-memory
+    /// implementations in their place. Intended for integration-test setups such as
+    /// <c>WebApplicationFactory</c> where the real registrations must be swapped out.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configure">Optional configuration for <see cref="BrowserStorageOptions"/>.</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection ReplaceWithInMemoryBrowserStorage(
+        this IServiceCollection services,
+        Action<BrowserStorageOptions>? configure = null) =>
+        services.ReplaceWithInMemoryLocalStorage(configure)
+                .ReplaceWithInMemorySessionStorage(configure);
+
+    /// <summary>
+    /// Removes any prior <see cref="ILocalStorageService"/> registration and replaces it with
+    /// the in-memory implementation.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configure">Optional configuration for <see cref="BrowserStorageOptions"/>.</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection ReplaceWithInMemoryLocalStorage(
+        this IServiceCollection services,
+        Action<BrowserStorageOptions>? configure = null)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        services.RemoveAll<ILocalStorageService>();
+        return services.AddInMemoryLocalStorage(configure);
+    }
+
+    /// <summary>
+    /// Removes any prior <see cref="ISessionStorageService"/> registration and replaces it with
+    /// the in-memory implementation.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configure">Optional configuration for <see cref="BrowserStorageOptions"/>.</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection ReplaceWithInMemorySessionStorage(
+        this IServiceCollection services,
+        Action<BrowserStorageOptions>? configure = null)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        services.RemoveAll<ISessionStorageService>();
+        return services.AddInMemorySessionStorage(configure);
+    }
 }

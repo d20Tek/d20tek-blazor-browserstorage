@@ -35,15 +35,14 @@ public class WebStorageServiceErrorHandlingTests
         // Arrange
         _jsRuntime.ExceptionForIdentifier["localStorage.setItem"] = new JSException("failed");
         var service = CreateService();
-        var raised = 0;
-        service.Changed += [ExcludeFromCodeCoverage](_, _) => raised++;
+        using var _ = service.RecordChanges(out var events);
 
         // Act
         var result = await service.SetAsync("key", "value", CancellationToken.None);
 
         // Assert
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual(0, raised);
+        Assert.IsEmpty(events);
     }
 
     [TestMethod]
@@ -102,15 +101,14 @@ public class WebStorageServiceErrorHandlingTests
         _jsRuntime.Results["localStorage.getItem"] = "\"old\"";
         _jsRuntime.ExceptionForIdentifier["localStorage.removeItem"] = new JSException("failed");
         var service = CreateService();
-        var raised = 0;
-        service.Changed += [ExcludeFromCodeCoverage](_, _) => raised++;
+        using var _ = service.RecordChanges(out var events);
 
         // Act
         var result = await service.RemoveAsync("key", CancellationToken.None);
 
         // Assert
         Assert.IsFalse(result.IsSuccess);
-        Assert.AreEqual(0, raised);
+        Assert.IsEmpty(events);
     }
 
     [TestMethod]

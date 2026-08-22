@@ -166,6 +166,25 @@ public abstract class InMemoryWebStorageService : IBrowserStorageService, IInMem
     }
 
     /// <inheritdoc />
+    public void Seed(IEnumerable<KeyValuePair<string, string>> entries)
+    {
+        ArgumentNullException.ThrowIfNull(entries);
+        foreach (var entry in entries) Seed(entry.Key, entry.Value);
+    }
+
+    /// <inheritdoc />
+    [RequiresUnreferencedCode(TrimmingMessages.RequiresUnreferencedCode)]
+    [RequiresDynamicCode(TrimmingMessages.RequiresDynamicCode)]
+    public void Seed<T>(IEnumerable<KeyValuePair<string, T>> entries)
+    {
+        ArgumentNullException.ThrowIfNull(entries);
+        foreach (var entry in entries) Seed(entry.Key, entry.Value);
+    }
+
+    /// <inheritdoc />
+    public void Clear() => _store.Clear();
+
+    /// <inheritdoc />
     public void SimulateUnavailable() => _available = false;
 
     /// <inheritdoc />
