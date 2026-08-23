@@ -26,7 +26,7 @@ This document provides a complete reference for all public types, interfaces, me
 | `GetAsync<T>(string key, CancellationToken ct)` | `ValueTask<StorageResult<T>>` | Reads and deserializes a value from storage. Returns a result with `IsSuccess = false` and an `ErrorMessage` when the key is missing, the stored JSON is corrupt, or storage is unavailable. |
 | `SetAsync<T>(string key, T value, CancellationToken ct)` | `ValueTask<StorageResult>` | Serializes and writes a value to storage. Returns a result indicating success or failure (e.g., quota exceeded or storage disabled). |
 | `RemoveAsync(string key, CancellationToken ct)` | `ValueTask<StorageResult>` | Removes a single key from storage. Returns a result indicating success or failure. |
-| `ClearAllAsync(CancellationToken cancellationToken)` | `ValueTask<StorageResult>` | Removes **all** keys from the underlying browser storage area for the current origin. This is a destructive, area-wide operation: it deletes every key in the target storage (`localStorage` or `sessionStorage`), **including keys written by other libraries or application code sharing the same origin**. The configured `KeyPrefix` is **not** honored — to delete only keys owned by this service, enumerate `GetKeysAsync` and call `RemoveAsync` for each. Returns a result indicating success or failure. |
+| `ClearAllAsync(CancellationToken cancellationToken)` | `ValueTask<StorageResult>` | Removes **all** keys from the underlying browser storage area for the current origin. This is a destructive, area-wide operation: it deletes every key in the target storage (`localStorage` or `sessionStorage`), **including keys written by other libraries or application code sharing the same origin**. The configured `KeyPrefix` is **not** honored - to delete only keys owned by this service, enumerate `GetKeysAsync` and call `RemoveAsync` for each. Returns a result indicating success or failure. |
 | `ContainsKeyAsync(string key, CancellationToken ct)` | `ValueTask<bool>` | Returns `true` if the specified key exists in storage. |
 | `LengthAsync(CancellationToken ct)` | `ValueTask<int>` | Returns the number of keys in storage. |
 | `GetKeysAsync(CancellationToken ct)` | `ValueTask<IReadOnlyList<string>>` | Returns a read-only list of all key names in storage. |
@@ -128,4 +128,4 @@ services.AddLocalStorage(options =>
 });
 ```
 
-Consumers who don't publish with trimming/AOT can suppress the warnings with `[UnconditionalSuppressMessage("Trimming", "IL2026")]` at their call sites, or ignore them — the library will continue to use reflection at runtime.
+Consumers who don't publish with trimming/AOT can suppress the warnings with `[UnconditionalSuppressMessage("Trimming", "IL2026")]` at their call sites, or ignore them - the library will continue to use reflection at runtime.

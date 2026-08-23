@@ -6,7 +6,7 @@ It provides:
 
 - Real-behavior in-memory implementations of `ILocalStorageService` and `ISessionStorageService` that route through the same serializer, key-prefix rules, and `StorageResult` semantics as the production service.
 - A test-time `IInMemoryStorage` handle for seeding data (single or bulk), clearing the store, inspecting a snapshot, simulating unavailability, and raising cross-tab `Changed` events.
-- A `RecordChanges` extension on `IBrowserStorageService` that captures `Changed` events without boilerplate — works with the in-memory services and the real service.
+- A `RecordChanges` extension on `IBrowserStorageService` that captures `Changed` events without boilerplate - works with the in-memory services and the real service.
 - Framework-agnostic `IServiceCollection` extensions (`AddInMemoryBrowserStorage`, `ReplaceWithInMemoryBrowserStorage`, and matching local/session-only variants) for xUnit, MSTest, NUnit, `WebApplicationFactory`, and any other DI-based test host.
 - bUnit `BunitContext` extension methods that wire everything up in a single line.
 
@@ -22,7 +22,7 @@ The package targets `net9.0` and `net10.0` and references bUnit 2.x.
 
 The package supports three usage tiers, from most direct to most integrated:
 
-### Pure unit test — no DI
+### Pure unit test - no DI
 
 Instantiate the service directly using either the parameterless constructor or one that accepts `BrowserStorageOptions`:
 
@@ -92,7 +92,7 @@ public class PreferencesPanelTests
 
 ## Arranging data with `Seed`
 
-`Seed` is a **silent** arrange helper — it writes directly to the underlying store without raising the `Changed` event. The configured `KeyPrefix` is applied automatically.
+`Seed` is a **silent** arrange helper - it writes directly to the underlying store without raising the `Changed` event. The configured `KeyPrefix` is applied automatically.
 
 ```csharp
 ctx.GetLocalStorage().Seed("token", "abc123");                 // typed
@@ -111,7 +111,7 @@ ctx.GetLocalStorage().Seed(new Dictionary<string, int>
 
 ## Resetting between tests with `Clear`
 
-`Clear` synchronously empties the store and — like `Seed` — does not raise `Changed`. Useful for shared fixtures or per-test teardown:
+`Clear` synchronously empties the store and - like `Seed` - does not raise `Changed`. Useful for shared fixtures or per-test teardown:
 
 ```csharp
 ctx.GetLocalStorage().Clear();
@@ -158,7 +158,7 @@ Assert.Equal("theme", events[0].Key);
 
 ## Capturing `Changed` events with `RecordChanges`
 
-`RecordChanges` is an extension on `IBrowserStorageService` that subscribes to the `Changed` event, returns an `IDisposable`, and exposes a thread-safe live list of captured events. It works with the in-memory services *and* the real `WebStorageService` — anywhere the event fires.
+`RecordChanges` is an extension on `IBrowserStorageService` that subscribes to the `Changed` event, returns an `IDisposable`, and exposes a thread-safe live list of captured events. It works with the in-memory services *and* the real `WebStorageService` - anywhere the event fires.
 
 ```csharp
 var local = sp.GetRequiredService<ILocalStorageService>();
@@ -195,4 +195,4 @@ Unlike `AddInMemoryBrowserStorage`, the `ReplaceWith*` methods explicitly remove
 
 ## Using with xUnit / MSTest / NUnit
 
-The in-memory services and bUnit extensions are test-framework agnostic. Any framework that supports bUnit will work — the samples above use xUnit-style assertions but the same code runs unchanged under MSTest or NUnit.
+The in-memory services and bUnit extensions are test-framework agnostic. Any framework that supports bUnit will work - the samples above use xUnit-style assertions but the same code runs unchanged under MSTest or NUnit.

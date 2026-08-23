@@ -2,11 +2,11 @@
 
 ## The problem: browser storage in Blazor shouldn't be this hard
 
-If you've built anything meaningful with Blazor WebAssembly, you've needed to persist data in the browser. User preferences, session tokens, form drafts, shopping carts, game state — the list is long. The browser provides `localStorage` and `sessionStorage` for exactly this purpose, but accessing them from Blazor requires JavaScript interop. That means writing JS glue code, managing serialization by hand, and handling the inevitable edge cases around missing keys, null values, and type mismatches.
+If you've built anything meaningful with Blazor WebAssembly, you've needed to persist data in the browser. User preferences, session tokens, form drafts, shopping carts, game state - the list is long. The browser provides `localStorage` and `sessionStorage` for exactly this purpose, but accessing them from Blazor requires JavaScript interop. That means writing JS glue code, managing serialization by hand, and handling the inevitable edge cases around missing keys, null values, and type mismatches.
 
 For years, the community's answer was Blazored.LocalStorage. It wrapped the interop details in a clean C# API and became a fixture in most Blazor WebAssembly projects. Then it was deprecated. The packages were removed from NuGet.org, the repository went into maintenance-only mode, and developers were left to find alternatives or write their own.
 
-If you're one of those developers — whether you need to replace Blazored in an existing project or you're starting fresh and want a reliable browser storage solution — D20Tek.Blazor.BrowserStorage was built to fill that gap.
+If you're one of those developers - whether you need to replace Blazored in an existing project or you're starting fresh and want a reliable browser storage solution - D20Tek.Blazor.BrowserStorage was built to fill that gap.
 
 ## What this library does
 
@@ -16,19 +16,19 @@ The library handles the full lifecycle of browser-stored data: writing values, r
 
 ## Where Blazored fell short
 
-Blazored.LocalStorage served the community well, but it had design decisions that created friction in practice. The most notable: calling `GetItemAsync<T>` with a key that didn't exist in storage would throw an exception. This meant every read had to be wrapped in a try-catch block or preceded by a `ContainKeyAsync` check — adding boilerplate and making the code harder to reason about.
+Blazored.LocalStorage served the community well, but it had design decisions that created friction in practice. The most notable: calling `GetItemAsync<T>` with a key that didn't exist in storage would throw an exception. This meant every read had to be wrapped in a try-catch block or preceded by a `ContainKeyAsync` check - adding boilerplate and making the code harder to reason about.
 
-D20Tek.Blazor.BrowserStorage takes a different approach. The `GetAsync<T>` method returns a `StorageResult<T>` — a lightweight record struct with an `IsSuccess` flag and a `Value` property. If the key exists and deserializes correctly, `IsSuccess` is `true` and `Value` holds your data. If the key is missing, `IsSuccess` is `false` and `Value` contains the default for that type. No exceptions, no ceremony. You write a single conditional and move on.
+D20Tek.Blazor.BrowserStorage takes a different approach. The `GetAsync<T>` method returns a `StorageResult<T>` - a lightweight record struct with an `IsSuccess` flag and a `Value` property. If the key exists and deserializes correctly, `IsSuccess` is `true` and `Value` holds your data. If the key is missing, `IsSuccess` is `false` and `Value` contains the default for that type. No exceptions, no ceremony. You write a single conditional and move on.
 
 Blazored also split localStorage and sessionStorage into separate NuGet packages with separate registrations. D20Tek.Blazor.BrowserStorage bundles both in one package. A single `AddBrowserStorage()` call registers both `ILocalStorageService` and `ISessionStorageService`, or you can register them individually if you prefer.
 
 ## Problems it solves
 
-**Key collisions in multi-module applications.** When multiple features or independently developed modules share the same browser origin, key names can collide silently. The library supports configurable key prefixes — set a prefix like `"myapp_"` and every key is automatically namespaced without changing your application code.
+**Key collisions in multi-module applications.** When multiple features or independently developed modules share the same browser origin, key names can collide silently. The library supports configurable key prefixes - set a prefix like `"myapp_"` and every key is automatically namespaced without changing your application code.
 
 **Boilerplate around missing keys.** As described above, the result-based read pattern eliminates try-catch blocks and double-call patterns. You check `IsSuccess`, provide a fallback, and continue.
 
-**Batch operations without loops.** When you need to save multiple values at once (a score, a timestamp, and a player name at the end of a game round, for instance) or clean up several session keys on navigation, the bulk extension methods — `SetMultipleAsync` and `RemoveMultipleAsync` — handle the iteration internally.
+**Batch operations without loops.** When you need to save multiple values at once (a score, a timestamp, and a player name at the end of a game round, for instance) or clean up several session keys on navigation, the bulk extension methods - `SetMultipleAsync` and `RemoveMultipleAsync` - handle the iteration internally.
 
 **Reacting to storage changes.** If your app has multiple components that depend on the same stored value, you can subscribe to the `Changed` event on the storage service. When any value is written or removed, subscribers receive the key name, old value, and new value without coupling the components to each other.
 

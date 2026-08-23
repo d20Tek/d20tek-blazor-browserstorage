@@ -79,7 +79,7 @@ await LocalStorage.RemoveAsync("username");
 // Clear ALL keys in this browser storage area (destructive, area-wide).
 // This removes every key in localStorage/sessionStorage for the current origin,
 // including keys written by other libraries. The configured KeyPrefix is NOT
-// honored — enumerate GetKeysAsync + RemoveAsync to scope the delete instead.
+// honored - enumerate GetKeysAsync + RemoveAsync to scope the delete instead.
 await LocalStorage.ClearAllAsync();
 ```
 

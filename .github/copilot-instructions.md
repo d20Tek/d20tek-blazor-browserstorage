@@ -1,0 +1,6 @@
+# Copilot Instructions
+
+## Project Guidelines
+- In documentation and generated content for this workspace, do not use em-dashes (—) or en-dashes (–); use normal hyphens (-). Also use only straight apostrophes (') and straight quotes (" ") instead of curly/smart variants.
+- When writing or updating documentation in this workspace, use proper English grammar, punctuation, and spelling whenever possible. Prefer complete, well-formed sentences and correct subject-verb agreement, tense consistency, and article usage.
+- When scanning or replacing special characters (em-dashes, en-dashes, smart quotes, curly apostrophes, etc.) in text files on Windows/PowerShell, use a UTF-8 aware approach. Do NOT rely on `Get-Content -Raw` (it can miss multi-byte UTF-8 sequences due to default encoding). Instead, use `[System.IO.File]::ReadAllText(path, [System.Text.UTF8Encoding]::new($false))` and `[System.IO.File]::WriteAllText(path, content, [System.Text.UTF8Encoding]::new($false))` to preserve UTF-8 without BOM, or inspect raw bytes with `[System.IO.File]::ReadAllBytes` when verifying.

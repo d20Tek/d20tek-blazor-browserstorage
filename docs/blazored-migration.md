@@ -83,7 +83,7 @@ D20Tek.Blazor.BrowserStorage includes several features not available in Blazored
 
 - **Key prefix namespacing** via `BrowserStorageOptions.KeyPrefix`
 - **Availability probing** via `IsAvailableAsync` to detect blocked or disabled storage
-- **Result-based writes** — `SetAsync`, `RemoveAsync`, and `ClearAllAsync` return `StorageResult` so quota / blocked-storage failures are non-throwing
+- **Result-based writes** - `SetAsync`, `RemoveAsync`, and `ClearAllAsync` return `StorageResult` so quota / blocked-storage failures are non-throwing
 - **Bulk operations** via `SetMultipleAsync` and `RemoveMultipleAsync` (fail-fast, returning a `StorageResult`)
 - **Change notifications** via the `Changed` event
 - **Configurable DI service lifetimes** (Scoped, Singleton, or Transient)

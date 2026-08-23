@@ -1,6 +1,6 @@
 # Testing API Reference
 
-This document provides a complete reference for all public types, interfaces, methods, events, and extension methods in **D20Tek.Blazor.BrowserStorage.Testing** — the companion package for unit- and component-testing code that depends on `ILocalStorageService` or `ISessionStorageService`.
+This document provides a complete reference for all public types, interfaces, methods, events, and extension methods in **D20Tek.Blazor.BrowserStorage.Testing** - the companion package for unit- and component-testing code that depends on `ILocalStorageService` or `ISessionStorageService`.
 
 ## Table of Contents
 
@@ -28,7 +28,7 @@ This document provides a complete reference for all public types, interfaces, me
 | `Seed(IEnumerable<KeyValuePair<string, string>> entries)` | `void` | Bulk silent-seed of raw JSON entries. |
 | `Seed<T>(IEnumerable<KeyValuePair<string, T>> entries)` | `void` | Bulk silent-seed of typed entries. |
 | `Clear()` | `void` | Synchronously removes every key from the store without raising `Changed`. Intended for test setup and teardown. |
-| `SimulateUnavailable()` | `void` | Marks the store as unavailable. Subsequent `GetAsync`, `SetAsync`, `RemoveAsync`, and `ClearAllAsync` calls return failure `StorageResult`s, and `ContainsKeyAsync` / `LengthAsync` / `GetKeysAsync` return empty results — mirroring the real service when the browser blocks storage. |
+| `SimulateUnavailable()` | `void` | Marks the store as unavailable. Subsequent `GetAsync`, `SetAsync`, `RemoveAsync`, and `ClearAllAsync` calls return failure `StorageResult`s, and `ContainsKeyAsync` / `LengthAsync` / `GetKeysAsync` return empty results - mirroring the real service when the browser blocks storage. |
 | `RestoreAvailable()` | `void` | Restores availability after a previous `SimulateUnavailable()` call. |
 | `RaiseExternalChange(string key, string? oldValue, string? newValue)` | `void` | Fires the `Changed` event as if another browser tab had modified storage. `oldValue` / `newValue` are the raw serialized JSON strings (matching what the real service stores). Does not mutate the store. |
 
@@ -82,7 +82,7 @@ Resolve the test-time handles for arrange / assert operations after building the
 
 ## IBrowserStorageService Extension Methods
 
-The following extension method is defined in the `BrowserStorageChangeRecorderExtensions` static class and works with any `IBrowserStorageService` — both the in-memory services and the real `WebStorageService`.
+The following extension method is defined in the `BrowserStorageChangeRecorderExtensions` static class and works with any `IBrowserStorageService` - both the in-memory services and the real `WebStorageService`.
 
 | Method | Return Type | Description |
 |---|---|---|
