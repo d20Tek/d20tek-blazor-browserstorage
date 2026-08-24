@@ -71,6 +71,10 @@ A readonly record struct returned by `GetAsync<T>` that represents the outcome o
 | `Value` | `T?` | The deserialized value, or the default value of `T` if the read did not succeed. |
 | `ErrorMessage` | `string?` | A description of the failure when `IsSuccess` is `false` (e.g., key not found, corrupt JSON, or storage unavailable). `null` on success. |
 
+| Member | Type | Description |
+|---|---|---|
+| `LogIfFailure(ILogger? logger = null)` | `void` | When `IsSuccess` is `false`, logs `ErrorMessage` as an error using the supplied `ILogger`. If no logger is provided, writes `ErrorMessage` to the console instead. Does nothing on success. |
+
 ### StorageResult
 
 A readonly record struct returned by write and remove operations (`SetAsync`, `RemoveAsync`, `ClearAllAsync`, `SetMultipleAsync`, `RemoveMultipleAsync`) that represents the outcome of a mutation.
@@ -84,6 +88,7 @@ A readonly record struct returned by write and remove operations (`SetAsync`, `R
 |---|---|---|
 | `StorageResult.Success()` | `StorageResult` | Creates a successful result with no error message. |
 | `StorageResult.Failure(string errorMessage)` | `StorageResult` | Creates a failure result with the specified error message. |
+| `LogIfFailure(ILogger? logger = null)` | `void` | When `IsSuccess` is `false`, logs `ErrorMessage` as an error using the supplied `ILogger`. If no logger is provided, writes `ErrorMessage` to the console instead. Does nothing on success. |
 
 ### StorageChangedEventArgs
 

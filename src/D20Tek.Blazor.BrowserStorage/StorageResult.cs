@@ -14,6 +14,26 @@ public readonly record struct StorageResult<T>(bool IsSuccess, T? Value, string?
 
     /// <summary>Creates a failure result with the specified error message.</summary>
     public static StorageResult<T> Failure(string errorMessage) => new(false, default, errorMessage);
+
+    /// <summary>
+    /// Logs the error message to the provided logger if the operation failed. 
+    /// If no logger is provided, it writes the error message to the console.
+    /// </summary>
+    /// <param name="logger">The logger to use for logging the error message.</param>
+    public void LogIfFailure(ILogger? logger = null)
+    {
+        if (IsSuccess is false)
+        {
+            if (logger is not null)
+            {
+                logger.LogError(ErrorMessage);
+            }
+            else
+            {
+                Console.WriteLine(ErrorMessage);
+            }
+        }
+    }
 }
 
 /// <summary>
@@ -28,4 +48,24 @@ public readonly record struct StorageResult(bool IsSuccess, string? ErrorMessage
 
     /// <summary>Creates a failure result with the specified error message.</summary>
     public static StorageResult Failure(string errorMessage) => new(false, errorMessage);
+
+    /// <summary>
+    /// Logs the error message to the provided logger if the operation failed. 
+    /// If no logger is provided, it writes the error message to the console.
+    /// </summary>
+    /// <param name="logger">The logger to use for logging the error message.</param>
+    public void LogIfFailure(ILogger? logger = null)
+    {
+        if (IsSuccess is false)
+        {
+            if (logger is not null)
+            {
+                logger.LogError(ErrorMessage);
+            }
+            else
+            {
+                Console.WriteLine(ErrorMessage);
+            }
+        }
+    }
 }
