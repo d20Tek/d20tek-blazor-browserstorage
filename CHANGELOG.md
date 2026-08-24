@@ -5,6 +5,12 @@ All notable changes to **D20Tek.Blazor.BrowserStorage** are documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Upcoming] - StorageResult logging helpers
+
+### Added
+
+- `StorageResult<T>.LogIfFailure(ILogger? logger = null)` and `StorageResult.LogIfFailure(ILogger? logger = null)` convenience methods. When the result represents a failure, the `ErrorMessage` is logged as an error through the supplied `ILogger`; if no logger is provided, the message is written to the console. Successful results are a no-op. This makes it easy to surface storage failures from calling code without hand-rolling `if (result.IsSuccess is false)` checks at every call site.
+
 ## [1.1.3] - Blazor.BrowserStorage.Testing package release
 
 ### Added
