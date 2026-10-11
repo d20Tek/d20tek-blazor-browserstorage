@@ -70,6 +70,38 @@ public class ServiceCollectionExtensionsTests
     }
 
     [TestMethod]
+    public void AddCookieStorage_RegistersCookieStorageService()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddSingleton<Microsoft.JSInterop.IJSRuntime>(new FakeJSRuntime());
+
+        // Act
+        services.AddCookieStorage();
+
+        // Assert
+        var provider = services.BuildServiceProvider();
+        var service = provider.GetService<ICookieStorageService>();
+        Assert.IsNotNull(service);
+    }
+
+    [TestMethod]
+    public void AddCookieStorage_WithOptions_ConfiguresCookieAttributes()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddSingleton<Microsoft.JSInterop.IJSRuntime>(new FakeJSRuntime());
+
+        // Act
+        services.AddCookieStorage(configureCookie: opts => opts.Path = "/app");
+
+        // Assert
+        var provider = services.BuildServiceProvider();
+        var options = provider.GetRequiredService<IOptions<CookieStorageOptions>>();
+        Assert.AreEqual("/app", options.Value.Path);
+    }
+
+    [TestMethod]
     public void AddLocalStorage_WithoutOptions_UsesDefaults()
     {
         // Arrange

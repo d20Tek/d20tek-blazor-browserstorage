@@ -27,6 +27,7 @@ This package was inspired by Blazored.LocalStorage/SessionStorage. Once I realiz
   - [Custom JSON Serialization](docs/getting-started-detailed.md#custom-json-serialization)
   - [Service Lifetime](docs/getting-started-detailed.md#service-lifetime)
 - [API Reference](docs/api-reference.md)
+- [Cookie Storage Guide](docs/guide-cookie-storage.md)
 - [Sample Applications](#sample-applications)
 - [Testing](#testing)
   - [Testing Guide](docs/testing.md)

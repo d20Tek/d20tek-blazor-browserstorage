@@ -5,6 +5,22 @@ All notable changes to **D20Tek.Blazor.BrowserStorage** are documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **`ICookieStorageService`** — a new typed, async storage service for browser cookies that mirrors the shape of `ILocalStorageService` and `ISessionStorageService`. Reads and writes go through `document.cookie` via JS interop, and the configured `BrowserStorageOptions.KeyPrefix` / `JsonOptions` are honored the same way as the other storage services.
+- **`CookieStorageOptions`** for configuring cookie attributes applied by `ICookieStorageService`: `DefaultExpiration`, `Path`, `Domain`, `SameSite` (via the new `CookieSameSiteMode` enum), and `Secure`.
+- **`AddCookieStorage`** extension on `IServiceCollection` for registering `ICookieStorageService`, with optional `BrowserStorageOptions` and `CookieStorageOptions` configuration delegates and a configurable DI lifetime.
+- **`InMemoryCookieStorageService`** in `D20Tek.Blazor.BrowserStorage.Testing`, implementing both `ICookieStorageService` and `IInMemoryStorage` for seeding/inspection in tests.
+- New `D20Tek.Blazor.BrowserStorage.Testing` DI extensions: `AddInMemoryCookieStorage`, `GetInMemoryCookieStorage`, and `ReplaceWithInMemoryCookieStorage`.
+- New `AddCookieStorage` and `GetCookieStorage` extensions on bUnit `BunitContext` (`BrowserStorageTestContextExtensions`) for registering and resolving the in-memory cookie storage service in component tests.
+
+### Notes
+
+- Unlike `localStorage` and `sessionStorage`, browsers do not raise a native change event for cookie writes made in other tabs, so `ICookieStorageService.Changed` only fires for writes and removals performed through the same service instance.
+- Only script-accessible (non-`HttpOnly`) cookies can be read or written through this service, since it is implemented via `document.cookie`.
+
 ## [1.1.4] - Nuget trusted publishing
 
 ### Added

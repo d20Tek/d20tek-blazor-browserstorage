@@ -21,7 +21,7 @@ Expose the Cache API and light-touch service worker helpers for PWA scenarios.
 - Helpers to prefetch and pin critical assets on first load.
 - Interop that plays nicely with Blazor WebAssembly service workers.
 
-## 3. Cookie Storage Service
+## 3. Cookie Storage Service [DONE]
 
 Provide a typed cookie facade that mirrors the existing storage API shape.
 

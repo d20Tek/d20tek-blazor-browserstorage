@@ -39,10 +39,10 @@ public class BrowserStorageTestContextExtensionsTests
         var local = ctx.Services.GetRequiredService<ILocalStorageService>();
         var session = ctx.Services.GetRequiredService<ISessionStorageService>();
 
-        await local.SetAsync("k", 1);
+        await local.SetAsync("k", 1, CancellationToken.None);
 
-        Assert.IsTrue(await local.ContainsKeyAsync("k"));
-        Assert.IsFalse(await session.ContainsKeyAsync("k"));
+        Assert.IsTrue(await local.ContainsKeyAsync("k", CancellationToken.None));
+        Assert.IsFalse(await session.ContainsKeyAsync("k", CancellationToken.None));
     }
 
     [TestMethod]
@@ -76,4 +76,31 @@ public class BrowserStorageTestContextExtensionsTests
     public void AddSessionStorage_ThrowsArgumentNullException_WhenContextIsNull() =>
         Assert.ThrowsExactly<ArgumentNullException>(
             [ExcludeFromCodeCoverage]() => ((BunitContext)null!).AddSessionStorage());
+
+    [TestMethod]
+    public void AddCookieStorage_OnlyRegistersCookie()
+    {
+        // Arrange
+        using var ctx = new BunitContext();
+
+        // Act
+        ctx.AddCookieStorage(o => o.KeyPrefix = "c_");
+
+        // Assert
+        Assert.IsNotNull(ctx.Services.GetService<ICookieStorageService>());
+        Assert.IsNull(ctx.Services.GetService<ILocalStorageService>());
+        Assert.IsNull(ctx.Services.GetService<ISessionStorageService>());
+        ctx.GetCookieStorage().Seed("k", "\"v\"");
+        Assert.IsTrue(ctx.GetCookieStorage().Snapshot.ContainsKey("c_k"));
+    }
+
+    [TestMethod]
+    public void AddCookieStorage_ThrowsArgumentNullException_WhenContextIsNull() =>
+        Assert.ThrowsExactly<ArgumentNullException>(
+            [ExcludeFromCodeCoverage]() => ((BunitContext)null!).AddCookieStorage());
+
+    [TestMethod]
+    public void GetCookieStorage_ThrowsArgumentNullException_WhenContextIsNull() =>
+        Assert.ThrowsExactly<ArgumentNullException>(
+            [ExcludeFromCodeCoverage]() => ((BunitContext)null!).GetCookieStorage());
 }

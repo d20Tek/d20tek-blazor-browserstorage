@@ -2,9 +2,10 @@ namespace D20Tek.Blazor.BrowserStorage.Testing;
 
 /// <summary>
 /// bUnit <see cref="BunitContext"/> extensions that register in-memory implementations of
-/// <see cref="ILocalStorageService"/> and <see cref="ISessionStorageService"/> for
-/// component and service tests. These are thin adapters over
-/// <see cref="InMemoryBrowserStorageServiceCollectionExtensions"/>.
+/// <see cref="ILocalStorageService"/>, <see cref="ISessionStorageService"/>, and
+/// <see cref="ICookieStorageService"/> for component and service tests. These are thin
+/// adapters over <see cref="InMemoryBrowserStorageServiceCollectionExtensions"/> and
+/// <see cref="InMemoryCookieStorageServiceCollectionExtensions"/>.
 /// </summary>
 public static class BrowserStorageTestContextExtensions
 {
@@ -42,6 +43,17 @@ public static class BrowserStorageTestContextExtensions
     }
 
     /// <summary>
+    /// Registers an in-memory <see cref="ICookieStorageService"/> on the bUnit
+    /// <paramref name="context"/>.
+    /// </summary>
+    public static BunitContext AddCookieStorage(this BunitContext context, Action<BrowserStorageOptions>? configure = null)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        context.Services.AddInMemoryCookieStorage(configure);
+        return context;
+    }
+
+    /// <summary>
     /// Gets the in-memory local storage handle for arrange / assert operations.
     /// </summary>
     public static IInMemoryStorage GetLocalStorage(this BunitContext context)
@@ -57,5 +69,14 @@ public static class BrowserStorageTestContextExtensions
     {
         ArgumentNullException.ThrowIfNull(context);
         return context.Services.GetInMemorySessionStorage();
+    }
+
+    /// <summary>
+    /// Gets the in-memory cookie storage handle for arrange / assert operations.
+    /// </summary>
+    public static IInMemoryStorage GetCookieStorage(this BunitContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        return context.Services.GetInMemoryCookieStorage();
     }
 }

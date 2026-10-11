@@ -17,6 +17,7 @@ This document provides a complete reference for all public types, interfaces, me
 |---|---|
 | `ILocalStorageService` | Provides typed, async access to the browser's `localStorage`. Inherits from `IBrowserStorageService`. |
 | `ISessionStorageService` | Provides typed, async access to the browser's `sessionStorage`. Inherits from `IBrowserStorageService`. |
+| `ICookieStorageService` | Provides typed, async access to browser cookies via `document.cookie`. Inherits from `IBrowserStorageService`. Only script-accessible (non-`HttpOnly`) cookies can be managed. See [guide-cookie-storage.md](guide-cookie-storage.md) for details. |
 | `IBrowserStorageService` | Base interface defining all storage operations. Implements `IAsyncDisposable`. |
 
 ## IBrowserStorageService Methods
@@ -56,6 +57,7 @@ The following extension methods are defined in the `ServiceCollectionExtensions`
 | `AddBrowserStorage(Action<BrowserStorageOptions>?, ServiceLifetime)` | Registers both `ILocalStorageService` and `ISessionStorageService`. |
 | `AddLocalStorage(Action<BrowserStorageOptions>?, ServiceLifetime)` | Registers only `ILocalStorageService`. |
 | `AddSessionStorage(Action<BrowserStorageOptions>?, ServiceLifetime)` | Registers only `ISessionStorageService`. |
+| `AddCookieStorage(Action<BrowserStorageOptions>?, Action<CookieStorageOptions>?, ServiceLifetime)` | Registers `ICookieStorageService`. Accepts an additional `Action<CookieStorageOptions>` delegate for configuring cookie attributes (path, domain, SameSite, Secure, default expiration). |
 
 All registration methods accept an optional `Action<BrowserStorageOptions>` delegate for configuration and an optional `ServiceLifetime` parameter that defaults to `ServiceLifetime.Scoped`.
 
@@ -108,6 +110,28 @@ Configuration class used to customize storage service behavior during dependency
 |---|---|---|---|
 | `KeyPrefix` | `string` | `""` (empty) | A prefix string that is automatically prepended to all storage keys. |
 | `JsonOptions` | `JsonSerializerOptions?` | `null` | Custom JSON serializer options. When null, the library uses `JsonSerializerDefaults.Web`. |
+
+### CookieStorageOptions
+
+Configuration class used to customize the cookie attributes applied by `ICookieStorageService`. See [guide-cookie-storage.md](guide-cookie-storage.md) for usage examples.
+
+| Property | Type | Default | Description |
+|---|---|---|---|
+| `DefaultExpiration` | `TimeSpan?` | `30 days` | The default lifetime applied to cookies written without an explicit expiration. When `null`, the cookie is a session cookie that is removed when the browser session ends. |
+| `Path` | `string` | `"/"` | The `path` attribute applied to cookies. |
+| `Domain` | `string?` | `null` | The `domain` attribute applied to cookies. When `null`, cookies are host-only. |
+| `SameSite` | `CookieSameSiteMode` | `CookieSameSiteMode.Lax` | The `SameSite` attribute applied to cookies. |
+| `Secure` | `bool` | `false` | Whether the `Secure` attribute is applied, restricting cookies to HTTPS connections. Must be `true` when `SameSite` is `CookieSameSiteMode.None`. |
+
+### CookieSameSiteMode
+
+An enum representing the supported `SameSite` cookie attribute values.
+
+| Member | Description |
+|---|---|
+| `Lax` | Cookies are sent with same-site requests and top-level navigation GET requests. Default. |
+| `None` | Cookies are sent with every request, including cross-site requests. Requires `CookieStorageOptions.Secure` to be `true`. |
+| `Strict` | Cookies are only sent with same-site requests. |
 
 ## Trimming and AOT
 

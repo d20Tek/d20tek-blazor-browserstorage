@@ -62,4 +62,26 @@ public static class ServiceCollectionExtensions
         services.TryAdd(new ServiceDescriptor(typeof(ISessionStorageService), typeof(SessionStorageService), lifetime));
         return services;
     }
+
+    /// <summary>
+    /// Registers the cookie storage service.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configure">Optional configuration for browser storage options (key prefix, JSON options).</param>
+    /// <param name="configureCookie">Optional configuration for cookie-specific attributes (path, domain, SameSite, Secure, expiration).</param>
+    /// <param name="lifetime">The service lifetime (defaults to Scoped).</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection AddCookieStorage(
+        this IServiceCollection services,
+        Action<BrowserStorageOptions>? configure = null,
+        Action<CookieStorageOptions>? configureCookie = null,
+        ServiceLifetime lifetime = ServiceLifetime.Scoped)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        services.Configure(configure ?? (_ => { }));
+        services.Configure(configureCookie ?? (_ => { }));
+        services.TryAdd(new ServiceDescriptor(typeof(ICookieStorageService), typeof(CookieStorageService), lifetime));
+        return services;
+    }
 }

@@ -16,7 +16,7 @@ This document provides a complete reference for all public types, interfaces, me
 
 | Interface | Description |
 |---|---|
-| `IInMemoryStorage` | Test-time surface for arranging, inspecting, and manipulating the in-memory backing store. Implemented by both `InMemoryLocalStorageService` and `InMemorySessionStorageService`. |
+| `IInMemoryStorage` | Test-time surface for arranging, inspecting, and manipulating the in-memory backing store. Implemented by `InMemoryLocalStorageService`, `InMemorySessionStorageService`, and `InMemoryCookieStorageService`. |
 
 ## IInMemoryStorage Members
 
@@ -56,6 +56,16 @@ Implements `ISessionStorageService`. Constructor set matches `InMemoryLocalStora
 | `InMemorySessionStorageService(BrowserStorageOptions options)` | Uses the supplied options directly. |
 | `InMemorySessionStorageService(IOptions<BrowserStorageOptions> options)` | DI-friendly constructor used by the `IServiceCollection` extensions. |
 
+### InMemoryCookieStorageService
+
+Implements `ICookieStorageService`. Constructor set matches `InMemoryLocalStorageService`. This fake mirrors the key/value and change-notification semantics shared with the other in-memory services; it does not model cookie-specific attributes (path, domain, SameSite, Secure, expiration) since those are not observable through `IBrowserStorageService`.
+
+| Constructor | Description |
+|---|---|
+| `InMemoryCookieStorageService()` | Uses default `BrowserStorageOptions`. |
+| `InMemoryCookieStorageService(BrowserStorageOptions options)` | Uses the supplied options directly. |
+| `InMemoryCookieStorageService(IOptions<BrowserStorageOptions> options)` | DI-friendly constructor used by the `IServiceCollection` extensions. |
+
 ## IServiceCollection Extension Methods
 
 The following extension methods are defined in the `InMemoryBrowserStorageServiceCollectionExtensions` static class and are available on any `IServiceCollection` instance. They are framework-agnostic and work with xUnit, MSTest, NUnit, `WebApplicationFactory`, and any other DI-based test host.
@@ -71,6 +81,13 @@ The following extension methods are defined in the `InMemoryBrowserStorageServic
 
 All registration methods accept an optional `Action<BrowserStorageOptions>` delegate for configuration. Services are registered with singleton lifetime.
 
+The following extension methods are defined in the `InMemoryCookieStorageServiceCollectionExtensions` static class and are available on any `IServiceCollection` instance.
+
+| Method | Description |
+|---|---|
+| `AddInMemoryCookieStorage(Action<BrowserStorageOptions>?)` | Registers the in-memory `ICookieStorageService` as a singleton, plus a keyed `IInMemoryStorage` handle for arrange / assert. |
+| `ReplaceWithInMemoryCookieStorage(Action<BrowserStorageOptions>?)` | Removes any prior `ICookieStorageService` registration (including the one added by the production `AddCookieStorage`) and registers the in-memory implementation in its place. |
+
 ## IServiceProvider Extension Methods
 
 Resolve the test-time handles for arrange / assert operations after building the service provider.
@@ -79,6 +96,7 @@ Resolve the test-time handles for arrange / assert operations after building the
 |---|---|---|
 | `GetInMemoryLocalStorage()` | `IInMemoryStorage` | Resolves the in-memory local storage handle. Throws if `AddInMemoryLocalStorage` (or `AddInMemoryBrowserStorage`) was not called. |
 | `GetInMemorySessionStorage()` | `IInMemoryStorage` | Resolves the in-memory session storage handle. Throws if `AddInMemorySessionStorage` (or `AddInMemoryBrowserStorage`) was not called. |
+| `GetInMemoryCookieStorage()` | `IInMemoryStorage` | Resolves the in-memory cookie storage handle. Throws if `AddInMemoryCookieStorage` was not called. |
 
 ## IBrowserStorageService Extension Methods
 
@@ -97,8 +115,10 @@ The following extension methods are defined in the `BrowserStorageTestContextExt
 | `AddBrowserStorage(Action<BrowserStorageOptions>?)` | `BunitContext` | Registers both the in-memory local and session storage services on the context's `Services`. Returns the context for chaining. |
 | `AddLocalStorage(Action<BrowserStorageOptions>?)` | `BunitContext` | Registers only the in-memory local storage service. |
 | `AddSessionStorage(Action<BrowserStorageOptions>?)` | `BunitContext` | Registers only the in-memory session storage service. |
+| `AddCookieStorage(Action<BrowserStorageOptions>?)` | `BunitContext` | Registers only the in-memory cookie storage service. |
 | `GetLocalStorage()` | `IInMemoryStorage` | Resolves the in-memory local storage handle from the context's `Services`. |
 | `GetSessionStorage()` | `IInMemoryStorage` | Resolves the in-memory session storage handle from the context's `Services`. |
+| `GetCookieStorage()` | `IInMemoryStorage` | Resolves the in-memory cookie storage handle from the context's `Services`. |
 
 ## Related documentation
 
