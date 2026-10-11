@@ -1,0 +1,19 @@
+@inherits LayoutComponentBase
+@attribute [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+
+<div style="min-height: 100vh;">
+
+    <nav class="navbar navbar-expand-sm navbar-light shadow-sm px-3 mb-4">
+        <a class="navbar-brand fw-bold" href="/">Cookie Consent</a>
+        <div class="navbar-nav ms-auto">
+            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">Home</NavLink>
+            <NavLink class="nav-link" href="/privacy">Privacy &amp; Cookies</NavLink>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        @Body
+    </div>
+
+    <ConsentBanner />
+</div>

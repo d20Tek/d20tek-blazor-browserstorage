@@ -1,0 +1,51 @@
+@page "/"
+<PageTitle>Home - Cookie Consent</PageTitle>
+
+<h1>Cookie Consent Sample</h1>
+<p>
+    This sample demonstrates <code>ICookieStorageService</code> from
+    <code>D20Tek.Blazor.BrowserStorage</code> through a realistic cookie-consent banner.
+</p>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card h-100 p-3">
+            <h5>Why a cookie (and not localStorage)?</h5>
+            <ul class="mb-0">
+                <li>Cookies can be sent with every request, so a server-rendered page on the same
+                    domain could read this same consent decision - <code>localStorage</code> never
+                    leaves the browser.</li>
+                <li>The decision is configured to persist for 1 year via
+                    <code>CookieStorageOptions.DefaultExpiration</code>, surviving browser restarts.</li>
+                <li><code>SameSite</code>, <code>Path</code>, and <code>Secure</code> are configured
+                    once in <code>Program.cs</code> and applied to every write automatically.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100 p-3 cookie-state-card">
+            <h5 class="font-monospace-reset" style="font-family: var(--font-family);">Current consent cookie</h5>
+            @if (BannerService.HasDecided)
+            {
+                <div>Analytics: <strong>@BannerService.Current!.Analytics</strong></div>
+                <div>Marketing: <strong>@BannerService.Current!.Marketing</strong></div>
+                <div>Decided at (UTC): <strong>@BannerService.Current!.DecidedAtUtc</strong></div>
+            }
+            else
+            {
+                <div>No consent decision has been made yet. Use the banner at the bottom of the page.</div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private ConsentBannerService BannerService { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await BannerService.LoadAsync();
+        BannerService.OnChanged += StateHasChanged;
+    }
+}

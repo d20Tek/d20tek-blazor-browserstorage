@@ -1,0 +1,71 @@
+@if (!BannerService.HasDecided)
+{
+    <div class="consent-banner">
+        @if (!_customizing)
+        {
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                    <strong>We use cookies.</strong>
+                    We use a small essential cookie to remember your consent choice, plus optional
+                    analytics and marketing cookies if you allow them. See our
+                    <a href="/privacy">Privacy &amp; Cookies</a> page for details.
+                </div>
+                <div class="d-flex gap-2 flex-shrink-0">
+                    <button class="btn btn-outline-light btn-sm" @onclick="() => _customizing = true">Customize</button>
+                    <button class="btn btn-outline-light btn-sm" @onclick="Reject">Reject Non-Essential</button>
+                    <button class="btn btn-accent btn-sm" @onclick="AcceptAll">Accept All</button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div class="d-flex flex-wrap gap-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="consent-analytics" @bind="_analytics" />
+                        <label class="form-check-label" for="consent-analytics">Analytics cookies</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="consent-marketing" @bind="_marketing" />
+                        <label class="form-check-label" for="consent-marketing">Marketing cookies</label>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 flex-shrink-0">
+                    <button class="btn btn-outline-light btn-sm" @onclick="() => _customizing = false">Back</button>
+                    <button class="btn btn-accent btn-sm" @onclick="SaveCustom">Save Preferences</button>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private bool _customizing;
+    private bool _analytics;
+    private bool _marketing;
+
+    [Inject]
+    private ConsentBannerService BannerService { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await BannerService.LoadAsync();
+        BannerService.OnChanged += StateHasChanged;
+    }
+
+    private async Task AcceptAll()
+    {
+        await BannerService.AcceptAllAsync();
+    }
+
+    private async Task Reject()
+    {
+        await BannerService.RejectNonEssentialAsync();
+    }
+
+    private async Task SaveCustom()
+    {
+        await BannerService.SaveCustomPreferencesAsync(_analytics, _marketing);
+        _customizing = false;
+    }
+}
