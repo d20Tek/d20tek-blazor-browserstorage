@@ -5,7 +5,7 @@ All notable changes to **D20Tek.Blazor.BrowserStorage** are documented in this f
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.5] - Cookie Storage Service
 
 ### Added
 
@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`InMemoryCookieStorageService`** in `D20Tek.Blazor.BrowserStorage.Testing`, implementing both `ICookieStorageService` and `IInMemoryStorage` for seeding/inspection in tests.
 - New `D20Tek.Blazor.BrowserStorage.Testing` DI extensions: `AddInMemoryCookieStorage`, `GetInMemoryCookieStorage`, and `ReplaceWithInMemoryCookieStorage`.
 - New `AddCookieStorage` and `GetCookieStorage` extensions on bUnit `BunitContext` (`BrowserStorageTestContextExtensions`) for registering and resolving the in-memory cookie storage service in component tests.
+- New **CookieConsent** sample application (`samples/CookieConsent`) demonstrating `ICookieStorageService` through a cookie-consent banner, with companion tests in `tests/CookieConsent.Tests`.
 
 ### Notes
 

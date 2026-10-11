@@ -155,7 +155,7 @@ For detailed usage instructions covering all storage operations (reading, writin
 For a complete reference of all public interfaces, methods, events, extension methods, and types, see the [API Reference](docs/api-reference.md).
 
 ## Sample Applications
-The repository includes two sample Blazor WebAssembly applications that demonstrate the library's features in realistic scenarios:
+The repository includes three sample Blazor WebAssembly applications that demonstrate the library's features in realistic scenarios:
 
 ### [PreferenceDashboard](samples/PreferenceDashboard)
 A settings and preferences dashboard that uses `localStorage` to persist visual preferences (theme, accent color, and font family) across browser sessions, and `sessionStorage` to track dismissal of a "What's New" banner within the current tab.
@@ -166,6 +166,11 @@ A settings and preferences dashboard that uses `localStorage` to persist visual 
 An interactive tech trivia game with 100 questions across .NET, Azure, and Windows categories. The application uses `localStorage` for persistent data such as player profiles, high scores, and game statistics, and `sessionStorage` for current quiz state with recovery on page refresh.
 
 **Features demonstrated:** Complex object serialization, `StorageResult<T>` for first-time player detection, `SetMultipleAsync` for batch result saving, `RemoveMultipleAsync` for session cleanup, `GetKeysAsync` and `LengthAsync` for storage statistics, and `ClearAllAsync` for data reset.
+
+### [CookieConsent](samples/CookieConsent)
+A cookie-consent banner that uses `ICookieStorageService` to persist a visitor's consent decision (analytics/marketing categories) for a full year across browser restarts - a scenario where a cookie is a better fit than `localStorage` because the same decision could also be read by a server-rendered page on the same domain.
+
+**Features demonstrated:** `AddCookieStorage` with `CookieStorageOptions` (`DefaultExpiration`, `Path`, `SameSite`), typed `GetAsync<T>` / `SetAsync<T>`, `RemoveAsync` to reset consent, and the `Changed` event keeping the banner and a settings page in sync.
 
 ## Testing
 

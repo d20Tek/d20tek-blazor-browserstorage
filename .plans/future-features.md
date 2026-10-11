@@ -23,6 +23,8 @@ Expose the Cache API and light-touch service worker helpers for PWA scenarios.
 
 ## 3. Cookie Storage Service [DONE]
 
+- Sample: [CookieConsent](../samples/CookieConsent) - a cookie-consent banner demonstrating `ICookieStorageService`, `CookieStorageOptions`, and the `Changed` event, with companion bUnit/MSTest coverage in `tests/CookieConsent.Tests`.
+
 Provide a typed cookie facade that mirrors the existing storage API shape.
 
 - `ICookieStorageService` with `SameSite`, `Secure`, `HttpOnly` (where applicable), path, domain, and expiration options.
