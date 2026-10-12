@@ -2,8 +2,8 @@
 
 Testing companion for [D20Tek.Blazor.BrowserStorage](https://www.nuget.org/packages/D20Tek.Blazor.BrowserStorage). Provides:
 
-- In-memory implementations of `ILocalStorageService` and `ISessionStorageService` that exercise the same serialization, key-prefixing, and `StorageResult` semantics as the real service.
-- bUnit `TestContext` extensions that wire everything up with one line.
+- In-memory implementations of `ILocalStorageService`, `ISessionStorageService`, and `ICookieStorageService` that exercise the same serialization, key-prefixing, and `StorageResult` semantics as the real services.
+- bUnit `TestContext` extensions (`AddBrowserStorage`, `AddCookieStorage`, `GetLocalStorage`, `GetSessionStorage`, `GetCookieStorage`) that wire everything up with one line.
 - A test-time `IInMemoryStorage` surface for seeding, snapshot inspection, availability simulation, and cross-tab event simulation.
 
 ## Install
