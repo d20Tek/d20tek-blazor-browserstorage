@@ -4,7 +4,7 @@
 
 # D20Tek.Blazor.BrowserStorage
 
-A modern, lightweight .NET library that provides typed, asynchronous access to the browser's `localStorage` and `sessionStorage` APIs for Blazor WebAssembly and client-side render modes. Built using JavaScript interop, this library eliminates the need for manual serialization, raw JS calls, or string-based key management. It offers a clean, strongly-typed C# API with full dependency injection support.
+A modern, lightweight .NET library that provides typed, asynchronous access to the browser's `localStorage`, `sessionStorage`, and cookie APIs for Blazor WebAssembly and client-side render modes. Built using JavaScript interop, this library eliminates the need for manual serialization, raw JS calls, or string-based key management. It offers a clean, strongly-typed C# API with full dependency injection support.
 
 This package was inspired by Blazored.LocalStorage/SessionStorage. Once I realized that it was deprecated and removed from NuGet.org, I needed my own implementation to use across my Blazor apps. While building on the basic functionality, D20Tek.Blazor.BrowserStorage provides additional features and a more modern, flexible API. The most significant difference is that `GetAsync<T>` returns a `StorageResult<T>` instead of throwing an exception when a key is not found, allowing for more graceful handling of missing keys.
 
@@ -50,7 +50,7 @@ D20Tek.Blazor.BrowserStorage provides:
 - A clean async interface
 - Zero‑boilerplate JSON handling
 - A simple, DI‑friendly .NET service
-- Support for both localStorage and sessionStorage
+- Support for localStorage, sessionStorage, and cookies
 - A modern API designed for Blazor WebAssembly and Blazor SSR
 
 It gives Blazor developers a first‑class, standard way to use browser storage, without having to touch JavaScript.
@@ -60,7 +60,8 @@ It gives Blazor developers a first‑class, standard way to use browser storage,
 - **Typed, async API**: Read and write any serializable .NET type with generic `GetAsync<T>` and `SetAsync<T>` methods. No manual JSON handling required.
 - **Result-based reads and writes**: `GetAsync<T>` returns a `StorageResult<T>` and `SetAsync<T>` / `RemoveAsync` / `ClearAllAsync` return a `StorageResult`, each with an `IsSuccess` flag and an optional `ErrorMessage`. Missing keys, corrupt values, quota-exceeded, and blocked-storage conditions surface as results rather than exceptions.
 - **Availability probing**: `IsAvailableAsync` detects whether browser storage is usable (private mode, disabled site data, quota exhausted) and caches the result.
-- **localStorage and sessionStorage**: Full support for both browser storage mechanisms through `ILocalStorageService` and `ISessionStorageService`.
+- **localStorage, sessionStorage, and cookies**: Full support for all three browser storage mechanisms through `ILocalStorageService`, `ISessionStorageService`, and `ICookieStorageService`, which all share the same typed, result-based API shape.
+- **Configurable cookie attributes**: `CookieStorageOptions` controls `DefaultExpiration`, `Path`, `Domain`, `SameSite` (via `CookieSameSiteMode`), and `Secure` for every cookie written through `ICookieStorageService`.
 - **Bulk operations**: `SetMultipleAsync` and `RemoveMultipleAsync` extension methods for batch read/write scenarios, with fail-fast semantics that return the first failing `StorageResult`.
 - **Key prefix namespacing**: Configure a prefix string (for example, `"myapp_"`) that is automatically prepended to all keys, preventing collisions between multiple applications or modules sharing the same origin.
 - **Change notifications**: Subscribe to the `Changed` event on either service to receive `StorageChangedEventArgs` whenever a value is added, modified, or removed.
@@ -115,11 +116,25 @@ builder.Services.AddLocalStorage();
 builder.Services.AddSessionStorage();
 ```
 
+Cookie storage is registered separately with `AddCookieStorage`, which also accepts an optional delegate for configuring the cookie attributes:
+
+```csharp
+builder.Services.AddCookieStorage(
+    configureCookie: cookieOptions =>
+    {
+        cookieOptions.DefaultExpiration = TimeSpan.FromDays(365);
+        cookieOptions.Path = "/";
+        cookieOptions.SameSite = CookieSameSiteMode.Lax;
+        cookieOptions.Secure = true;
+    });
+```
+
 ### 2. Inject the service into a component
 
 ```csharp
 @inject ILocalStorageService LocalStorage
 @inject ISessionStorageService SessionStorage
+@inject ICookieStorageService CookieStorage
 ```
 
 Or in a code-behind file:
@@ -148,6 +163,27 @@ if (result.IsSuccess)
 }
 ```
 
+Cookies use the same typed API, so reading and writing a cookie looks identical apart from the injected service:
+
+```csharp
+// Write a cookie using the configured default expiration
+await CookieStorage.SetAsync("consent", new ConsentPreferences { Analytics = true });
+
+// Read it back
+var consent = await CookieStorage.GetAsync<ConsentPreferences>("consent");
+if (consent.IsSuccess)
+{
+    Console.WriteLine(consent.Value.Analytics); // True
+}
+```
+
+Two cookie-specific behaviors are worth noting:
+
+- Only script-accessible (non-`HttpOnly`) cookies can be read or written, because the service is implemented through `document.cookie`.
+- Browsers do not raise a native change event for cookie writes made in other tabs, so `ICookieStorageService.Changed` only fires for writes and removals performed through the same service instance.
+
+For guidance on when to choose cookies over `localStorage`, and for the full set of cookie options, see the [Cookie Storage Guide](docs/guide-cookie-storage.md).
+
 ## Usage and Configuration
 For detailed usage instructions covering all storage operations (reading, writing, removing, checking keys, enumerating, bulk operations, and change notifications) as well as configuration options (key prefixing, custom JSON serialization, and service lifetimes), see the [Detailed Getting Started Guide](docs/getting-started-detailed.md).
 
@@ -174,7 +210,7 @@ A cookie-consent banner that uses `ICookieStorageService` to persist a visitor's
 
 ## Testing
 
-For unit and component tests, install the companion package **[D20Tek.Blazor.BrowserStorage.Testing](https://www.nuget.org/packages/D20Tek.Blazor.BrowserStorage.Testing)**. It ships in-memory implementations of `ILocalStorageService` and `ISessionStorageService` plus bUnit `BunitContext` extensions so you can test components that depend on browser storage without spinning up a real browser or mocking `IJSRuntime` by hand.
+For unit and component tests, install the companion package **[D20Tek.Blazor.BrowserStorage.Testing](https://www.nuget.org/packages/D20Tek.Blazor.BrowserStorage.Testing)**. It ships in-memory implementations of `ILocalStorageService`, `ISessionStorageService`, and `ICookieStorageService` plus bUnit `BunitContext` extensions so you can test components that depend on browser storage without spinning up a real browser or mocking `IJSRuntime` by hand.
 
 ```bash
 dotnet add package D20Tek.Blazor.BrowserStorage.Testing
@@ -189,6 +225,16 @@ var cut = ctx.Render<PreferencesPanel>();
 cut.Find("button.reset").Click();
 
 Assert.False(ctx.GetLocalStorage().Snapshot.ContainsKey("app_prefs"));
+```
+
+Cookie-backed components are registered and inspected the same way through `AddCookieStorage` and `GetCookieStorage`:
+
+```csharp
+using var ctx = new BunitContext();
+ctx.AddCookieStorage();
+ctx.GetCookieStorage().Seed("consent", new ConsentPreferences { Analytics = true });
+
+var cut = ctx.Render<ConsentBanner>();
 ```
 
 See [docs/testing.md](docs/testing.md) for the full guide — seeding, `Snapshot` inspection, availability simulation, and cross-tab `Changed` event simulation. For the complete list of public types, methods, and extensions in the testing package, see the [Testing API Reference](docs/testing-api-reference.md).
