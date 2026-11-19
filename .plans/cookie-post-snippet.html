@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Cookie storage snippet</title>
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        background: #0d1117;
+    }
+
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 48px;
+        box-sizing: border-box;
+        font-family: "Cascadia Code", "Consolas", "SF Mono", monospace;
+    }
+
+    /* Screenshot this element. It is sized close to a 16:9 social card. */
+    .card {
+        width: 1000px;
+        background: #1e1e1e;
+        border: 1px solid #2d2d2d;
+        border-radius: 14px;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+        overflow: hidden;
+    }
+
+    .titlebar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 18px;
+        background: #252526;
+        border-bottom: 1px solid #333;
+    }
+
+    .dot {
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+    }
+
+    .dot.red { background: #ff5f57; }
+    .dot.yellow { background: #febc2e; }
+    .dot.green { background: #28c840; }
+
+    .filename {
+        margin-left: 10px;
+        color: #9d9d9d;
+        font-size: 15px;
+    }
+
+    pre {
+        margin: 0;
+        padding: 28px 32px 32px;
+        font-size: 21px;
+        line-height: 1.55;
+        color: #dcdcdc;
+        white-space: pre;
+    }
+
+    /* Visual Studio dark theme token colors. */
+    .cmt { color: #6a9955; }
+    .kw  { color: #569cd6; }
+    .ctl { color: #d8a0df; }
+    .typ { color: #4ec9b0; }
+    .ifc { color: #b8d7a3; }
+    .mth { color: #dcdcaa; }
+    .str { color: #d69d85; }
+    .num { color: #b5cea8; }
+    .loc { color: #9cdcfe; }
+    .op  { color: #dcdcdc; }
+</style>
+</head>
+<body>
+<div class="card">
+    <div class="titlebar">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="filename">ICookieStorageService &mdash; D20Tek.Blazor.BrowserStorage</span>
+    </div>
+<pre><span class="cmt">// Register once, with the cookie attributes you need.</span>
+<span class="loc">builder</span>.<span class="loc">Services</span>.<span class="mth">AddCookieStorage</span>(
+    <span class="loc">configureCookie</span>: <span class="loc">options</span> =&gt;
+    {
+        <span class="loc">options</span>.<span class="loc">DefaultExpiration</span> = <span class="typ">TimeSpan</span>.<span class="mth">FromDays</span>(<span class="num">365</span>);
+        <span class="loc">options</span>.<span class="loc">SameSite</span> = <span class="typ">CookieSameSiteMode</span>.<span class="loc">Lax</span>;
+        <span class="loc">options</span>.<span class="loc">Secure</span> = <span class="kw">true</span>;
+    });
+
+<span class="cmt">// Then read and write typed values anywhere.</span>
+<span class="ctl">await</span> <span class="loc">Cookies</span>.<span class="mth">SetAsync</span>(<span class="str">"consent"</span>, <span class="loc">prefs</span>);
+
+<span class="kw">var</span> <span class="loc">result</span> = <span class="ctl">await</span> <span class="loc">Cookies</span>.<span class="mth">GetAsync</span>&lt;<span class="typ">ConsentPreferences</span>&gt;(<span class="str">"consent"</span>);
+<span class="ctl">if</span> (<span class="loc">result</span>.<span class="loc">IsSuccess</span>)
+{
+    <span class="cmt">// result.Value is a ConsentPreferences, already deserialized.</span>
+}</pre>
+</div>
+</body>
+</html>

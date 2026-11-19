@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.5] - Cookie Storage Service
 
+### Changed
+- Updated package references to latest .net10 versions.
+- Producing last build before updating to .net11.
+
+## [1.1.5] - Cookie Storage Service
+
 ### Added
 
 - **`ICookieStorageService`** — a new typed, async storage service for browser cookies that mirrors the shape of `ILocalStorageService` and `ISessionStorageService`. Reads and writes go through `document.cookie` via JS interop, and the configured `BrowserStorageOptions.KeyPrefix` / `JsonOptions` are honored the same way as the other storage services.
